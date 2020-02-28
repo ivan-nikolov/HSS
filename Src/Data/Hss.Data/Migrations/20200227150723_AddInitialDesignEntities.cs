@@ -37,7 +37,7 @@ namespace Hss.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 30, nullable: false),
-                    ParentCategoryId = table.Column<int>(nullable: false)
+                    ParentCategoryId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -65,7 +65,7 @@ namespace Hss.Data.Migrations
                     BillingFrequency = table.Column<int>(nullable: false),
                     BillingStartOn = table.Column<DateTime>(nullable: false),
                     CancelOn = table.Column<DateTime>(nullable: true),
-                    Expiration = table.Column<DateTime>(nullable: false)
+                    Expiration = table.Column<DateTime>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -88,7 +88,7 @@ namespace Hss.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(maxLength: 90, nullable: false)
+                    Name = table.Column<string>(maxLength: 90, nullable: false),
                 },
                 constraints: table =>
                 {
@@ -104,7 +104,7 @@ namespace Hss.Data.Migrations
                     ModifiedOn = table.Column<DateTime>(nullable: true),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(maxLength: 50, nullable: false)
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
                 },
                 constraints: table =>
                 {
@@ -123,7 +123,7 @@ namespace Hss.Data.Migrations
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     CategoryId = table.Column<int>(nullable: false),
-                    Price = table.Column<decimal>(nullable: false)
+                    Price = table.Column<decimal>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -147,7 +147,7 @@ namespace Hss.Data.Migrations
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeletedOn = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 200, nullable: false),
-                    CountryId = table.Column<int>(nullable: false)
+                    CountryId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -165,7 +165,7 @@ namespace Hss.Data.Migrations
                 columns: table => new
                 {
                     TeamId = table.Column<string>(nullable: false),
-                    ServiceId = table.Column<int>(nullable: false)
+                    ServiceId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -199,7 +199,7 @@ namespace Hss.Data.Migrations
                     StreetName = table.Column<string>(maxLength: 200, nullable: true),
                     Neighborhood = table.Column<string>(maxLength: 200, nullable: true),
                     ZipCode = table.Column<int>(nullable: false),
-                    CityId = table.Column<int>(nullable: false)
+                    CityId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -228,7 +228,7 @@ namespace Hss.Data.Migrations
                     NetAmount = table.Column<decimal>(nullable: false),
                     TotalAmount = table.Column<decimal>(nullable: false),
                     UseDiscountPercentage = table.Column<bool>(nullable: false),
-                    OrderId = table.Column<string>(nullable: false)
+                    OrderId = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -260,7 +260,7 @@ namespace Hss.Data.Migrations
                     Status = table.Column<int>(nullable: false),
                     InvoiceId = table.Column<string>(nullable: true),
                     ContractId = table.Column<string>(nullable: true),
-                    ClientId = table.Column<string>(nullable: false)
+                    ClientId = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {

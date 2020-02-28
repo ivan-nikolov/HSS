@@ -23,11 +23,6 @@
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.ContractId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasOne(i => i.Invoice)
-            //    .WithOne(i => i.Order)
-            //    .HasForeignKey<Invoice>(o => o.OrderId)
-            //    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
