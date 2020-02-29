@@ -1,7 +1,7 @@
 ﻿namespace Hss.Web.ViewModels.Settings
 {
-    using Hss.Data.Models;
     using Hss.Services.Mapping;
+    using Hss.Data.Models;
 
     using AutoMapper;
 

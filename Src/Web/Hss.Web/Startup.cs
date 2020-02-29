@@ -9,8 +9,10 @@
     using Hss.Data.Repositories;
     using Hss.Data.Seeding;
     using Hss.Services.Data;
+    using Hss.Services.Data.Categories;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
+    using Hss.Services.Models.Categories;
     using Hss.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -59,12 +61,16 @@
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
+
+            services.AddTransient<ICategoriesService, CategoriesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).GetTypeInfo().Assembly);
+            AutoMapperConfig.RegisterMappings(
+                typeof(ErrorViewModel).GetTypeInfo().Assembly,
+                typeof(CategoryServiceModel).GetTypeInfo().Assembly);
 
             // Seed data on application startup
             using (var serviceScope = app.ApplicationServices.CreateScope())

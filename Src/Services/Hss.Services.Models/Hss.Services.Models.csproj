@@ -2,14 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" />
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,10 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Hss.Data.Common\Hss.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Hss.Data.Models\Hss.Data.Models.csproj" />
     <ProjectReference Include="..\Hss.Services.Mapping\Hss.Services.Mapping.csproj" />
-    <ProjectReference Include="..\Hss.Services.Models\Hss.Services.Models.csproj" />
   </ItemGroup>
-
+  
 </Project>
