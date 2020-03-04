@@ -15,8 +15,15 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="Administration" asp-controller="Dashboard" asp-action="Index" title="Admin">Admin</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="Create" title="Create">Create Category</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="Create" title="Create">Create Category</a>
+
+                        <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="All" title="Create">All Categories</a>
+                    </div>
                 </li>
             }
             <li class="nav-item">

@@ -1,0 +1,61 @@
+﻿@model Hss.Web.ViewModels.Administration.Categories.DetailsCategoryViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    var number = 1;
+}
+
+<h1>Service Category Details</h1>
+<hr />
+<div class="d-flex justify-content-around">
+    <div>
+        <h3>Name</h3>
+    </div>
+    <div>
+        <h3>@Model.Name</h3>
+    </div>
+</div>
+<hr />
+@if (this.Model.ChildCategories.Any())
+{
+    <h2>Subcategories</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col"><h3>Name</h3></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.ChildCategories)
+            {
+                <tr>
+                    <th>@(number++)</th>
+                    <td>
+                        <div>
+                            <h4>@category.Name</h4>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a class="btn btn-primary" asp-route-id="@category.Id" asp-area="Administration" asp-controller="Categories" asp-action="Details">Details</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <hr />
+}
+<div>
+    @if (Model.ParentCategoryId != null)
+    {
+        <a class="btn btn-info" asp-action="Details" asp-route-id="@Model.ParentCategoryId">Back</a>
+    }
+    else
+    {
+        <a class="btn btn-info" asp-action="All">Back</a>
+    }
+</div>

@@ -9,8 +9,6 @@
             this.Categories = new HashSet<CategoryViewModel>();
         }
 
-        public string Name { get; set; }
-
         public IEnumerable<CategoryViewModel> Categories { get; set; }
     }
 }

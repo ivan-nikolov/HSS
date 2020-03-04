@@ -25,6 +25,8 @@
                     controller,
                     context.ActionDescriptor.BoundProperties.ToArray())
                     ?? new BadRequestResult();
+
+                await context.Result.ExecuteResultAsync(context);
             }
 
             await next();
