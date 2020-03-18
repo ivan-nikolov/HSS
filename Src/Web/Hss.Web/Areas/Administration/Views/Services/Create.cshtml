@@ -1,0 +1,52 @@
+﻿@model Hss.Web.ViewModels.Administration.Services.CreateServiceInputModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Service</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input type="number" step=".01" min="0.00" asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="parentCategory">Category</label>
+                <select asp-items="Model.Categories" id="categoryId" class="form-control" name="categoryId">
+                    <option selected="selected" disabled="disabled">--Select Category--</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <dl>
+                    <dt>
+                        <label asp-for="Image"></label>
+                    </dt>
+                    <dd>
+                        <input asp-for="Image" type="file">
+                    </dd>
+                </dl>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

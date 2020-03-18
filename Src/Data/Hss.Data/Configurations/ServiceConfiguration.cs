@@ -18,6 +18,14 @@
             builder.HasIndex(s => s.Name)
                 .IsUnique();
 
+            builder.Property(s => s.Description)
+                .HasMaxLength(500)
+                .IsRequired(true)
+                .IsUnicode(true);
+
+            builder.Property(s => s.ImageName)
+                .IsRequired(true);
+
             // Relations
             builder.HasOne(s => s.Category)
                 .WithMany(c => c.Services)

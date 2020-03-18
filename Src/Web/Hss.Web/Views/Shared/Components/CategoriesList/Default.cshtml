@@ -1,0 +1,15 @@
+﻿@model Hss.Web.ViewModels.Categories.CategoriesListViewModel
+
+<div class="row">
+    @foreach (var category in Model.Categories)
+    {
+        <div class="col-md-3">
+            <a class="card" asp-route-id="@category.Id" asp-area="Administration" asp-controller="Categories" asp-action="Details">
+                <img src="@category.ImageUrl" alt="@category.Name image" style="width:100%">
+                <div class="container">
+                    <h4>@category.Name</h4>
+                </div>
+            </a>
+        </div>
+    }
+</div>

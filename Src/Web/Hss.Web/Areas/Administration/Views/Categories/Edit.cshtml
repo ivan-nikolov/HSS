@@ -15,8 +15,8 @@
             </div>
             <div class="form-group">
                 <label for="parentCategory">Parant Category</label>
-                <select asp-items="Model.Categories"  id="parentCategoryId" class="form-control" name="parentCategoryId">
-                    <option selected="selected">@Model.Categories.FirstOrDefault(c => c.Value == Model.ParentCategoryId?.ToString())?.Text</option>
+                <select asp-items="Model.Categories" id="parentCategoryId" class="form-control" name="parentCategoryId">
+                    <option selected="selected">--Select Parent Category--</option>
                 </select>
             </div>
             <div class="d-flex justify-content-between">

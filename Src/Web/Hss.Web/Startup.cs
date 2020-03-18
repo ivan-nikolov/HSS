@@ -2,22 +2,27 @@
 {
     using System.Reflection;
 
+    using CloudinaryDotNet;
     using Hss.Data;
     using Hss.Data.Common;
     using Hss.Data.Common.Repositories;
     using Hss.Data.Models;
     using Hss.Data.Repositories;
     using Hss.Data.Seeding;
+    using Hss.Services;
     using Hss.Services.Data;
     using Hss.Services.Data.Categories;
+    using Hss.Services.Data.Services;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
+    using Hss.Web.Filters;
     using Hss.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +53,11 @@
                         options.MinimumSameSitePolicy = SameSiteMode.None;
                     });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(typeof(ArgumentNullExceptionFilterAttribute));
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
             services.AddRazorPages();
 
             services.AddSingleton(this.configuration);
@@ -58,11 +67,21 @@
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbQueryRunner, DbQueryRunner>();
 
+            // Cloudinary
+            Account account = new Account(
+    this.configuration["Cloudinary:Name"],
+    this.configuration["Cloudinary:ApiKey"],
+    this.configuration["Cloudinary:ApiSecret"]);
+
+            Cloudinary cloudinary = new Cloudinary(account);
+            services.AddSingleton(cloudinary);
+
             // Application services
             services.AddTransient<IEmailSender, NullMessageSender>();
             services.AddTransient<ISettingsService, SettingsService>();
-
             services.AddTransient<ICategoriesService, CategoriesService>();
+            services.AddTransient<IServicesService, ServicesService>();
+            services.AddTransient<ICloudinaryService, CloudinaryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -9,7 +9,7 @@
     using Microsoft.AspNetCore.Mvc.Controllers;
     using Microsoft.AspNetCore.Mvc.Filters;
 
-    public class ValidateModelAttribute : Attribute, IAsyncActionFilter
+    public class ModelValidationActionFilterAttribute : Attribute, IAsyncActionFilter
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {

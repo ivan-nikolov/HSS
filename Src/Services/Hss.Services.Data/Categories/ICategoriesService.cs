@@ -1,6 +1,7 @@
 ﻿namespace Hss.Services.Data.Categories
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Services.Models.Categories;
@@ -11,14 +12,14 @@
 
         Task<CategoryServiceModel> GetByIdWithDeletedAsync(int id);
 
-        Task<CategoryServiceModel> GetById(int id);
+        Task<CategoryServiceModel> GetByIdAsync(int id);
 
         IEnumerable<CategoryServiceModel> GetAllRootCategories();
 
-        IEnumerable<CategoryServiceModel> GetAllCategories();
+        IQueryable<CategoryServiceModel> GetAllCategories();
 
         Task DeleteAsync(int id);
 
-        Task Update(CategoryServiceModel input);
+        Task UpdateAsync(CategoryServiceModel input);
     }
 }

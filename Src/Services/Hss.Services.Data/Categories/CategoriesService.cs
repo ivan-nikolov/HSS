@@ -1,5 +1,6 @@
 ﻿namespace Hss.Services.Data.Categories
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -29,6 +30,11 @@
         {
             var category = await this.categoryRepository.GetByIdAsync(id);
 
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(Category));
+            }
+
             var childCategories = this.categoryRepository.All()
                 .Where(c => c.ParentCategoryId == id)
                 .Select(c => c.Id)
@@ -43,7 +49,7 @@
             await this.categoryRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<CategoryServiceModel> GetAllCategories()
+        public IQueryable<CategoryServiceModel> GetAllCategories()
         {
             var categories = this.categoryRepository
                 .All()
@@ -62,9 +68,14 @@
             return categories;
         }
 
-        public async Task<CategoryServiceModel> GetById(int id)
+        public async Task<CategoryServiceModel> GetByIdAsync(int id)
         {
             var category = await this.categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(Category));
+            }
 
             return category.To<CategoryServiceModel>();
         }
@@ -72,12 +83,25 @@
         public async Task<CategoryServiceModel> GetByIdWithDeletedAsync(int id)
         {
             var category = await this.categoryRepository.GetByIdWithDeletedAsync(id);
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(Category));
+            }
+
             return category.To<CategoryServiceModel>();
         }
 
-        public async Task Update(CategoryServiceModel input)
+        public async Task UpdateAsync(CategoryServiceModel input)
         {
-            var category = this.GetById(input.Id).To<Category>();
+            var category = await this.categoryRepository.GetByIdAsync(input.Id);
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(Category));
+            }
+
+            category.Name = input.Name;
+            category.ParentCategoryId = input.ParentCategoryId;
+
             this.categoryRepository.Update(category);
             await this.categoryRepository.SaveChangesAsync();
         }

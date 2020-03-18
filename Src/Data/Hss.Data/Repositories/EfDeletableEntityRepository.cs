@@ -45,7 +45,7 @@
             entity.DeletedOn = null;
             this.Update(entity);
         }
-        
+
         public override void Delete(TEntity entity)
         {
             entity.IsDeleted = true;

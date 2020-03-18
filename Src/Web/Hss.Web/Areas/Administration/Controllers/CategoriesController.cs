@@ -1,8 +1,9 @@
 ﻿namespace Hss.Web.Areas.Administration.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
-
+    using Hss.Services;
     using Hss.Services.Data.Categories;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Categories;
@@ -18,22 +19,17 @@
         private const string CategoryNotFoundErrorMessage = "Category Not Found";
 
         private readonly ICategoriesService categoriesService;
+        private readonly ICloudinaryService cloudinaryService;
 
-        public CategoriesController(ICategoriesService categoriesService)
+        public CategoriesController(ICategoriesService categoriesService, ICloudinaryService cloudinaryService)
         {
             this.categoriesService = categoriesService;
+            this.cloudinaryService = cloudinaryService;
         }
 
         public IActionResult All()
         {
-            var categories = new CategoriesListViewModel()
-            {
-                Categories = this.categoriesService
-                .GetAllCategories()
-                .Select(c => c.To<CategoryViewModel>()),
-            };
-
-            return this.View(categories);
+            return this.View();
         }
 
         public IActionResult Create()
@@ -50,16 +46,20 @@
                 }),
             };
 
-            inputModel.Categories = inputModel.Categories.Prepend(new SelectListItem() { Text = "Select Parent Category", Value = string.Empty });
-
             return this.View(inputModel);
         }
 
         [HttpPost]
-        [ValidateModel]
+        [ModelValidationActionFilter]
         public async Task<IActionResult> Create(CreateCategoryInputModel input)
         {
+            if (input.ParentCategoryId.HasValue)
+            {
+                var parantCategory = this.categoriesService.GetByIdAsync(input.ParentCategoryId.Value);
+            }
+
             var category = input.To<CategoryServiceModel>();
+            category.ImageUrl = await this.cloudinaryService.UploadAsync(input.Image);
             await this.categoriesService.CreateAsync(category);
 
             return this.RedirectToAction("All");
@@ -67,7 +67,7 @@
 
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await this.categoriesService.GetById(id);
+            var category = await this.categoriesService.GetByIdAsync(id);
             if (category == null)
             {
                 this.ModelState.AddModelError(CategoryNotFoundErrorKey, CategoryNotFoundErrorMessage);
@@ -80,7 +80,7 @@
         }
 
         [HttpPost]
-        [ValidateModel]
+        [ModelValidationActionFilter]
         public async Task<IActionResult> Delete(DeleteCategoryInputModel input)
         {
             await this.categoriesService.DeleteAsync(input.Id);
@@ -90,25 +90,16 @@
 
         public async Task<IActionResult> Details(int id)
         {
-            var category = await this.categoriesService.GetById(id);
-            if (category == null)
-            {
-                this.ModelState.AddModelError(CategoryNotFoundErrorKey, CategoryNotFoundErrorMessage);
-                return this.RedirectToAction("All");
-            }
+            var category = await this.categoriesService.GetByIdAsync(id);
 
             var viewModel = category.To<DetailsCategoryViewModel>();
-            viewModel.ChildCategories = this.categoriesService.GetAllCategories()
-                .Where(c => c.ParentCategoryId == id)
-                .Select(c => c.To<DetailsCategoryViewModel>())
-                .ToList();
 
             return this.View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await this.categoriesService.GetById(id);
+            var category = await this.categoriesService.GetByIdAsync(id);
 
             var viewModel = category.To<EditCategoryViewModel>();
 
@@ -121,16 +112,14 @@
                     Text = c.Name,
                 });
 
-            viewModel.Categories = viewModel.Categories.Prepend(new SelectListItem() { Text = "Select Parent Category", Value = string.Empty });
-
             return this.View(viewModel);
         }
 
         [HttpPost]
-        [ValidateModel]
+        [ModelValidationActionFilter]
         public async Task<IActionResult> Edit(EditCategoryInputViewModel input)
         {
-            await this.categoriesService.Update(input.To<CategoryServiceModel>());
+            await this.categoriesService.UpdateAsync(input.To<CategoryServiceModel>());
 
             return this.RedirectToAction("All");
         }

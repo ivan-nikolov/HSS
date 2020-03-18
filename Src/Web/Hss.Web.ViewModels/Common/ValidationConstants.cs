@@ -6,5 +6,10 @@
 
         public const int CategiryNameMinLength = 3;
         public const int CategiryNameMaxLength = 30;
+
+        public const int ServiceNameMinLength = 3;
+        public const int ServiceNamehMaxLength = 30;
+
+        public const int DescriptionMaxLength = 500;
     }
 }
