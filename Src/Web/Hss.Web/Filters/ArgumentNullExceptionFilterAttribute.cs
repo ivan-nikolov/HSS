@@ -11,7 +11,11 @@
         {
             if (context.Exception.GetType() == typeof(ArgumentNullException))
             {
-                context.Result = new RedirectResult("/Home/Error");
+                context.Result = new RedirectResult("/Home/Error?statusCode=404");
+            }
+            else
+            {
+                context.Result = new RedirectResult("/Error/HttpError");
             }
         }
     }

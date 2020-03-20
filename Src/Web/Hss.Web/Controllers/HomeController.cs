@@ -15,6 +15,8 @@
 
         public IActionResult Privacy()
         {
+            string a = null;
+            a.ToLower();
             return this.View();
         }
 

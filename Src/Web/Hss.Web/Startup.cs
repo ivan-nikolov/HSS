@@ -111,7 +111,7 @@
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseStatusCodePagesWithRedirects("/Error/HttpError?statusCode={0}");
                 app.UseHsts();
             }
 

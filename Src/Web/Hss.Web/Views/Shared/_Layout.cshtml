@@ -14,6 +14,7 @@
         <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
         <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
     </environment>
+    @RenderSection("Styles", false)
 </head>
 <body>
     <header>
@@ -31,29 +32,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Settings" asp-action="Index">Settings</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Categories
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="Create" title="Create">Create Category</a>
-                                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Categories" asp-action="All" title="Create">All Categories</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Services
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Services" asp-action="Create" title="Create">Create Service</a>
-                                <a class="nav-link text-dark" asp-area="Administration" asp-controller="Services" asp-action="All" title="Create">All Services</a>
-                            </div>
-                        </li>
+                        @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
+                        {
+                            <partial name="_AdminNavBar" />
+                        }
                     </ul>
                 </div>
             </div>
