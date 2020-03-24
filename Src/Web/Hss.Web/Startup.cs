@@ -59,6 +59,7 @@
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages();
+            services.AddServerSideBlazor();
 
             services.AddSingleton(this.configuration);
 
@@ -130,6 +131,8 @@
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
+                        endpoints.MapBlazorHub();
+                        endpoints.MapFallbackToController("Blazor", "Home");
                     });
         }
     }

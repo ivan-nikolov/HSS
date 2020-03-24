@@ -26,6 +26,11 @@
             return this.View();
         }
 
+        public IActionResult Blazor()
+        {
+            return this.View("_Host");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

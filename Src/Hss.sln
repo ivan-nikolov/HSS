@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hss.Web.Tests", "Tests\Hss.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hss.Web.ViewModels", "Web\Hss.Web.ViewModels\Hss.Web.ViewModels.csproj", "{13B7AACB-9C85-4409-8D4B-95A67D0DFFF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hss.Services.Models", "Services\Hss.Services.Models\Hss.Services.Models.csproj", "{C73FE24C-2EE5-4269-8105-3BF5BC79343C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hss.Services.Models", "Services\Hss.Services.Models\Hss.Services.Models.csproj", "{C73FE24C-2EE5-4269-8105-3BF5BC79343C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{423FF9D4-522B-43FD-8098-C7A64054ACDA}"
 	ProjectSection(SolutionItems) = preProject
