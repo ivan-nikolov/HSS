@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering;
+@using System.Linq;
+@inject Hss.Services.Data.Categories.ICategoriesService categoriesService;
+
+@if (this.SubCategories == null)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+<div class="form-group">
+    <select @onchange="@(e => OnCategoryChanged(e))" class="form-control">
+        <option>--Select Parent Category--</option>
+        @foreach (var item in RootCategories)
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </select>
+</div>
+    @if (this.SubCategories.Count() > 0)
+    {
+        <CategoriesDropdownComponent UpdateRoot="this.UpdateRoot" CurrentCategoryId="@this.selectedCategoryId" CategoryChanged="SetCategoryId"></CategoriesDropdownComponent>
+    }
+}
+@code {
+    private int? selectedCategoryId;
+
+    [Parameter]
+    public int? CurrentCategoryId { get; set; }
+
+    public IEnumerable<SelectListItem> RootCategories { get; set; }
+
+    public IEnumerable<SelectListItem> SubCategories { get; set; }
+
+    [Parameter]
+    public EventCallback<int?> CategoryChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<(int?, string)> UpdateRoot { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.RootCategories = this.InitializeCategories();
+        this.SubCategories = new List<SelectListItem>();
+    }
+
+    private async Task OnCategoryChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value.ToString(), out int selectedCategoryId))
+        {
+            this.selectedCategoryId = selectedCategoryId;
+        }
+        else
+        {
+            this.selectedCategoryId = null;
+        }
+
+        var categoryName = this.RootCategories?.FirstOrDefault(c => c?.Value == e.Value?.ToString())?.Text;
+
+        await this.UpdateRoot.InvokeAsync((this.selectedCategoryId, categoryName));
+        this.CurrentCategoryId = this.selectedCategoryId;
+        this.AddDropDown();
+        await CategoryChanged.InvokeAsync(this.selectedCategoryId);
+        this.StateHasChanged();
+    }
+
+    private void AddDropDown()
+    {
+        if (this.CurrentCategoryId.HasValue)
+        {
+            this.SubCategories = this.InitializeCategories();
+        }
+        else
+        {
+            this.SubCategories = new List<SelectListItem>();
+        }
+
+        this.StateHasChanged();
+
+    }
+
+    private void SetCategoryId(int? id)
+    {
+        this.selectedCategoryId = id;
+    }
+
+    private IEnumerable<SelectListItem> InitializeCategories()
+    {
+        return this.categoriesService.GetAllCategories()
+                .Where(c => c.ParentCategoryId == this.CurrentCategoryId)
+                .Select(c => new SelectListItem()
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name,
+                })
+        .ToList();
+    }
+}

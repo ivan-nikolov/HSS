@@ -43,7 +43,8 @@
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name,
-                }),
+                })
+                .ToList(),
             };
 
             return this.View(inputModel);
@@ -55,7 +56,7 @@
         {
             if (input.ParentCategoryId.HasValue)
             {
-                var parantCategory = this.categoriesService.GetByIdAsync(input.ParentCategoryId.Value);
+                var parantCategory = await this.categoriesService.GetByIdAsync(input.ParentCategoryId.Value);
             }
 
             var category = input.To<CategoryServiceModel>();

@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@this.ViewData["Title"] - @GlobalConstants.SystemName</title>
-
     <environment names="Development">
         <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" asp-append-version="true" />
         <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
@@ -15,6 +14,7 @@
         <link href="~/css/site.min.css" rel="stylesheet" asp-append-version="true" />
     </environment>
     @RenderSection("Styles", false)
+    <base href="~/" />
 </head>
 <body>
     <header>
@@ -72,7 +72,7 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @this.RenderSection("Scripts", required: false)
     <script src="_framework/blazor.server.js"></script>
+    @this.RenderSection("Scripts", required: false)
 </body>
 </html>

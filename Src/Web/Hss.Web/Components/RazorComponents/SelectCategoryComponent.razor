@@ -1,0 +1,18 @@
+﻿@inject Hss.Services.Data.Categories.ICategoriesService categoriesService
+<div>
+    <h6>Selected category: @categoryName</h6>
+</div>
+<input name="ParentCategoryId" class="form-control" value="@this.selectedCategoryId" type="hidden" />
+<CategoriesDropdownComponent UpdateRoot="Update" CurrentCategoryId="null"></CategoriesDropdownComponent>
+
+@code {
+    private int? selectedCategoryId;
+
+    private string categoryName;
+
+    private void Update((int? id, string name) category)
+    {
+        this.selectedCategoryId = category.id;
+        this.categoryName = category.name;
+    }
+}

@@ -22,9 +22,7 @@
             </div>
             <div class="form-group">
                 <label for="parentCategory">Category</label>
-                <select asp-items="Model.Categories" id="categoryId" class="form-control" name="categoryId">
-                    <option selected="selected" disabled="disabled">--Select Category--</option>
-                </select>
+                <component type="typeof(SelectCategoryComponent)" render-mode="ServerPrerendered" />
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>

@@ -9,7 +9,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <form asp-action="Create" asp-controller="Categories" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -18,25 +18,24 @@
             </div>
             <div class="form-group">
                 <label for="parentCategory">Parant Category</label>
-                <select asp-items="Model.Categories" id="parentCategoryId" class="form-control" name="parentCategoryId">
-                    <option selected="selected" value="">--Select Parent Category--</option>
-                </select>
+                <component type="typeof(SelectCategoryComponent)" render-mode="ServerPrerendered" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control" ></textarea>
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-        <div class="form-group">
-            <dl>
-                <dt>
-                    <label asp-for="Image"></label>
-                </dt>
-                <dd>
-                    <input asp-for="Image" type="file">
-                </dd>
-            </dl>
-        </div>
+            <div class="form-group">
+                <dl>
+                    <dt>
+                        <label asp-for="Image"></label>
+                    </dt>
+                    <dd>
+                        <input asp-for="Image" type="file">
+                    </dd>
+                </dl>
+            </div>
             <div class="d-flex justify-content-between">
                 <div class="form-group">
                     <input type="submit" value="Create" class="btn btn-primary" />

@@ -60,6 +60,7 @@
             });
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSignalR();
 
             services.AddSingleton(this.configuration);
 
