@@ -1,5 +1,9 @@
-﻿<CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
-<button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled">Back</button>
+﻿<div>
+    <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
+    <hr />
+    <a class="btn btn-primary" href="/Administration/Categories/Create">Create New</a>
+    <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled">Back</button>
+</div>
 @code {
     private int? parentCategoryId { get; set; }
     private int? currentCategoryId { get; set; }
