@@ -1,22 +1,21 @@
 ﻿namespace Hss.Services.Data.Categories
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Services.Models.Categories;
 
     public interface ICategoriesService
     {
-        Task CreateAsync(CategoryServiceModel input);
+        Task<int> CreateAsync(CategoryServiceModel input);
 
-        Task<CategoryServiceModel> GetByIdWithDeletedAsync(int id);
+        Task<T> GetByIdWithDeletedAsync<T>(int id);
 
-        Task<CategoryServiceModel> GetByIdAsync(int id);
+        Task<T> GetByIdAsync<T>(int id);
 
-        IEnumerable<CategoryServiceModel> GetAllRootCategories();
+        IEnumerable<T> GetAllRootCategories<T>();
 
-        IQueryable<CategoryServiceModel> GetAllCategories();
+        IEnumerable<T> GetAllCategories<T>();
 
         Task DeleteAsync(int id);
 

@@ -2,11 +2,15 @@
 {
     using System.ComponentModel.DataAnnotations;
 
+    using Hss.Data.Models;
+    using Hss.Services.Mapping;
     using Hss.Web.ViewModels.Common;
     using Microsoft.AspNetCore.Http;
 
-    public class EditCategoryInputViewModel
+    public class EditCategoryInputModel : IMapTo<Category>
     {
+        public int Id { get; set; }
+
         [Required]
         [StringLength(
             ValidationConstants.CategiryNameMaxLength,

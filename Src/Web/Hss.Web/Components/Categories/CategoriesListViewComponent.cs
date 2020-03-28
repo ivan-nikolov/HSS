@@ -19,7 +19,7 @@
         public IViewComponentResult Invoke(int? id = null)
         {
             var categories = this.categoriesService
-                .GetAllCategories();
+                .GetAllCategories<CategoryViewModel>();
             if (id.HasValue)
             {
                 categories = categories

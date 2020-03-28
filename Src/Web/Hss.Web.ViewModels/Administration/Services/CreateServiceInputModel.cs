@@ -1,21 +1,14 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Services
 {
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     using Hss.Services.Mapping;
     using Hss.Services.Models.Services;
     using Hss.Web.ViewModels.Common;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class CreateServiceInputModel : IMapTo<ServiceServiceModel>
     {
-        public CreateServiceInputModel()
-        {
-            this.Categories = new List<SelectListItem>();
-        }
-
         [Required]
         [StringLength(
             ValidationConstants.ServiceNamehMaxLength,
@@ -34,7 +27,5 @@
         public string Description { get; set; }
 
         public int CategoryId { get; set; }
-
-        public IEnumerable<SelectListItem> Categories { get; set; }
     }
 }

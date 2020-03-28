@@ -1,11 +1,9 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Categories
 {
-    using System.Collections.Generic;
-
+    using Hss.Data.Models;
     using Hss.Services.Mapping;
-    using Hss.Services.Models.Categories;
 
-    public class DetailsCategoryViewModel : IMapFrom<CategoryServiceModel>
+    public class DetailsCategoryViewModel : IMapFrom<Category>
     {
         public int Id { get; set; }
 

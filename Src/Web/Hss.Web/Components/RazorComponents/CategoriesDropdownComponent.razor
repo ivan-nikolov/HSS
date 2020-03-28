@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering;
 @using System.Linq;
+@using Hss.Web.ViewModels.Components.RazorComponents
 @inject Hss.Services.Data.Categories.ICategoriesService categoriesService;
 
 @if (this.SubCategories == null)
@@ -8,18 +9,18 @@
 }
 else
 {
-<div class="form-group">
-    <select @onchange="@(e => OnCategoryChanged(e))" class="form-control">
-        <option>--Select Parent Category--</option>
-        @foreach (var item in RootCategories)
-        {
-            <option value="@item.Value">@item.Text</option>
-        }
-    </select>
-</div>
+    <div class="form-group">
+        <select @onchange="@(e => OnCategoryChanged(e))" class="form-control">
+            <option>--Select Parent Category--</option>
+            @foreach (var item in RootCategories)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
     @if (this.SubCategories.Count() > 0)
     {
-        <CategoriesDropdownComponent UpdateRoot="this.UpdateRoot" CurrentCategoryId="@this.selectedCategoryId" CategoryChanged="SetCategoryId"></CategoriesDropdownComponent>
+        <CategoriesDropdownComponent UpdateRoot="this.UpdateRoot" CategoryToEdit="this.CategoryToEdit" CurrentCategoryId="@this.selectedCategoryId" CategoryChanged="SetCategoryId"></CategoriesDropdownComponent>
     }
 }
 @code {
@@ -27,6 +28,9 @@ else
 
     [Parameter]
     public int? CurrentCategoryId { get; set; }
+
+    [Parameter]
+    public int? CategoryToEdit { get; set; }
 
     public IEnumerable<SelectListItem> RootCategories { get; set; }
 
@@ -55,8 +59,8 @@ else
             this.selectedCategoryId = null;
         }
 
-        var categoryName = this.RootCategories?.FirstOrDefault(c => c?.Value == e.Value?.ToString())?.Text;
-
+        var categoryName = this.RootCategories?
+            .FirstOrDefault(c => c?.Value == e.Value?.ToString())?.Text;
         await this.UpdateRoot.InvokeAsync((this.selectedCategoryId, categoryName));
         this.CurrentCategoryId = this.selectedCategoryId;
         this.AddDropDown();
@@ -86,13 +90,20 @@ else
 
     private IEnumerable<SelectListItem> InitializeCategories()
     {
-        return this.categoriesService.GetAllCategories()
-                .Where(c => c.ParentCategoryId == this.CurrentCategoryId)
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name,
-                })
+        var categories = this.categoriesService.GetAllCategories<CategorySelectListViewModel>()
+                .Where(c => c.ParentCategoryId == this.CurrentCategoryId);
+        if (this.CategoryToEdit.HasValue)
+        {
+            categories = categories.Where(c => c.Id != this.CategoryToEdit);
+        }
+
+        var categoriesList = categories.Select(c => new SelectListItem()
+        {
+            Value = c.Id.ToString(),
+            Text = c.Name,
+        })
         .ToList();
+
+        return categoriesList;
     }
 }

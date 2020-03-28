@@ -1,10 +1,9 @@
-﻿namespace Hss.Web.ViewModels.Categories
+﻿namespace Hss.Web.ViewModels.Components.RazorComponents
 {
     using Hss.Data.Models;
     using Hss.Services.Mapping;
-    using Hss.Services.Models.Categories;
 
-    public class CategoryViewModel : IMapFrom<Category>
+    public class CategoryComponentViewModel : IMapFrom<Category>
     {
         public int Id { get; set; }
 
@@ -15,5 +14,7 @@
         public string ParentCategoryName { get; set; }
 
         public int? ParentCategoryId { get; set; }
+
+        public int ChildCategoriesCount { get; set; }
     }
 }

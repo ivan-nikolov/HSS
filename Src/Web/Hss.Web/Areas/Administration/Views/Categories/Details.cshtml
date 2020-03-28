@@ -14,8 +14,8 @@
             <img src="@Model.ImageUrl" class="img-thumbnail img-fluid float-left" width="300" />
         </div>
         <div class="ml-auto">
-            <a class="btn btn-warning" asp-area="Administration" asp-controller="ServicesController" asp-action="Edit">Edit</a>
-            <a class="btn btn-danger" asp-area="Administration" asp-controller="ServicesController" asp-action="Delete">Delete</a>
+            <a class="btn btn-warning" asp-area="Administration" asp-controller="Categories" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            <a class="btn btn-danger" asp-area="Administration" asp-controller="Categories" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
         </div>
     </div>
     <p>@Model.Description</p>
@@ -23,7 +23,9 @@
 <hr />
 <h2>Subcategories</h2>
 <hr />
-<vc:categories-list id="@Model.Id"></vc:categories-list>
+<div class="d-flex">
+    <vc:categories-list id="@Model.Id"></vc:categories-list>
+</div>
 <hr />
 
 <div>

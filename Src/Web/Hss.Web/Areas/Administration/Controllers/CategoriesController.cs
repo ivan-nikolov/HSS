@@ -1,8 +1,8 @@
 ﻿namespace Hss.Web.Areas.Administration.Controllers
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Hss.Services;
     using Hss.Services.Data.Categories;
     using Hss.Services.Mapping;
@@ -34,20 +34,7 @@
 
         public IActionResult Create()
         {
-            // TODO: Refactor this
-            var inputModel = new CreateCategoryInputModel()
-            {
-                Categories = this.categoriesService
-                .GetAllRootCategories()
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name,
-                })
-                .ToList(),
-            };
-
-            return this.View(inputModel);
+            return this.View();
         }
 
         [HttpPost]
@@ -56,7 +43,11 @@
         {
             if (input.ParentCategoryId.HasValue)
             {
-                var parantCategory = await this.categoriesService.GetByIdAsync(input.ParentCategoryId.Value);
+                var parentCategory = await this.categoriesService.GetByIdAsync<CreateCategoryInputModel>(input.ParentCategoryId.Value);
+                if (parentCategory == null)
+                {
+                    return this.NotFound();
+                }
             }
 
             var category = input.To<CategoryServiceModel>();
@@ -68,14 +59,11 @@
 
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await this.categoriesService.GetByIdAsync(id);
-            if (category == null)
+            var viewModel = await this.categoriesService.GetByIdAsync<DeleteCategoryInputModel>(id);
+            if (viewModel == null)
             {
-                this.ModelState.AddModelError(CategoryNotFoundErrorKey, CategoryNotFoundErrorMessage);
-                return this.RedirectToAction("All");
+                return this.NotFound();
             }
-
-            var viewModel = category.To<CategoryViewModel>();
 
             return this.View(viewModel);
         }
@@ -84,6 +72,15 @@
         [ModelValidationActionFilter]
         public async Task<IActionResult> Delete(DeleteCategoryInputModel input)
         {
+            var category = await this
+                .categoriesService
+                .GetByIdAsync<DeleteCategoryInputModel>(input.Id);
+
+            if (category == null)
+            {
+                return this.NotFound();
+            }
+
             await this.categoriesService.DeleteAsync(input.Id);
 
             return this.RedirectToAction("All");
@@ -91,35 +88,34 @@
 
         public async Task<IActionResult> Details(int id)
         {
-            var category = await this.categoriesService.GetByIdAsync(id);
-
-            var viewModel = category.To<DetailsCategoryViewModel>();
+            var viewModel = await this.categoriesService.GetByIdAsync<DetailsCategoryViewModel>(id);
 
             return this.View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await this.categoriesService.GetByIdAsync(id);
+            var viewModel = await this.categoriesService.GetByIdAsync<CategoryServiceModel>(id);
 
-            var viewModel = category.To<EditCategoryViewModel>();
+            if (viewModel == null)
+            {
+                return this.NotFound();
+            }
 
-            viewModel.Categories = this.categoriesService
-                .GetAllRootCategories()
-                .Where(c => c.Id != id)
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name,
-                });
-
-            return this.View(viewModel);
+            return this.View(viewModel.To<EditCategoryViewModel>());
         }
 
         [HttpPost]
         [ModelValidationActionFilter]
-        public async Task<IActionResult> Edit(EditCategoryInputViewModel input)
+        public async Task<IActionResult> Edit(EditCategoryInputModel input)
         {
+            var category = await this.categoriesService.GetByIdAsync<CategoryServiceModel>(input.Id);
+
+            if (category == null)
+            {
+                return this.NotFound();
+            }
+
             await this.categoriesService.UpdateAsync(input.To<CategoryServiceModel>());
 
             return this.RedirectToAction("All");

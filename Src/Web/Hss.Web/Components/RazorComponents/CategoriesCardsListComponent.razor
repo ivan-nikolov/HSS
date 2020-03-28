@@ -1,0 +1,52 @@
+﻿@using Hss.Web.ViewModels.Components.RazorComponents
+@inject Hss.Services.Data.Categories.ICategoriesService categoriesService
+<div class="row">
+    @foreach (var category in this.categories)
+    {
+        @if (category.ChildCategoriesCount == 0)
+        {
+            this.isCardDisabled = true;
+            this.cardClass = string.Empty;
+        }
+        else
+        {
+            this.isCardDisabled = false;
+            this.cardClass = "card";
+        }
+        <div class="col-md-3">
+            <button class="@cardClass" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@isCardDisabled">
+                <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:100%">
+                <div class="card-body">
+                    <h5 class="card-title">@category.Name</h5>
+                </div>
+            </button>
+            <div>
+                <a class="btn bg-success" href="/Administration/Categories/Details/@category.Id">Details</a>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private IEnumerable<CategoryComponentViewModel> categories;
+    private bool isCardDisabled;
+    private string cardClass = "card";
+
+    [Parameter]
+    public int? ParentCategoryId { get; set; }
+
+    [Parameter]
+    public EventCallback<(int, int?)> OnSelectCategory { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.categories = this.categoriesService
+            .GetAllCategories<CategoryComponentViewModel>()
+            .Where(c => c.ParentCategoryId == this.ParentCategoryId);
+    }
+
+    private async Task OnCategorySelect(int categoryId)
+    {
+        await this.OnSelectCategory.InvokeAsync((categoryId, this.ParentCategoryId));
+    }
+}

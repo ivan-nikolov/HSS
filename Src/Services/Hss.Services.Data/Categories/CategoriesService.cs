@@ -1,6 +1,5 @@
 ﻿namespace Hss.Services.Data.Categories
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -19,21 +18,18 @@
             this.categoryRepository = categoryRepository;
         }
 
-        public async Task CreateAsync(CategoryServiceModel input)
+        public async Task<int> CreateAsync(CategoryServiceModel input)
         {
             var category = input.To<Category>();
             await this.categoryRepository.AddAsync(category);
             await this.categoryRepository.SaveChangesAsync();
+
+            return category.Id;
         }
 
         public async Task DeleteAsync(int id)
         {
             var category = await this.categoryRepository.GetByIdAsync(id);
-
-            if (category == null)
-            {
-                throw new ArgumentNullException(nameof(Category));
-            }
 
             var childCategories = this.categoryRepository.All()
                 .Where(c => c.ParentCategoryId == id)
@@ -49,58 +45,47 @@
             await this.categoryRepository.SaveChangesAsync();
         }
 
-        public IQueryable<CategoryServiceModel> GetAllCategories()
+        public IEnumerable<T> GetAllCategories<T>()
         {
             var categories = this.categoryRepository
                 .All()
-                .To<CategoryServiceModel>();
+                .To<T>();
 
             return categories;
         }
 
-        public IEnumerable<CategoryServiceModel> GetAllRootCategories()
+        public IEnumerable<T> GetAllRootCategories<T>()
         {
             var categories = this.categoryRepository
                 .All()
                 .Where(c => c.ParentCategoryId == null)
-                .To<CategoryServiceModel>();
+                .To<T>();
 
             return categories;
         }
 
-        public async Task<CategoryServiceModel> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync<T>(int id)
         {
             var category = await this.categoryRepository.GetByIdAsync(id);
 
-            if (category == null)
-            {
-                throw new ArgumentNullException(nameof(Category));
-            }
-
-            return category.To<CategoryServiceModel>();
+            return category.To<T>();
         }
 
-        public async Task<CategoryServiceModel> GetByIdWithDeletedAsync(int id)
+        public async Task<T> GetByIdWithDeletedAsync<T>(int id)
         {
             var category = await this.categoryRepository.GetByIdWithDeletedAsync(id);
-            if (category == null)
-            {
-                throw new ArgumentNullException(nameof(Category));
-            }
 
-            return category.To<CategoryServiceModel>();
+            return category.To<T>();
         }
 
         public async Task UpdateAsync(CategoryServiceModel input)
         {
-            var category = await this.categoryRepository.GetByIdAsync(input.Id);
-            if (category == null)
-            {
-                throw new ArgumentNullException(nameof(Category));
-            }
-
+            var category = await this.categoryRepository
+                .GetByIdAsync(input.Id);
             category.Name = input.Name;
             category.ParentCategoryId = input.ParentCategoryId;
+            category.Description = input.Description;
+            category.ImageUrl = input.ImageUrl;
 
             this.categoryRepository.Update(category);
             await this.categoryRepository.SaveChangesAsync();

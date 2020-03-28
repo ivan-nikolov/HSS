@@ -1,0 +1,39 @@
+﻿<CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
+<button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled">Back</button>
+@code {
+    private int? parentCategoryId { get; set; }
+    private int? currentCategoryId { get; set; }
+    private bool isDisabled;
+
+    protected override void OnInitialized()
+    {
+        this.isDisabled = true;
+    }
+
+    private void OnCategorySelect((int id, int? currentCategoryId) categories)
+    {
+        this.DisableBackButton(categories.id);
+        this.parentCategoryId = categories.id;
+        this.currentCategoryId = categories.currentCategoryId;
+    }
+
+    private void OnBackClicked(int? id)
+    {
+        this.DisableBackButton(id);
+
+        this.parentCategoryId = this.currentCategoryId;
+        this.StateHasChanged();
+    }
+
+    private void DisableBackButton(int? id)
+    {
+        if (id.HasValue)
+        {
+            this.isDisabled = false;
+        }
+        else
+        {
+            this.isDisabled = true;
+        }
+    }
+}

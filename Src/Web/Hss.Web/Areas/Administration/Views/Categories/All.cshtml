@@ -9,7 +9,8 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 <div class="d-flex">
-    <vc:categories-list id="null"></vc:categories-list>
+    @*<vc:categories-list id="null"></vc:categories-list>*@
+    <component type="typeof(CategoriesAllComponent)" render-mode="ServerPrerendered" />
 </div>
 <hr />
 <p>

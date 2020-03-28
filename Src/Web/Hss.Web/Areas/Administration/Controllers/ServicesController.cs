@@ -1,8 +1,7 @@
 ﻿namespace Hss.Web.Areas.Administration.Controllers
 {
-    using System.Linq;
     using System.Threading.Tasks;
-
+    using Hss.Services;
     using Hss.Services.Data.Categories;
     using Hss.Services.Data.Services;
     using Hss.Services.Mapping;
@@ -10,41 +9,42 @@
     using Hss.Web.Filters;
     using Hss.Web.ViewModels.Administration.Services;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class ServicesController : AdministrationController
     {
         private readonly ICategoriesService categoriesService;
         private readonly IServicesService servicesService;
+        private readonly ICloudinaryService cloudinaryService;
 
-        public ServicesController(ICategoriesService categoriesService, IServicesService servicesService)
+        public ServicesController(
+            ICategoriesService categoriesService,
+            IServicesService servicesService,
+            ICloudinaryService cloudinaryService)
         {
             this.categoriesService = categoriesService;
             this.servicesService = servicesService;
+            this.cloudinaryService = cloudinaryService;
         }
 
         public IActionResult Create()
         {
-            var inputModel = new CreateServiceInputModel()
-            {
-                Categories = this.categoriesService
-                .GetAllRootCategories()
-                .Select(c => new SelectListItem()
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name,
-                }),
-            };
-
-            return this.View(inputModel);
+            return this.View();
         }
 
         [HttpPost]
         [ModelValidationActionFilter]
         public async Task<IActionResult> Create(CreateServiceInputModel input)
         {
-            var category = await this.categoriesService.GetByIdAsync(input.CategoryId);
+            var category = await this.categoriesService
+                .GetByIdAsync<CreateServiceInputModel>(input.CategoryId);
+            if (category == null)
+            {
+                return this.NotFound();
+            }
+
             var serviceModel = input.To<ServiceServiceModel>();
+            var imageUrl = await this.cloudinaryService.UploadAsync(input.Image);
+            serviceModel.ImageUrl = imageUrl;
             await this.servicesService.CreateAsync(serviceModel);
 
             return this.Redirect("/");
