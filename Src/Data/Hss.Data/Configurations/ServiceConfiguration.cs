@@ -19,11 +19,11 @@
                 .IsUnique();
 
             builder.Property(s => s.Description)
-                .HasMaxLength(500)
+                .HasMaxLength(5000)
                 .IsRequired(true)
                 .IsUnicode(true);
 
-            builder.Property(s => s.ImageName)
+            builder.Property(s => s.ImageUrl)
                 .IsRequired(true);
 
             // Relations

@@ -10,6 +10,6 @@
         public const int ServiceNameMinLength = 3;
         public const int ServiceNamehMaxLength = 30;
 
-        public const int DescriptionMaxLength = 500;
+        public const int DescriptionMaxLength = 5000;
     }
 }

@@ -35,6 +35,13 @@
         "dist/jquery.validate.unobtrusive.js",
         "dist/jquery.validate.unobtrusive.min.js"
       ]
+    },
+    {
+      "library": "popper.js@1.12.6",
+      "destination": "wwwroot/lib/popper/",
+      "files": [
+        "dist/popper.js"
+      ]
     }
   ]
 }

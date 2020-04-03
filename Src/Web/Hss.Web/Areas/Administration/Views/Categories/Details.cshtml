@@ -21,12 +21,15 @@
     <p>@Model.Description</p>
 </div>
 <hr />
+@if(this.Model.ChildCategoriesCount > 0)
+{ 
 <h2>Subcategories</h2>
 <hr />
 <div class="d-flex">
-    <vc:categories-list id="@Model.Id"></vc:categories-list>
+    <vc:categories-list parent-category-id="@Model.Id"></vc:categories-list>
 </div>
 <hr />
+}
 
 <div>
     @if (Model.ParentCategoryId != null)

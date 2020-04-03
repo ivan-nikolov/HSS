@@ -16,14 +16,14 @@
             this.categoriesService = categoriesService;
         }
 
-        public IViewComponentResult Invoke(int? id = null)
+        public IViewComponentResult Invoke(int? parentCategoryId = null)
         {
             var categories = this.categoriesService
                 .GetAllCategories<CategoryViewModel>();
-            if (id.HasValue)
+            if (parentCategoryId.HasValue)
             {
                 categories = categories
-                    .Where(c => c.ParentCategoryId == id.Value);
+                    .Where(c => c.ParentCategoryId == parentCategoryId.Value);
             }
             else
             {

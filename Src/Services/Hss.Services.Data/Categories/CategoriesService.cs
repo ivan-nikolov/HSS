@@ -8,6 +8,7 @@
     using Hss.Data.Models;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Categories;
+    using Microsoft.EntityFrameworkCore;
 
     public class CategoriesService : ICategoriesService
     {
@@ -16,6 +17,11 @@
         public CategoriesService(IDeletableEntityRepository<Category> categoryRepository)
         {
             this.categoryRepository = categoryRepository;
+        }
+
+        public bool CategoryExists(int id)
+        {
+            return this.categoryRepository.AllAsNoTracking().Count(c => c.Id == id) > 0;
         }
 
         public async Task<int> CreateAsync(CategoryServiceModel input)
@@ -66,9 +72,12 @@
 
         public async Task<T> GetByIdAsync<T>(int id)
         {
-            var category = await this.categoryRepository.GetByIdAsync(id);
+            var category = await this.categoryRepository
+                .All().Where(c => c.Id == id)
+                .To<T>()
+                .FirstOrDefaultAsync();
 
-            return category.To<T>();
+            return category;
         }
 
         public async Task<T> GetByIdWithDeletedAsync<T>(int id)

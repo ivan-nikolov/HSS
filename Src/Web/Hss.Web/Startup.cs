@@ -61,6 +61,7 @@
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSignalR();
+            services.AddHttpContextAccessor();
 
             services.AddSingleton(this.configuration);
 

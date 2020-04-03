@@ -1,6 +1,7 @@
 ﻿namespace Hss.Web.Areas.Administration.Controllers
 {
     using System.Threading.Tasks;
+
     using Hss.Services;
     using Hss.Services.Data.Categories;
     using Hss.Services.Data.Services;
@@ -8,6 +9,7 @@
     using Hss.Services.Models.Services;
     using Hss.Web.Filters;
     using Hss.Web.ViewModels.Administration.Services;
+
     using Microsoft.AspNetCore.Mvc;
 
     public class ServicesController : AdministrationController
@@ -35,9 +37,7 @@
         [ModelValidationActionFilter]
         public async Task<IActionResult> Create(CreateServiceInputModel input)
         {
-            var category = await this.categoriesService
-                .GetByIdAsync<CreateServiceInputModel>(input.CategoryId);
-            if (category == null)
+            if (!this.categoriesService.CategoryExists(input.ParentCategoryId))
             {
                 return this.NotFound();
             }
@@ -48,6 +48,71 @@
             await this.servicesService.CreateAsync(serviceModel);
 
             return this.Redirect("/");
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var serviceModel = await this.servicesService.GetByIdAsync<DeleteServiceViewModel>(id);
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteServiceViewModel input)
+        {
+            if (!this.servicesService.ServiceExists(input.Id))
+            {
+                return this.NotFound();
+            }
+
+            await this.servicesService.DeleteAsync(input.Id);
+
+            return this.RedirectToAction("Details", "Categories", new { id = input.CategoryId });
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var serviceModel = await this.servicesService.GetByIdAsync<DetailsServiceViewModel>(id);
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(serviceModel);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var serviceModel = await this.servicesService
+                .GetByIdAsync<EditServiceInputModel>(id);
+
+            if (serviceModel == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.View(serviceModel);
+        }
+
+        [HttpPost]
+        [ModelValidationActionFilter]
+        public async Task<IActionResult> Edit(EditServiceInputModel input)
+        {
+            if (
+                !this.categoriesService.CategoryExists(input.CategoryId)
+                || !this.servicesService.ServiceExists(input.Id))
+            {
+                return this.NotFound();
+            }
+
+            var serviceDto = input.To<ServiceServiceModel>();
+            await this.servicesService.UpdateAsync(serviceDto);
+
+            return this.RedirectToAction("Details", "Categories", new { id = input.CategoryId });
         }
     }
 }

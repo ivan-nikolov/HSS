@@ -19,7 +19,7 @@
                 .IsUnique();
 
             builder.Property(c => c.Description)
-                .HasMaxLength(500)
+                .HasMaxLength(5000)
                 .IsRequired(true)
                 .IsUnicode(true);
 

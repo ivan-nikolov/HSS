@@ -20,5 +20,7 @@
         Task DeleteAsync(int id);
 
         Task UpdateAsync(CategoryServiceModel input);
+
+        bool CategoryExists(int id);
     }
 }

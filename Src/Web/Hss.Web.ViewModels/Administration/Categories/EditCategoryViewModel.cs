@@ -1,10 +1,10 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Categories
 {
+    using Hss.Data.Models;
     using Hss.Services.Mapping;
-    using Hss.Services.Models.Categories;
     using Microsoft.AspNetCore.Http;
 
-    public class EditCategoryViewModel : IMapFrom<CategoryServiceModel>
+    public class EditCategoryViewModel : IMapFrom<Category>
     {
         public int Id { get; set; }
 
@@ -18,6 +18,6 @@
 
         public int? ParentCategoryId { get; set; }
 
-        public string ParantCategoryName { get; set; }
+        public string ParentCategoryName { get; set; }
     }
 }

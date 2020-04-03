@@ -8,7 +8,8 @@
 <h1>Categories</h1>
 
 <div asp-validation-summary="All" class="text-danger"></div>
-<div class="d-flex">
-    <component type="typeof(CategoriesAllComponent)" render-mode="ServerPrerendered" />
+<component type="typeof(CategoriesAllComponent)" render-mode="ServerPrerendered" />
+<div>
+    <a class="btn btn-primary" asp-area="Administration" asp-controller="Categories" asp-action="Create">Create New</a>
 </div>
 

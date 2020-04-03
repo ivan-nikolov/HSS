@@ -1,0 +1,57 @@
+﻿@using Hss.Web.ViewModels.Components.RazorComponents
+@using Hss.Common
+
+@inject Hss.Services.Data.Services.IServicesService serviceService
+
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
+
+@if (this.Services == null)
+{
+    <h4>Loading...</h4>
+}
+else
+{
+    <div class="row d-flex justify-content-center">
+        @foreach (var service in this.Services)
+        {
+            <div class="col-lg-3">
+                <div class="card">
+                    <img class="card-img-top" src="@service.ImageUrl" alt="@service.Name image" style="width:18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@service.Name</h5>
+                        <p class="card-text">@service.ShortDescription</p>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                @if (this.user.IsInRole(GlobalConstants.AdministratorRoleName))
+                                {
+                                    <div>
+                                        <a class="btn btn-secondary" href="/Administration/Categories/Details/@service.Id">Details</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private ClaimsPrincipal user;
+
+    public IEnumerable<ServiceCardListViewModel> Services { get; set; }
+
+    [Parameter]
+    public int CategoryId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        user = this.httpContextAccessor.HttpContext.User;
+
+        this.Services = this.serviceService.GetAllByCategoryId<ServiceCardListViewModel>(this.CategoryId);
+    }
+}

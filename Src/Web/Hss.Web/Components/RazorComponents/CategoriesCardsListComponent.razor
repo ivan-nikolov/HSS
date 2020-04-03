@@ -1,52 +1,67 @@
-﻿@using Hss.Web.ViewModels.Components.RazorComponents
+﻿@using System.Security.Claims
+@using Hss.Web.ViewModels.Components.RazorComponents
+@using Hss.Common
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
 @inject Hss.Services.Data.Categories.ICategoriesService categoriesService
-<div class="row">
+
+<div class="row d-flex justify-content-center">
     @foreach (var category in this.categories)
     {
         @if (category.ChildCategoriesCount == 0)
         {
             this.isCardDisabled = true;
-            this.cardClass = string.Empty;
         }
         else
         {
             this.isCardDisabled = false;
-            this.cardClass = "card";
         }
-        <div class="col-md-3">
-            <button class="@cardClass" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@isCardDisabled">
-                <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:100%">
-                <div class="card-body">
-                    <h5 class="card-title">@category.Name</h5>
+    <div class="col-lg-3">
+        <div class="card">
+            <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@category.Name</h5>
+                <p class="card-text">@category.ShortDescription</p>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id, category.ServicesCount))" >@category.Name Services</button>
+                        </div>
+                        @if (this.user.IsInRole(GlobalConstants.AdministratorRoleName))
+                        {
+                            <div>
+                                <a class="btn btn-secondary" href="/Administration/Services/Details/@category.Id">Details</a>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </button>
-            <div class="mt-3">
-                <a class="btn bg-success" href="/Administration/Categories/Details/@category.Id">Details</a>
             </div>
         </div>
+    </div>
     }
 </div>
 
 @code {
     private IEnumerable<CategoryComponentViewModel> categories;
     private bool isCardDisabled;
-    private string cardClass = "card";
+    private ClaimsPrincipal user;
 
     [Parameter]
     public int? ParentCategoryId { get; set; }
 
     [Parameter]
-    public EventCallback<(int, int?)> OnSelectCategory { get; set; }
+    public EventCallback<(int, int?, int)> OnSelectCategory { get; set; }
 
     protected override void OnInitialized()
     {
+        user = this.httpContextAccessor.HttpContext.User;
         this.categories = this.categoriesService
-            .GetAllCategories<CategoryComponentViewModel>()
-            .Where(c => c.ParentCategoryId == this.ParentCategoryId);
+        .GetAllCategories<CategoryComponentViewModel>()
+        .Where(c => c.ParentCategoryId == this.ParentCategoryId);
     }
 
-    private async Task OnCategorySelect(int categoryId)
+    private async Task OnCategorySelect(int categoryId, int servicesCount)
     {
-        await this.OnSelectCategory.InvokeAsync((categoryId, this.ParentCategoryId));
+        await this.OnSelectCategory.InvokeAsync((categoryId, this.ParentCategoryId, servicesCount));
     }
 }

@@ -49,5 +49,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Administration\Views\Shared\" />
+    <Folder Include="wwwroot\lib\popper\" />
   </ItemGroup>
 </Project>

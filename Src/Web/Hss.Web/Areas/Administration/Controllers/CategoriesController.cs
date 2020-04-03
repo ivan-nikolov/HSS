@@ -89,20 +89,24 @@
         public async Task<IActionResult> Details(int id)
         {
             var viewModel = await this.categoriesService.GetByIdAsync<DetailsCategoryViewModel>(id);
+            if (viewModel == null)
+            {
+                return this.NotFound();
+            }
 
             return this.View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var viewModel = await this.categoriesService.GetByIdAsync<CategoryServiceModel>(id);
+            var viewModel = await this.categoriesService.GetByIdAsync<EditCategoryViewModel>(id);
 
             if (viewModel == null)
             {
                 return this.NotFound();
             }
 
-            return this.View(viewModel.To<EditCategoryViewModel>());
+            return this.View(viewModel);
         }
 
         [HttpPost]

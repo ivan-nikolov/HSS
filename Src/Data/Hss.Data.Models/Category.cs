@@ -24,7 +24,7 @@
 
         public int? ParentCategoryId { get; set; }
 
-        public Category ParentCategory { get; set; }
+        public virtual Category ParentCategory { get; set; }
 
         public virtual ICollection<Category> ChildCategories { get; set; }
 

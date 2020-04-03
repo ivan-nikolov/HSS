@@ -14,5 +14,7 @@
         public string ImageUrl { get; set; }
 
         public int? ParentCategoryId { get; set; }
+
+        public int ChildCategoriesCount { get; set; }
     }
 }

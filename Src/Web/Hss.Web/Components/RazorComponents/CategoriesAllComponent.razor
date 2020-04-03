@@ -1,24 +1,31 @@
 ﻿<div>
-    <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
-    <hr />
-    <a class="btn btn-primary" href="/Administration/Categories/Create">Create New</a>
-    <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled">Back</button>
+        <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
+        <hr />
+        @if (this.hasServices && this.parentCategoryId.HasValue)
+        {
+            <ServicesCardListComponent CategoryId="this.parentCategoryId.Value"></ServicesCardListComponent>
+            <hr />
+        }
+    <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
 </div>
 @code {
     private int? parentCategoryId { get; set; }
     private int? currentCategoryId { get; set; }
     private bool isDisabled;
+    private bool hasServices { get; set; }
+
 
     protected override void OnInitialized()
     {
         this.isDisabled = true;
     }
 
-    private void OnCategorySelect((int id, int? currentCategoryId) categories)
+    private void OnCategorySelect((int id, int? currentCategoryId, int serivcesCount) categories)
     {
         this.DisableBackButton(categories.id);
         this.parentCategoryId = categories.id;
         this.currentCategoryId = categories.currentCategoryId;
+        this.hasServices = categories.serivcesCount > 0;
     }
 
     private void OnBackClicked(int? id)
