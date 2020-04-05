@@ -6,49 +6,23 @@
 
 <h1>Details</h1>
 
-<div>
-    <h4>DetailsServiceViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CategoryName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CategoryName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IamgeUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IamgeUrl)
-        </dd>
-    </dl>
+<div class="ml-auto">
+    <h3>@Model.Name</h3>
 </div>
+<div class="mx-auto">
+    <hr />
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            <img src="@Model.ImageUrl" class="img-thumbnail img-fluid float-left" width="300" />
+        </div>
+        <div class="ml-auto">
+            <a class="btn btn-warning" asp-area="Administration" asp-controller="Services" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+            <a class="btn btn-danger" asp-area="Administration" asp-controller="Serivces" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        </div>
+    </div>
+    <p>@Model.Description</p>
+</div>
+<hr />
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-info" asp-area="Administration" asp-controller="Categories" asp-action="All">Back</a>
 </div>

@@ -72,12 +72,12 @@
 
         public async Task<T> GetByIdAsync<T>(int id)
         {
-            var category = await this.categoryRepository
-                .All().Where(c => c.Id == id)
-                .To<T>()
-                .FirstOrDefaultAsync();
+            var category = this.categoryRepository
+                .All().Where(c => c.Id == id);
+            var secondcategory = category.To<T>();
+            var result =   await secondcategory.FirstOrDefaultAsync();
 
-            return category;
+            return result;
         }
 
         public async Task<T> GetByIdWithDeletedAsync<T>(int id)

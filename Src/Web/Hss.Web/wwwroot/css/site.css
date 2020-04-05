@@ -67,9 +67,9 @@ main{
 .index-bg {
     width: 100% !important;
     height: 300px !important;
-    background: url('https://res.cloudinary.com/home-services-and-solutions/image/upload/v1585575810/pexels-photo-280229_pho3ts.jpg') no-repeat center !important;
-    background-repeat: no-repeat!important;
-    background-size: cover!important;
+    background: url('https://res.cloudinary.com/home-services-and-solutions/image/upload/v1586086205/IndexPageHouse_rvhugf.jpg') no-repeat center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
 }
 
 .card-img-top {

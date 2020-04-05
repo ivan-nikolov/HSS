@@ -1,6 +1,9 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Services
 {
-    public class DetailsServiceViewModel
+    using Hss.Data.Models;
+    using Hss.Services.Mapping;
+
+    public class DetailsServiceViewModel : IMapFrom<Service>
     {
         public int Id { get; set; }
 
@@ -12,6 +15,6 @@
 
         public decimal Price { get; set; }
 
-        public string IamgeUrl { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

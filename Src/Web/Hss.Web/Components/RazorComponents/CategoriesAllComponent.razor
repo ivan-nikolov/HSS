@@ -1,39 +1,55 @@
-﻿<div>
-        <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect" ParentCategoryId="this.parentCategoryId"></CategoriesCardsListComponent>
+﻿@inject Hss.Services.Data.Services.IServicesService servicesService
+@inject Hss.Services.Data.Categories.ICategoriesService categoriesService
+@using Hss.Web.ViewModels.Components.RazorComponents
+    <div>
+        <CascadingValue Value="category.CurrentCategoryId">
+            <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect"></CategoriesCardsListComponent>
+        </CascadingValue>
         <hr />
-        @if (this.hasServices && this.parentCategoryId.HasValue)
+        @if (this.hasServices && this.category.CurrentCategoryId.HasValue)
         {
-            <ServicesCardListComponent CategoryId="this.parentCategoryId.Value"></ServicesCardListComponent>
+            <div class="d-flex justify-content-center mt-3">
+                <h2 class="display-3">@this.category.Name Services</h2>
+            </div>
+            <ServicesCardListComponent CategoryId="this.category.CurrentCategoryId.Value"></ServicesCardListComponent>
             <hr />
         }
-    <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked(this.currentCategoryId)" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
-</div>
+        <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked()" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
+    </div>
 @code {
-    private int? parentCategoryId { get; set; }
-    private int? currentCategoryId { get; set; }
     private bool isDisabled;
-    private bool hasServices { get; set; }
+    private bool hasServices;
 
+    private CategoriesAllModel category;
 
     protected override void OnInitialized()
     {
         this.isDisabled = true;
+        this.category = new CategoriesAllModel();
     }
 
-    private void OnCategorySelect((int id, int? currentCategoryId, int serivcesCount) categories)
+    private async Task OnCategorySelect(int categoryId)
     {
-        this.DisableBackButton(categories.id);
-        this.parentCategoryId = categories.id;
-        this.currentCategoryId = categories.currentCategoryId;
-        this.hasServices = categories.serivcesCount > 0;
-    }
+        this.DisableBackButton(categoryId);
+        this.category = this.categoriesService.GetAllCategories<CategoriesAllModel>().FirstOrDefault(c => c.Id == categoryId);
+        this.hasServices = this.category.ServicesCount > 0;
 
-    private void OnBackClicked(int? id)
-    {
-        this.DisableBackButton(id);
-
-        this.parentCategoryId = this.currentCategoryId;
         this.StateHasChanged();
+    }
+
+    private async Task OnBackClicked()
+    {
+        this.DisableBackButton(this.category.ParentCategoryId);
+        if (this.category.ParentCategoryId.HasValue)
+        {
+            this.category = this.categoriesService.GetAllCategories<CategoriesAllModel>().FirstOrDefault(c => c.Id == this.category.ParentCategoryId.Value);
+        }
+        else
+        {
+            this.category = new CategoriesAllModel();
+        }
+
+        this.hasServices = this.category.ServicesCount > 0;
     }
 
     private void DisableBackButton(int? id)

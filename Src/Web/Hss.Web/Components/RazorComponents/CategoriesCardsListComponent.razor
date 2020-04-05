@@ -5,63 +5,76 @@
 @inject IHttpContextAccessor httpContextAccessor
 @inject Hss.Services.Data.Categories.ICategoriesService categoriesService
 
-<div class="row d-flex justify-content-center">
-    @foreach (var category in this.categories)
-    {
-        @if (category.ChildCategoriesCount == 0)
+    <div class="row d-flex justify-content-center">
+        @foreach (var category in this.categories)
         {
-            this.isCardDisabled = true;
-        }
-        else
-        {
-            this.isCardDisabled = false;
-        }
-    <div class="col-lg-3">
-        <div class="card">
-            <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:18rem;">
-            <div class="card-body">
-                <h5 class="card-title">@category.Name</h5>
-                <p class="card-text">@category.ShortDescription</p>
-                <div class="card-footer">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id, category.ServicesCount))" >@category.Name Services</button>
-                        </div>
-                        @if (this.user.IsInRole(GlobalConstants.AdministratorRoleName))
-                        {
-                            <div>
-                                <a class="btn btn-secondary" href="/Administration/Services/Details/@category.Id">Details</a>
+            @if (category.ChildCategoriesCount == 0 && category.ServicesCount == 0)
+            {
+                this.isCardDisabled = true;
+            }
+            else
+            {
+                this.isCardDisabled = false;
+            }
+
+            <div class="col-lg-3">
+                <div class="card">
+                    <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.Name</h5>
+                        <p class="card-text">@category.ShortDescription</p>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@this.isCardDisabled">@category.Name Services</button>
+                                </div>
+                                @if (this.user.IsInRole(GlobalConstants.AdministratorRoleName))
+                                {
+                                    <div>
+                                        <a class="btn btn-secondary" href="/Administration/Categories/Details/@category.Id">Details</a>
+                                    </div>
+                                }
                             </div>
-                        }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
-    }
-</div>
 
 @code {
     private IEnumerable<CategoryComponentViewModel> categories;
     private bool isCardDisabled;
     private ClaimsPrincipal user;
 
-    [Parameter]
-    public int? ParentCategoryId { get; set; }
+    [CascadingParameter] int? CurrentCategoryId { get; set; }
 
     [Parameter]
-    public EventCallback<(int, int?, int)> OnSelectCategory { get; set; }
+    public EventCallback<int> OnSelectCategory { get; set; }
 
     protected override void OnInitialized()
     {
         user = this.httpContextAccessor.HttpContext.User;
-        this.categories = this.categoriesService
-        .GetAllCategories<CategoryComponentViewModel>()
-        .Where(c => c.ParentCategoryId == this.ParentCategoryId);
+        //this.SetCategories(this.CurrentCategoryId);
     }
 
-    private async Task OnCategorySelect(int categoryId, int servicesCount)
+    protected override void OnParametersSet()
     {
-        await this.OnSelectCategory.InvokeAsync((categoryId, this.ParentCategoryId, servicesCount));
+        SetCategories(this.CurrentCategoryId);
+        base.OnParametersSet();
+    }
+
+    private async Task OnCategorySelect(int categoryId)
+    {
+        await this.OnSelectCategory.InvokeAsync(categoryId);
+        this.SetCategories(categoryId);
+    }
+
+    private void SetCategories(int? id)
+    {
+        this.categories = this.categoriesService
+        .GetAllCategories<CategoryComponentViewModel>()
+        .Where(c => c.ParentCategoryId == id)
+        .ToList();
     }
 }

@@ -55,6 +55,11 @@
             return category;
         }
 
+        public int GetCountByCategoryId(int categoryId)
+        {
+            return this.serviceRepository.All().Count(c => c.CategoryId == categoryId);
+        }
+
         public bool ServiceExists(int id)
         {
             return this.serviceRepository.AllAsNoTracking().Count(s => s.Id == id) > 0;

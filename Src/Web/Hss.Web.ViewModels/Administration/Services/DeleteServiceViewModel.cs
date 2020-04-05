@@ -1,6 +1,9 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Services
 {
-    public class DeleteServiceViewModel
+    using Hss.Data.Models;
+    using Hss.Services.Mapping;
+
+    public class DeleteServiceViewModel : IMapFrom<Service>
     {
         public int Id { get; set; }
 

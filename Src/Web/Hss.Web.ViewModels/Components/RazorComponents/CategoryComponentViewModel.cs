@@ -7,6 +7,8 @@
     {
         public int Id { get; set; }
 
+        public int? CurrentCategoryId => this.Id > 0 ? this.Id : (int?)null;
+
         public string Name { get; set; }
 
         public string ImageUrl { get; set; }

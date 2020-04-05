@@ -17,6 +17,8 @@
 
         IEnumerable<T> GetAllByCategoryId<T>(int categoryId);
 
+        int GetCountByCategoryId(int categoryId);
+
         bool ServiceExists(int id);
     }
 }
