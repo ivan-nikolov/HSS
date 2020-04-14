@@ -20,6 +20,7 @@ namespace Hss.Data.Models
             this.Orders = new HashSet<Order>();
             this.Contracts = new HashSet<Contract>();
             this.Invoices = new HashSet<Invoice>();
+            this.Addresses = new HashSet<Address>();
 
             this.CreatedOn = DateTime.UtcNow;
             this.IsDeleted = false;
@@ -54,5 +55,7 @@ namespace Hss.Data.Models
         public virtual ICollection<Order> Orders { get; set; }
 
         public virtual ICollection<Invoice> Invoices { get; set; }
+
+        public virtual ICollection<Address> Addresses { get; set; }
     }
 }

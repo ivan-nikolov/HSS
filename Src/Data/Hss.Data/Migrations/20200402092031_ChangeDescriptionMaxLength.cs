@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace Hss.Data.Migrations
+﻿namespace Hss.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class ChangeDescriptionMaxLength : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

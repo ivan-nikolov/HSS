@@ -11,7 +11,10 @@
     using Hss.Data.Seeding;
     using Hss.Services;
     using Hss.Services.Data;
+    using Hss.Services.Data.Addresses;
     using Hss.Services.Data.Categories;
+    using Hss.Services.Data.CIties;
+    using Hss.Services.Data.Countries;
     using Hss.Services.Data.Services;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
@@ -55,7 +58,7 @@
 
             services.AddControllersWithViews(options =>
             {
-                options.Filters.Add(typeof(ArgumentNullExceptionFilterAttribute));
+               // options.Filters.Add(typeof(ArgumentNullExceptionFilterAttribute));
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages();
@@ -84,6 +87,9 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<ICategoriesService, CategoriesService>();
             services.AddTransient<IServicesService, ServicesService>();
+            services.AddTransient<ICountriesService, CountriesService>();
+            services.AddTransient<ICitiesService, CitiesService>();
+            services.AddTransient<IAddressesService, AddressesService>();
             services.AddTransient<ICloudinaryService, CloudinaryService>();
         }
 

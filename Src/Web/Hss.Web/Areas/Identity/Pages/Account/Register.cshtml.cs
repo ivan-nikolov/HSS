@@ -6,6 +6,7 @@
     using System.Text;
     using System.Text.Encodings.Web;
     using System.Threading.Tasks;
+
     using Hss.Common;
     using Hss.Data.Models;
     using Hss.Services.Messaging;

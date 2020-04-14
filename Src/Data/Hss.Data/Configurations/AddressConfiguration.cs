@@ -27,6 +27,11 @@
                 .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(a => a.User)
+                .WithMany(u => u.Addresses)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

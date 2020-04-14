@@ -17,9 +17,9 @@
                 this.isCardDisabled = false;
             }
 
-            <div class="col-lg-3">
+            <div class="col-3">
                 <div class="card">
-                    <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:18rem;">
+                    <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:13rem;">
                     <div class="card-body">
                         <h5 class="card-title">@category.Name</h5>
                         <p class="card-text">@category.ShortDescription</p>
@@ -55,7 +55,6 @@
     protected override void OnInitialized()
     {
         user = this.httpContextAccessor.HttpContext.User;
-        //this.SetCategories(this.CurrentCategoryId);
     }
 
     protected override void OnParametersSet()

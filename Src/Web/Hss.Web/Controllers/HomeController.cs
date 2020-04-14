@@ -1,7 +1,7 @@
 ﻿namespace Hss.Web.Controllers
 {
     using System.Diagnostics;
-    using System.Threading.Tasks;
+
     using Hss.Services.Messaging;
     using Hss.Web.ViewModels;
 

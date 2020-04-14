@@ -24,11 +24,15 @@
 
         public string Neighborhood { get; set; }
 
-        public int ZipCode { get; set; }
+        public int PostCode { get; set; }
 
         public int CityId { get; set; }
 
-        public City City { get; set; }
+        public virtual City City { get; set; }
+
+        public string UserId { get; set; }
+
+        public virtual ApplicationUser User { get; set; }
 
         public virtual ICollection<Job> Jobs { get; set; }
 

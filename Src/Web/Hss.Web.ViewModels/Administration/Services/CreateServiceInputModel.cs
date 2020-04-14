@@ -1,6 +1,7 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Services
 {
     using System.ComponentModel.DataAnnotations;
+
     using AutoMapper;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Services;

@@ -1,11 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Components.Routing
+@inject NavigationManager NavManager
 
 <Router AppAssembly="typeof(Program).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="routeData" />
     </Found>
     <NotFound>
-        <h1>Page not found</h1>
-        <p>Sorry, but there's nothing here!</p>
+        @*@{
+            NavManager.NavigateTo("/Error/HttpError?statusCode=404", true);
+        }*@
+
+        <h1>Error</h1>
     </NotFound>
 </Router>

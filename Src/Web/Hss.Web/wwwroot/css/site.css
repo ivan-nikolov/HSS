@@ -78,3 +78,23 @@ main{
     object-fit: cover !important;
 }
 
+#main {
+    transition: margin-left .5s;
+    padding: 20px;
+    width:80%;
+    display:inline-block;
+    top: inherit;
+}
+
+#content {
+    padding-top: 1.1rem;
+}
+
+app {
+    position: relative;
+    display: flex;
+    
+}
+
+/*Sidebar navbar*/
+
