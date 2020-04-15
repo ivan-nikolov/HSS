@@ -1,0 +1,50 @@
+﻿@using Hss.Web.ViewModels.Administration.OperationalLocations
+@model LocationsListViewModel
+
+@{
+    var locations = this.Model.Locations.ToList();
+}
+<h1 class="mt-4 text-center">Operational Locations</h1>
+<hr />
+<div class="container h-100">
+    <div class="row h-100 justify-content-center">
+        <div class="col-8 mt-4" id="accordion">
+            @for (int i = 0; i < locations.Count; i++)
+            {
+                <div class="card">
+                    <div class="card-header" id="heading@(i)">
+                        <h5 class="mb-0 d-flex justify-content-between">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse@(i)" aria-expanded="false" aria-controls="collapse@(i)">
+                                @locations[i].Name
+                            </button>
+                            <button class="btn btn-danger" asp-area="Administration" asp-controller="OperationalController" asp-action="Delete" asp-route-id="@locations[i].Id">Delete</button>
+                        </h5>
+                    </div>
+
+                    <div id="collapse@(i)" class="collapse" aria-labelledby="heading@(i)" data-parent="#accordion">
+                        <div class="card-body">
+                            <ul>
+                                @foreach (var city in locations[i].Cities)
+                                {
+                                    <li class="d-flex justify-content-between">
+                                        <span>
+                                            @city.Name
+                                        </span>
+                                        <span>
+                                            <button class="btn btn-danger" asp-area="Administration" asp-controller="OperationalController" asp-action="Delete" asp-route-id="@city.Id">Delete</button>
+                                        </span>
+                                    </li>
+                                    <li class="dropdown-divider"></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-8 d-flex justify-content-between mt-5">
+            <a class="btn btn-primary" asp-area="Administration" asp-controller="OperationalLocations" asp-action="CreateCountry">Add Country</a>
+            <a class="btn btn-primary" asp-area="Administration" asp-controller="OperationalLocations" asp-action="CreateCity">Add City</a>
+        </div>
+    </div>
+</div>
