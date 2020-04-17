@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Components.Web
+
+<div class="blazored-modal-container @this.componentPosition @(this.isVisibal ? "blazored-modal-active" : "d-none")">
+    <div class="blazored-modal-overlay" @onclick="HandleBackgroundClick"></div>
+
+    <div class="blazored-modal-wrapper">
+        <div class="@this.componentStyle">
+            @if (!this.componentHideHeader)
+            {
+                if (!this.componentHideCloseButton)
+                {
+                    <button type="button" class="blazored-modal-close" @onclick="@(() => this.ModalService.Cancel())">
+                        <span>&times;</span>
+                    </button>
+                }
+                <div class="blazored-modal-header">
+                    <h3 class="blazored-modal-title">@this.title</h3>
+                </div>
+            }
+            <div class="blazored-modal-content">
+                <CascadingValue Value="this">
+                    <CascadingValue Value="@this.parameters">
+                        @this.content
+                    </CascadingValue>
+                </CascadingValue>
+            </div>
+            <p class="text-danger">Blazor Modal</p>
+        </div>
+    </div>
+</div>

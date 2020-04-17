@@ -1,48 +1,7 @@
 ﻿@page "/Dashboard"
+@using Hss.Web.Components.RazorComponents.Dashboard
 @layout AccountsLayout
-    <div class="site-section">
-        <div class="container">
-            <div class="section-heading mb-5">
-                <h3>Alerts</h3>
-            </div>
-        </div>
-
-        <div class="alert alert-primary" role="alert">
-            A simple primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"><span class="icon-close2"></span></span>
-            </button>
-        </div>
-
-        <div class="alert alert-success" role="alert">
-            A simple primary alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"><span class="icon-close2"></span></span>
-            </button>
-        </div>
-
-        <div class="alert alert-danger" role="alert">
-            A simple danger alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"><span class="icon-close2"></span></span>
-            </button>
-        </div>
-
-        <div class="alert alert-warning" role="alert">
-            A simple warning alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"><span class="icon-close2"></span></span>
-            </button>
-        </div>
-
-        <div class="alert alert-info" role="alert">
-            A simple info alert with <a href="#" class="alert-link">an example link</a>. Give it a click if you like.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true"><span class="icon-close2"></span></span>
-            </button>
-        </div>
-
-    </div>
+    <AddressesList></AddressesList>
 
 @code {
 

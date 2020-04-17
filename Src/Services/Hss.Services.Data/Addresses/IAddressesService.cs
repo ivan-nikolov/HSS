@@ -9,7 +9,7 @@
     {
         Task CreateAsync(AddressServiceModel input);
 
-        Task<IEnumerable<T>> GetUserAddressesAsync<T>(string userId);
+        IEnumerable<T> GetUserAddresses<T>(string userId);
 
         Task EditAsync(AddressServiceModel input);
 

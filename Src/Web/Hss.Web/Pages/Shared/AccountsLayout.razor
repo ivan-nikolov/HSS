@@ -1,17 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@using Hss.Web.Components.RazorComponents
 
+<BlazoredModal />
 
 <CascadingAuthenticationState>
     <AuthorizeView>
         <Authorized>
-            <div class="sidebar mt-3">
-                <NavMenu />
-            </div>
-            <div id="main">
-                <div id="content">
-                    @Body
+            <div class="row h-100">
+                <div class="sidebar col-2">
+                    <NavMenu />
+                </div>
+                <div id="main" class="col-10">
+                    <div id="content">
+                        @Body
+                    </div>
                 </div>
             </div>
         </Authorized>

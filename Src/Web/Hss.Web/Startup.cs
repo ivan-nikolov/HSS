@@ -10,6 +10,7 @@
     using Hss.Data.Repositories;
     using Hss.Data.Seeding;
     using Hss.Services;
+    using Hss.Services.BlazorModal;
     using Hss.Services.Data;
     using Hss.Services.Data.Addresses;
     using Hss.Services.Data.Categories;
@@ -62,7 +63,10 @@
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor(options =>
+            {
+                options.DetailedErrors = true;
+            });
             services.AddSignalR();
             services.AddHttpContextAccessor();
 
@@ -91,6 +95,8 @@
             services.AddTransient<ICitiesService, CitiesService>();
             services.AddTransient<IAddressesService, AddressesService>();
             services.AddTransient<ICloudinaryService, CloudinaryService>();
+
+            services.AddScoped<IModalService, ModalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

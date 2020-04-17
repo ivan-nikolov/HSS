@@ -1,12 +1,10 @@
-﻿namespace Hss.Services.Models.Addresses
+﻿namespace Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
 {
     using Hss.Data.Models;
     using Hss.Services.Mapping;
 
-    public class AddressServiceModel : IMapFrom<Address>, IMapTo<Address>
+    public class AddressViewModel : IMapFrom<Address>
     {
-        public int Id { get; set; }
-
         public string BuildingNumber { get; set; }
 
         public string Appartment { get; set; }
@@ -17,10 +15,8 @@
 
         public int PostCode { get; set; }
 
-        public int CityId { get; set; }
+        public string CityName { get; set; }
 
-        public int CountryId { get; set; }
-
-        public string UserId { get; set; }
+        public string CityCountryName { get; set; }
     }
 }

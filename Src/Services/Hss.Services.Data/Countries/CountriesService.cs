@@ -8,6 +8,7 @@
     using Hss.Data.Models;
     using Hss.Services.Data.CIties;
     using Hss.Services.Mapping;
+    using Hss.Services.Models.Countries;
     using Microsoft.EntityFrameworkCore;
 
     public class CountriesService : ICountriesService
@@ -54,6 +55,18 @@
             => await this.countryRepository.All()
             .To<T>()
             .ToListAsync();
+
+        public async Task<IEnumerable<CountryServiceModel>> GetAll()
+            => await this.countryRepository.All()
+            .To<CountryServiceModel>()
+            .ToListAsync();
+
+        public IEnumerable<CountryServiceModel> GetAllHavingCities()
+            => this.countryRepository
+            .All()
+            .Where(c => c.Cities.Count > 0)
+            .To<CountryServiceModel>()
+            .ToList();
 
         public async Task<T> GetByIdAsync<T>(int id)
             => await this.countryRepository.All()

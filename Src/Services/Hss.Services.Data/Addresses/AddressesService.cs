@@ -71,11 +71,11 @@
             await this.addressesRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetUserAddressesAsync<T>(string userId)
-            => await this.addressesRepository
+        public IEnumerable<T> GetUserAddresses<T>(string userId)
+            => this.addressesRepository
                          .All()
                          .Where(a => a.UserId == userId)
                          .To<T>()
-                         .ToListAsync();
+                         .ToList();
     }
 }

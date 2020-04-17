@@ -1,0 +1,101 @@
+﻿@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
+@using Hss.Services.BlazorModal
+@using Hss.Web.Components.RazorComponents.Addresses
+@inject Hss.Services.Data.Addresses.IAddressesService AddressesService
+@inject IModalService ModalService
+@attribute [Authorize]
+
+@if (this.addresses == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row h-100 justify-content-center">
+        <div class="col-8 mt-4" id="accordion">
+            <div class="card">
+                <div class="card-header" id="addresses">
+                    <h5 class="mb-0 d-flex justify-content-between">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            My Addresses
+                        </button>
+                        <button type="button" class="btn btn-primary" @onclick="ShowModal">
+                            Add Address
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne)" data-parent="#accordion">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Country</th>
+                                    <th scope="col">City</th>
+                                    <th scope="col">Neighborhood</th>
+                                    <th scope="col">Street Name</th>
+                                    <th scope="col">Building Number</th>
+                                    <th scope="col">Appartment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                    @foreach (var address in this.addresses)
+                                    {
+                                <tr>
+                                    <td>@address.CityCountryName</td>
+                                    <td>@address.CityName</td>
+                                    <td>@address.Neighborhood</td>
+                                    <td>@address.StreetName</td>
+                                    <td>@address.BuildingNumber</td>
+                                    <td>@address.Appartment</td>
+                                </tr>
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+@code {
+    private List<AddressViewModel> addresses;
+    private string userId;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.userId = (await this.AuthenticationStateTask).User.GetId();
+        this.addresses = AddressesService
+            .GetUserAddresses<AddressViewModel>(this.userId)
+            .ToList();
+    }
+
+    private void ShowModal()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add("FormId", 1);
+        this.ModalService.OnClose += this.ModalClosed;
+        this.ModalService.OnClose += this.UpdateAddresses;
+        this.ModalService.Show<AddAddressForm>("Add Address Form", parameters);
+    }
+
+    private void ModalClosed(object sender, ModalResult modalResult)
+    {
+        this.ModalService.OnClose -= this.ModalClosed;
+        this.ModalService.OnClose -= this.UpdateAddresses;
+    }
+
+    private void UpdateAddresses(object sender, ModalResult modalResult = null)
+    {
+        
+        this.addresses = (AddressesService
+            .GetUserAddresses<AddressViewModel>(userId))
+            .ToList();
+        this.StateHasChanged();
+    }
+}

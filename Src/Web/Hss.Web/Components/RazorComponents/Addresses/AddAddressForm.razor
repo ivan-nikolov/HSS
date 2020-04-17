@@ -1,0 +1,184 @@
+﻿@inject Hss.Services.Data.Countries.ICountriesService CountryService
+@inject Hss.Services.Data.CIties.ICitiesService CityService
+@inject Hss.Services.Data.Addresses.IAddressesService AddressService
+@inject Hss.Services.BlazorModal.IModalService ModalService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Hss.Services.Models.Addresses
+@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+
+@if (this.ShowForm)
+{
+    <EditForm Model="@this.Address" OnValidSubmit="SubmitForm">
+        <DataAnnotationsValidator />
+        <Microsoft.AspNetCore.Components.Forms.ValidationSummary style="color: red"/>
+
+        <div class="form-group">
+            <label>
+                Country:
+                <select class="form-control" @onchange="@(e => GetCities(e))">
+                    <option value="">Select country ...</option>
+                    @foreach (var country in this.Countries)
+                    {
+                        <option value="@country.Value">@country.Text</option>
+                    }
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                City:
+                <select class="form-control" @bind="Address.CityId">
+                    <option value="">Select city ...</option>
+                    @foreach (var city in this.Cities)
+                    {
+                        <option value="@city.Value">@city.Text</option>
+                    }
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Neighborhood:
+                <InputText class="form-control" id="Neighborhood" @bind-Value="Address.Neighborhood" />
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                PostCode:
+                <InputNumber class="form-control" id="PostCode" @bind-Value="Address.PostCode" />
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Street Name:
+                <InputText class="form-control" id="StreetName" @bind-Value="Address.StreetName" />
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Building Number:
+                <InputText class="form-control" id="BuildingNumber" @bind-Value="Address.BuildingNumber" />
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                Appartment:
+                <InputText class="form-control" id="Appartment" @bind-Value="Address.Appartment" />
+            </label>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </EditForm>
+}
+else
+{
+    <div class="alert alert-success" role="alert">
+        Address is successfuly added!
+        <button class="btn btn-primary" @onclick="Done">Done</button>
+    </div>
+}
+
+
+@code {
+    private EditContext editContext;
+
+    [CascadingParameter]
+    public ModalParameters Parameters { get; set; }
+
+    [CascadingParameter]
+    public BlazoredModal BlazoredModal { get; set; }
+
+    private List<SelectListItem> Countries { get; set; }
+
+    private List<SelectListItem> Cities { get; set; }
+
+    private AddressInputModel Address { get; set; }
+
+    bool ShowForm { get; set; } = true;
+    int FormId { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.Address = new AddressInputModel();
+        this.editContext = new EditContext(this.Address);
+
+        this.Cities = new List<SelectListItem>();
+        var countries = this.CountryService
+        .GetAllHavingCities();
+
+        this.Countries = countries
+            .Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+            })
+            .ToList();
+
+        this.FormId = this.Parameters.Get<int>("FormId");
+        BlazoredModal.SetTitle("Add Address");
+    }
+
+    private async Task GetCities(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value.ToString(), out int countryId))
+        {
+            return;
+        }
+
+        this.Address.CountryId = countryId;
+
+        if (!await this.CountryService.CheckIfCountryExists(this.Address.CountryId))
+        {
+            return;
+        }
+
+        var cities = await this.CityService.GetByCountryIdAsync(this.Address.CountryId);
+
+        this.Cities = cities
+            .Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+            })
+            .ToList();
+    }
+
+    private async Task SubmitForm()
+    {
+        var isValid = this.editContext.Validate()
+            && await this.ServerValidate(this.editContext);
+
+        if (!isValid)
+        {
+            return;
+        }
+
+        var serviceModel = this.Address.To<AddressServiceModel>();
+        var userId = (await this.AuthenticationStateProvider.GetAuthenticationStateAsync()).User.GetId();
+        serviceModel.UserId = userId;
+        await this.AddressService.CreateAsync(serviceModel);
+
+        this.ShowForm = false;
+    }
+
+    private void Done()
+    {
+        this.ModalService.Close(ModalResult.Ok("Form submitted"));
+    }
+
+    private void Cancel()
+    {
+        this.ModalService.Cancel();
+    }
+
+    private async Task<bool> ServerValidate(EditContext editContext)
+    {
+        var serverChecksValid = await this.CountryService.CheckIfCountryExists(this.Address.CountryId)
+            && await this.CityService.CheckIfCityExists(this.Address.CityId);
+
+        return serverChecksValid;
+    }
+}

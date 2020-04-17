@@ -13,8 +13,8 @@
 
         [Required]
         [StringLength(
-            ValidationConstants.CategiryNameMaxLength,
-            MinimumLength = ValidationConstants.CategiryNameMinLength,
+            ValidationConstants.CategoryNameMaxLength,
+            MinimumLength = ValidationConstants.CategoryNameMinLength,
             ErrorMessage = ValidationConstants.StringLengthErrorMessage)]
         public string Name { get; set; }
 
