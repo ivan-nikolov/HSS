@@ -29,6 +29,8 @@
                               new SettingsSeeder(),
                               new RootAdminSeeder(),
                               new UsersSeeder(),
+                              new CategoriesSeeder(),
+                              new ServicesSeeder(),
                           };
 
             foreach (var seeder in seeders)

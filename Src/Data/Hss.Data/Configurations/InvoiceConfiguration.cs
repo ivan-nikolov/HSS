@@ -13,9 +13,6 @@
             builder.Property(i => i.OrderId)
                 .IsRequired(true);
 
-            builder.HasIndex(i => i.OrderId)
-                .IsUnique(true);
-
             builder.Property(i => i.ClientId)
                 .IsRequired(true);
 
@@ -31,8 +28,8 @@
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(i => i.Order)
-                .WithOne(o => o.Invoice)
-                .HasForeignKey<Order>(i => i.InvoiceId)
+                .WithMany(o => o.Invoices)
+                .HasForeignKey(i => i.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -1,6 +1,5 @@
 ﻿namespace Hss.Data.Models
 {
-    using System;
     using System.Collections.Generic;
 
     using Hss.Data.Common.Models;
@@ -10,10 +9,7 @@
         public Service()
         {
             this.Teams = new HashSet<TeamService>();
-            this.Jobs = new HashSet<Job>();
-
-            this.IsDeleted = false;
-            this.CreatedOn = DateTime.UtcNow;
+            this.Orders = new HashSet<Order>();
         }
 
         public string Name { get; set; }
@@ -22,13 +18,17 @@
 
         public string ImageUrl { get; set; }
 
+        public bool IsRecurrent { get; set; }
+
+        public decimal Price { get; set; }
+
+        public int DurationInHours { get; set; }
+
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
 
-        public decimal Price { get; set; }
-
-        public virtual ICollection<Job> Jobs { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
 
         public virtual ICollection<TeamService> Teams { get; set; }
     }

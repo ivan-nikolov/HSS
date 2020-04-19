@@ -1,7 +1,6 @@
 ﻿namespace Hss.Data.Models
 {
     using System;
-    using System.Collections.Generic;
 
     using Hss.Data.Common.Models;
     using Hss.Data.Models.Enums;
@@ -11,8 +10,6 @@
         public Invoice()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.IsDeleted = false;
-            this.CreatedOn = DateTime.UtcNow;
         }
 
         public int AddressId { get; set; }

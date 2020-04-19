@@ -11,6 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200419100739_AddAppointment.cs" />
+    <Compile Remove="Migrations\20200419100739_AddAppointment.Designer.cs" />
+    <Compile Remove="Migrations\20200419115307_AddAppointment.cs" />
+    <Compile Remove="Migrations\20200419115307_AddAppointment.Designer.cs" />
+    <Compile Remove="Migrations\20200419121437_UpdateOrders.cs" />
+    <Compile Remove="Migrations\20200419121437_UpdateOrders.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>
 

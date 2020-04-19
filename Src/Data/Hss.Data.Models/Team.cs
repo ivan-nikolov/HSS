@@ -10,20 +10,21 @@
         public Team()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.IsDeleted = false;
-            this.CreatedOn = DateTime.UtcNow;
-
             this.TeamMembers = new HashSet<ApplicationUser>();
             this.Services = new HashSet<TeamService>();
-            this.Jobs = new HashSet<Job>();
+            this.Orders = new HashSet<Order>();
         }
 
         public string Name { get; set; }
+
+        public int CityId { get; set; }
+
+        public City City { get; set; }
 
         public virtual ICollection<ApplicationUser> TeamMembers { get; set; }
 
         public virtual ICollection<TeamService> Services { get; set; }
 
-        public virtual ICollection<Job> Jobs { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

@@ -11,9 +11,6 @@
         {
             this.ChildCategories = new HashSet<Category>();
             this.Services = new HashSet<Service>();
-
-            this.IsDeleted = false;
-            this.CreatedOn = DateTime.UtcNow;
         }
 
         public string Name { get; set; }

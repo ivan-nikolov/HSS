@@ -11,26 +11,38 @@
         public Order()
         {
             this.Id = Guid.NewGuid().ToString();
-            this.IsDeleted = false;
-            this.CreatedOn = DateTime.UtcNow;
+            this.Jobs = new HashSet<Job>();
+            this.Invoices = new HashSet<Invoice>();
         }
 
-        public int ServiceFrequencyInDays { get; set; }
+        public BillingFrequency BillingFrequency { get; set; }
 
         public OrderStatus Status { get; set; }
 
-        public string InvoiceId { get; set; }
+        public ServiceFrequency ServiceFrequency { get; set; }
 
-        public Invoice Invoice { get; set; }
+        public string AppointmetnId { get; set; }
 
-        public string ContractId { get; set; }
+        public Appointment Appointment { get; set; }
 
-        public Contract Contract { get; set; }
+        public int AddresId { get; set; }
+
+        public Address Address { get; set; }
+
+        public string TeamId { get; set; }
+
+        public Team Team { get; set; }
+
+        public int ServiceId { get; set; }
+
+        public Service Service { get; set; }
 
         public string ClientId { get; set; }
 
         public ApplicationUser Client { get; set; }
 
         public virtual ICollection<Job> Jobs { get; set; }
+
+        public virtual ICollection<Invoice> Invoices { get; set; }
     }
 }

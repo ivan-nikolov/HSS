@@ -17,6 +17,12 @@
 
             builder.HasIndex(t => t.Name)
                 .IsUnique();
+
+            // Relations
+            builder.HasOne(t => t.City)
+                .WithMany(c => c.Teams)
+                .HasForeignKey(t => t.CityId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

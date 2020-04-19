@@ -1,6 +1,5 @@
 ﻿namespace Hss.Data.Models
 {
-    using System;
     using System.Collections.Generic;
 
     using Hss.Data.Common.Models;
@@ -10,8 +9,7 @@
         public City()
         {
             this.Addresses = new HashSet<Address>();
-            this.CreatedOn = DateTime.UtcNow;
-            this.IsDeleted = false;
+            this.Teams = new HashSet<Team>();
         }
 
         public string Name { get; set; }
@@ -21,5 +19,7 @@
         public Country Country { get; set; }
 
         public virtual ICollection<Address> Addresses { get; set; }
+
+        public virtual ICollection<Team> Teams { get; set; }
     }
 }

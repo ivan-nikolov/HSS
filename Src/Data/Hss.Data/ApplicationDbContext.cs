@@ -28,11 +28,11 @@
 
         public DbSet<Address> Addresses { get; set; }
 
+        public DbSet<Appointment> Appointments { get; set; }
+
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<City> Cities { get; set; }
-
-        public DbSet<Contract> Contracts { get; set; }
 
         public DbSet<Country> Countries { get; set; }
 

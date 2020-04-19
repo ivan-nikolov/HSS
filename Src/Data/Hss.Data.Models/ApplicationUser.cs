@@ -18,12 +18,8 @@ namespace Hss.Data.Models
             this.Logins = new HashSet<IdentityUserLogin<string>>();
 
             this.Orders = new HashSet<Order>();
-            this.Contracts = new HashSet<Contract>();
             this.Invoices = new HashSet<Invoice>();
             this.Addresses = new HashSet<Address>();
-
-            this.CreatedOn = DateTime.UtcNow;
-            this.IsDeleted = false;
         }
 
         // Audit info
@@ -49,8 +45,6 @@ namespace Hss.Data.Models
         public string TeamId { get; set; }
 
         public Team Team { get; set; }
-
-        public virtual ICollection<Contract> Contracts { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
 
