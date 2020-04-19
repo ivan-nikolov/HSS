@@ -74,17 +74,6 @@
             return this.RedirectToAction("Details", "Categories", new { id = input.CategoryId });
         }
 
-        public async Task<IActionResult> Details(int id)
-        {
-            var serviceModel = await this.servicesService.GetByIdAsync<DetailsServiceViewModel>(id);
-            if (serviceModel == null)
-            {
-                return this.NotFound();
-            }
-
-            return this.View(serviceModel);
-        }
-
         public async Task<IActionResult> Edit(int id)
         {
             var serviceModel = await this.servicesService

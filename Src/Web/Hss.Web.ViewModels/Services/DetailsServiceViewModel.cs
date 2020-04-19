@@ -1,4 +1,4 @@
-﻿namespace Hss.Web.ViewModels.Administration.Services
+﻿namespace Hss.Web.ViewModels.Services
 {
     using Hss.Data.Models;
     using Hss.Services.Mapping;
@@ -12,6 +12,8 @@
         public string CategoryName { get; set; }
 
         public string Description { get; set; }
+
+        public int DurationInHours { get; set; }
 
         public decimal Price { get; set; }
 

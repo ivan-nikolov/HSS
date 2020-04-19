@@ -1,0 +1,36 @@
+﻿@using Hss.Common
+@model  Hss.Web.ViewModels.Services.DetailsServiceViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div class="ml-auto">
+    <h3>@Model.Name</h3>
+</div>
+<div class="mx-auto">
+    <hr />
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            <img src="@Model.ImageUrl" class="img-thumbnail img-fluid float-left" width="300" />
+        </div>
+        @if (User.IsInRole(GlobalConstants.AdministratorRoleName))
+        {
+            <div class="ml-auto">
+                <a class="btn btn-warning" asp-area="Administration" asp-controller="Services" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                <a class="btn btn-danger" asp-area="Administration" asp-controller="Serivces" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+            </div>
+        }
+    </div>
+    <hr class="mt-3"/>
+    <p>@Model.Description</p>
+    <hr />
+    <p>Duration: @Model.DurationInHours</p>
+    <p>Price: @Model.Price per hour</p>
+</div>
+<hr />
+<div>
+    <a class="btn btn-info" asp-area="" asp-controller="Home" asp-action="Index">Back</a>
+</div>
