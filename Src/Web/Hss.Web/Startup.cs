@@ -17,6 +17,7 @@
     using Hss.Services.Data.CIties;
     using Hss.Services.Data.Countries;
     using Hss.Services.Data.Services;
+    using Hss.Services.Data.Teams;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
@@ -95,6 +96,7 @@
             services.AddTransient<ICitiesService, CitiesService>();
             services.AddTransient<IAddressesService, AddressesService>();
             services.AddTransient<ICloudinaryService, CloudinaryService>();
+            services.AddTransient<ITeamsService, TeamsService>();
 
             services.AddScoped<IModalService, ModalService>();
         }

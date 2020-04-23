@@ -22,7 +22,7 @@
             this.addressesService = addressesService;
         }
 
-        public async Task<bool> CheckIfCityExists(int id)
+        public async Task<bool> CheckIfCityExistsAsync(int id)
             => await this.citiesRepository.All()
             .Where(c => c.Id == id)
             .CountAsync() > 0;
@@ -59,6 +59,12 @@
             await this.citiesRepository.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync<T>()
+            => await this.citiesRepository
+            .All()
+            .To<T>()
+            .ToListAsync();
+
         public async Task<IEnumerable<T>> GetByCountryIdAsync<T>(int countryId)
             => await this.citiesRepository
             .All()
@@ -66,14 +72,24 @@
             .To<T>()
             .ToListAsync();
 
-        public async Task<IEnumerable<CityServiceModel>> GetByCountryIdAsync(int countryId)
-            => await this.citiesRepository
+        public async Task<IEnumerable<CityServiceModel>> GetByCountryIdAsync(int countryId, bool hasServices = false)
+        {
+            var cities = this.citiesRepository
             .All()
-            .Where(c => c.CountryId == countryId)
-            .To<CityServiceModel>()
+            .Where(c => c.CountryId == countryId);
+
+            if (hasServices)
+            {
+                cities = cities.Where(c => c.Teams.Any(t => t.Services.Any()));
+            }
+
+            var resultCities = await cities.To<CityServiceModel>()
             .ToListAsync();
 
-        public async Task<T> GetById<T>(int id)
+            return resultCities;
+        }
+
+        public async Task<T> GetByIdAsync<T>(int id)
             => await this.citiesRepository.All()
             .Where(c => c.Id == id)
             .To<T>()

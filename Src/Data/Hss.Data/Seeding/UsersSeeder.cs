@@ -28,6 +28,7 @@
                 FirstName = "Abram",
                 LastName = "Davy",
                 Email = "abram_davi@hss.com",
+                EmailConfirmed = true,
             };
 
             var client = new ApplicationUser()
@@ -36,6 +37,7 @@
                 FirstName = "Dayna",
                 LastName = "Lennon",
                 Email = "dayna_lennon@bmail.com",
+                EmailConfirmed = true,
             };
 
             var teamMember = new ApplicationUser()
@@ -44,6 +46,7 @@
                 FirstName = "Santos",
                 LastName = "Walton",
                 Email = "santos_walton@bmail.com",
+                EmailConfirmed = true,
             };
 
             await SeedUser(userManager, admin, UsersPassword, GlobalConstants.AdministratorRoleName);

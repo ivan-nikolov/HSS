@@ -5,6 +5,8 @@
 
     public class AddressViewModel : IMapFrom<Address>
     {
+        public int Id { get; set; }
+
         public string BuildingNumber { get; set; }
 
         public string Appartment { get; set; }

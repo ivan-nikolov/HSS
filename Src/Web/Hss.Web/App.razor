@@ -6,10 +6,8 @@
         <RouteView RouteData="routeData" />
     </Found>
     <NotFound>
-        @*@{
+        @{
             NavManager.NavigateTo("/Error/HttpError?statusCode=404", true);
-        }*@
-
-        <h1>Error</h1>
+        }
     </NotFound>
 </Router>

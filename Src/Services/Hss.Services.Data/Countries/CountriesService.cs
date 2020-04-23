@@ -61,12 +61,22 @@
             .To<CountryServiceModel>()
             .ToListAsync();
 
-        public IEnumerable<CountryServiceModel> GetAllHavingCities()
-            => this.countryRepository
+        public IEnumerable<CountryServiceModel> GetAllHavingCities(bool hasServicesInCities = false)
+        {
+            var countries = this.countryRepository
             .All()
-            .Where(c => c.Cities.Count > 0)
-            .To<CountryServiceModel>()
+            .Where(c => c.Cities.Count > 0);
+
+            if (hasServicesInCities)
+            {
+                countries = countries.Where(c => c.Cities.Any(c => c.Teams.Any(t => t.Services.Any())));
+            }
+
+            var resultCountries = countries.To<CountryServiceModel>()
             .ToList();
+
+            return resultCountries;
+        }
 
         public async Task<T> GetByIdAsync<T>(int id)
             => await this.countryRepository.All()

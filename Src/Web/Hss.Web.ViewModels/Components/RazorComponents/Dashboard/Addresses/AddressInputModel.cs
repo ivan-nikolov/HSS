@@ -9,7 +9,7 @@
     public class AddressInputModel : IMapTo<AddressServiceModel>
     {
         [Required]
-        [StringLength(10, MinimumLength = 3, ErrorMessage = ValidationConstants.StringLengthErrorMessage)]
+        [StringLength(10, MinimumLength = 1, ErrorMessage = ValidationConstants.StringLengthErrorMessage)]
         [Display(Name = "Building Number")]
         public string BuildingNumber { get; set; }
 

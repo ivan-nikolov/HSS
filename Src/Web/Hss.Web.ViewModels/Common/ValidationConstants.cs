@@ -17,5 +17,8 @@
 
         public const int CityNameMinLength = 2;
         public const int CityNameMaxLength = 200;
+
+        public const int TeamNameMinLength = 3;
+        public const int TeamNameMaxLength = 50;
     }
 }

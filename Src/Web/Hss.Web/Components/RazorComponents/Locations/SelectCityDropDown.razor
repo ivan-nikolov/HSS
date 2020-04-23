@@ -1,0 +1,113 @@
+﻿@inject Hss.Services.Data.Countries.ICountriesService CountryService
+@inject Hss.Services.Data.CIties.ICitiesService CityService
+
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+    <div class="d-flex justify-content-around">
+        <div class="form-group">
+            <label>
+                Country:
+                <select class="form-control" @onchange="@(e => GetCities(e))">
+                    <option value="">Select country ...</option>
+                    @foreach (var country in this.Countries)
+                    {
+                        <option value="@country.Value">@country.Text</option>
+                    }
+                </select>
+            </label>
+        </div>
+        <div class="form-group">
+            <label>
+                City:
+                <select class="form-control" @onchange="@(e => this.OnCitySelect(e))">
+                    <option value="">Select city ...</option>
+                    @foreach (var city in this.Cities)
+                    {
+                        <option value="@city.Value">@city.Text</option>
+                    }
+                </select>
+            </label>
+        </div>
+    </div>
+
+@code {
+    private List<SelectListItem> Countries { get; set; }
+
+    private List<SelectListItem> Cities { get; set; }
+
+    [Parameter]
+    public int CityId { get; set; }
+
+    [Parameter]
+    public int CountryId { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CountryIdChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CityIdChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        this.Cities = new List<SelectListItem>();
+        var countries = this.CountryService
+        .GetAllHavingCities(true);
+
+        this.Countries = countries
+            .Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+            })
+            .ToList();
+    }
+
+    private async Task GetCities(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value.ToString(), out int countryId))
+        {
+            return;
+        }
+
+        this.CountryId = countryId;
+
+        if (!await this.CountryService.CheckIfCountryExists(this.CountryId))
+        {
+            return;
+        }
+
+        var cities = await this.CityService.GetByCountryIdAsync(this.CountryId, true);
+        
+        var eventArgs = new ChangeEventArgs() { Value = this.CityId.ToString() };
+        await this.OnCitySelect(eventArgs);
+
+        await this.CountryIdChanged.InvokeAsync(this.CountryId);
+        this.Cities = cities
+            .Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+            })
+            .ToList();
+
+        this.ShouldRender();
+    }
+
+    private async Task OnCitySelect(ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value.ToString(), out int cityId))
+        {
+            return;
+        }
+
+        this.CityId = cityId;
+
+        if (!await this.CityService.CheckIfCityExistsAsync(this.CityId))
+        {
+            return;
+        }
+
+        await this.CityIdChanged.InvokeAsync(this.CityId);
+    }
+}

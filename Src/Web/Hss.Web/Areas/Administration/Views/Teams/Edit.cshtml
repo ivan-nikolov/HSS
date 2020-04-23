@@ -1,0 +1,38 @@
+﻿@model Hss.Web.ViewModels.Administration.Teams.EditTeamInputModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="d-flex justify-content-center align-items-center container ">
+    <form class="w-75" asp-area="Administration" asp-controller="Teams" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CityId" class="control-label">City</label>
+            <select class="form-control" required asp-for="CityId" asp-items="@Model.Cities"></select>
+            <span asp-validation-for="CityId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Services" class="control-label">Services</label>
+            <select class="form-control" required multiple asp-for="Services" asp-items="@Model.AllServices"></select>
+            <span asp-validation-for="Services" class="text-danger"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+            <div>
+                <a class="btn btn-info" asp-route-id="@Model.Id" asp-action="Index">Back</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

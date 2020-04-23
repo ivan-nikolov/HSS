@@ -102,7 +102,7 @@
 
         public IActionResult DeleteCity(int id)
         {
-            var city = this.citiesService.GetById<DeleteCityInputModel>(id);
+            var city = this.citiesService.GetByIdAsync<DeleteCityInputModel>(id);
             if (city == null)
             {
                 return this.NotFound();
@@ -114,7 +114,7 @@
         [HttpPost]
         public async Task<IActionResult> DeleteCity(DeleteCityInputModel input)
         {
-            if (!await this.citiesService.CheckIfCityExists(input.Id))
+            if (!await this.citiesService.CheckIfCityExistsAsync(input.Id))
             {
                 return this.NotFound();
             }

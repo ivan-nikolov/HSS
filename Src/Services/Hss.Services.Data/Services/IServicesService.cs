@@ -15,10 +15,16 @@
 
         Task UpdateAsync(ServiceServiceModel input);
 
+        Task<IEnumerable<T>> GetAllAsync<T>();
+
         IEnumerable<T> GetAllByCategoryId<T>(int categoryId);
+
+        IEnumerable<T> GetAllByTeamCity<T>(int cityId);
 
         int GetCountByCategoryId(int categoryId);
 
-        bool ServiceExists(int id);
+        bool CheckIfServiceExists(int id);
+
+        bool CheckIfServicesExist(IEnumerable<int> serviceIds);
     }
 }

@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Hss.Web.Areas.Administration.Components
+@using Hss.Web.Components.RazorComponents
+@using Hss.Web.Components.RazorComponents.Shared
+@using Hss.Common
+
+<BlazoredModal />
+
+<CascadingAuthenticationState>
+    <AuthorizeView Roles="@GlobalConstants.AdministratorRoleName">
+        <Authorized>
+            <div class="row h-100">
+                <div class="sidebar col-2">
+                    <AdminNavBar />
+                </div>
+                <div id="main" class="col-10">
+                    <div id="content">
+                        @Body
+                    </div>
+                </div>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            @{
+                var returnUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+                <RedirectToLogin ReturnUrl="@returnUrl"></RedirectToLogin>
+            }
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+@code {
+    private AuthenticationState authenticationState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.authenticationState = await this.AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+
+
+}

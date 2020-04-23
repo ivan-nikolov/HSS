@@ -1,0 +1,26 @@
+﻿@using Hss.Web.Components.RazorComponents.Orders
+@{
+    this.ViewData["Title"] = "Book Service";
+}
+    <script>
+        window.addDatePicker = () => $(function () {
+            $("#datepicker").datepicker({
+                beforeShowDay: $.datepicker.noWeekends
+            });
+        });
+    </script>
+<component type="@typeof(BookServiceForm)" render-mode="ServerPrerendered" />
+
+
+@section Scripts {
+    <script>
+        window.addDatePicker = () => $(document).ready(function () {
+            $('#datepicker').datepicker({
+                defaultDate: new Date(),
+                dateFormat: "dd.mm.yy",
+                beforeShowDay: $.datepicker.noWeekends,
+                minDate: new Date()
+            });
+        });
+    </script>
+}

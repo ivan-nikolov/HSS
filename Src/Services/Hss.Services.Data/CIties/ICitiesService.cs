@@ -13,12 +13,14 @@
 
         Task<IEnumerable<T>> GetByCountryIdAsync<T>(int countryId);
 
-        Task<IEnumerable<CityServiceModel>> GetByCountryIdAsync(int countryId);
+        Task<IEnumerable<CityServiceModel>> GetByCountryIdAsync(int countryId, bool hasServices = false);
 
         Task DeleteByCountryIdAsync(int countryId);
 
-        Task<bool> CheckIfCityExists(int id);
+        Task<bool> CheckIfCityExistsAsync(int id);
 
-        Task<T> GetById<T>(int id);
+        Task<T> GetByIdAsync<T>(int id);
+
+        Task<IEnumerable<T>> GetAllAsync<T>();
     }
 }

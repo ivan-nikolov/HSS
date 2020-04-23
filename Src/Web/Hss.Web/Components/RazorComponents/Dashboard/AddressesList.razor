@@ -11,22 +11,23 @@
 }
 else
 {
-    <div class="row h-100 justify-content-center">
-        <div class="col-8 mt-4" id="accordion">
-            <div class="card">
-                <div class="card-header" id="addresses">
-                    <h5 class="mb-0 d-flex justify-content-between">
-                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                            My Addresses
-                        </button>
-                        <button type="button" class="btn btn-primary" @onclick="ShowModal">
-                            Add Address
-                        </button>
-                    </h5>
-                </div>
+<div>
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="addresses">
+                <h5 class="mb-0 d-flex justify-content-between">
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="@this.CanSelectAddress.ToString()" aria-controls="collapseOne">
+                        My Addresses
+                    </button>
+                    <button type="button" class="btn btn-primary" @onclick="ShowModal">
+                        Add Address
+                    </button>
+                </h5>
+            </div>
 
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne)" data-parent="#accordion">
-                    <div class="card-body">
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -39,25 +40,30 @@ else
                                 </tr>
                             </thead>
                             <tbody>
-                                    @foreach (var address in this.addresses)
-                                    {
-                                <tr>
-                                    <td>@address.CityCountryName</td>
-                                    <td>@address.CityName</td>
-                                    <td>@address.Neighborhood</td>
-                                    <td>@address.StreetName</td>
-                                    <td>@address.BuildingNumber</td>
-                                    <td>@address.Appartment</td>
-                                </tr>
-                                    }
+                                @foreach (var address in this.addresses)
+                                {
+                                    <tr>
+                                        <td>@address.CityCountryName</td>
+                                        <td>@address.CityName</td>
+                                        <td>@address.Neighborhood</td>
+                                        <td>@address.StreetName</td>
+                                        <td>@address.BuildingNumber</td>
+                                        <td>@address.Appartment</td>
+                                        @if (this.CanSelectAddress)
+                                        {
+
+                                            <td><button @onclick="@(() => this.OnAddressSelect.InvokeAsync(address))" class="btn btn-sm btn-primary">Select</button></td>
+                                        }
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
+</div>
 }
 
 @code {
@@ -66,6 +72,12 @@ else
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public bool CanSelectAddress { get; set; }
+
+    [Parameter]
+    public EventCallback<AddressViewModel> OnAddressSelect { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -92,7 +104,7 @@ else
 
     private void UpdateAddresses(object sender, ModalResult modalResult = null)
     {
-        
+
         this.addresses = (AddressesService
             .GetUserAddresses<AddressViewModel>(userId))
             .ToList();

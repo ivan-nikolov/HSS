@@ -60,7 +60,7 @@
             return this.serviceRepository.All().Count(c => c.CategoryId == categoryId);
         }
 
-        public bool ServiceExists(int id)
+        public bool CheckIfServiceExists(int id)
         {
             return this.serviceRepository.AllAsNoTracking().Count(s => s.Id == id) > 0;
         }
@@ -78,5 +78,24 @@
             this.serviceRepository.Update(service);
             await this.serviceRepository.SaveChangesAsync();
         }
+
+        public IEnumerable<T> GetAllByTeamCity<T>(int cityId)
+            => this.serviceRepository.All()
+            .Where(s => s.Teams.Any(ts => ts.Team.CityId == cityId))
+            .To<T>()
+            .ToList();
+
+        public async Task<IEnumerable<T>> GetAllAsync<T>()
+            => await this.serviceRepository
+            .All()
+            .To<T>()
+            .ToListAsync();
+
+        public bool CheckIfServicesExist(IEnumerable<int> serviceIds)
+            => this.serviceRepository.All()
+            .Select(s => s.Id)
+            .ToList()
+            .Intersect(serviceIds)
+            .Count() == serviceIds.Count();
     }
 }

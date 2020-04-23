@@ -15,7 +15,7 @@
 
         Task<IEnumerable<CountryServiceModel>> GetAll();
 
-        IEnumerable<CountryServiceModel> GetAllHavingCities();
+        IEnumerable<CountryServiceModel> GetAllHavingCities(bool hasServicesInCities = false);
 
         Task<T> GetByIdAsync<T>(int id);
 

@@ -64,7 +64,7 @@
         [HttpPost]
         public async Task<IActionResult> Delete(DeleteServiceViewModel input)
         {
-            if (!this.servicesService.ServiceExists(input.Id))
+            if (!this.servicesService.CheckIfServiceExists(input.Id))
             {
                 return this.NotFound();
             }
@@ -93,7 +93,7 @@
         {
             if (
                 !this.categoriesService.CategoryExists(input.CategoryId)
-                || !this.servicesService.ServiceExists(input.Id))
+                || !this.servicesService.CheckIfServiceExists(input.Id))
             {
                 return this.NotFound();
             }

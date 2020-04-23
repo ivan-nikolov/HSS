@@ -1,0 +1,31 @@
+﻿@*<div class="top-row pl-4 navbar">
+        <a class="navbar-brand text-dark" href="/Dashboard">My Account</a>
+        <button class="btn bmd-btn-icon" @onclick="ToggleNavMenu">
+        </button>
+    </div>*@
+
+<div class="@NavMenuCssClass">
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/Administration/Dashboard">
+                Dashboard
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/Administration/Teams">
+                Teams
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = false;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -4,9 +4,8 @@
 @inject Hss.Services.BlazorModal.IModalService ModalService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using Hss.Services.Models.Addresses
+@using Hss.Web.Components.RazorComponents.Locations
 @using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
-@using Microsoft.AspNetCore.Mvc.Rendering
-
 
 @if (this.ShowForm)
 {
@@ -14,30 +13,8 @@
         <DataAnnotationsValidator />
         <Microsoft.AspNetCore.Components.Forms.ValidationSummary style="color: red"/>
 
-        <div class="form-group">
-            <label>
-                Country:
-                <select class="form-control" @onchange="@(e => GetCities(e))">
-                    <option value="">Select country ...</option>
-                    @foreach (var country in this.Countries)
-                    {
-                        <option value="@country.Value">@country.Text</option>
-                    }
-                </select>
-            </label>
-        </div>
-        <div class="form-group">
-            <label>
-                City:
-                <select class="form-control" @bind="Address.CityId">
-                    <option value="">Select city ...</option>
-                    @foreach (var city in this.Cities)
-                    {
-                        <option value="@city.Value">@city.Text</option>
-                    }
-                </select>
-            </label>
-        </div>
+        <SelectCityDropDown @bind-CountryId="@Address.CountryId" @bind-CityId="@Address.CityId"></SelectCityDropDown>
+
         <div class="form-group">
             <label>
                 Neighborhood:
@@ -91,10 +68,6 @@ else
     [CascadingParameter]
     public BlazoredModal BlazoredModal { get; set; }
 
-    private List<SelectListItem> Countries { get; set; }
-
-    private List<SelectListItem> Cities { get; set; }
-
     private AddressInputModel Address { get; set; }
 
     bool ShowForm { get; set; } = true;
@@ -105,45 +78,8 @@ else
         this.Address = new AddressInputModel();
         this.editContext = new EditContext(this.Address);
 
-        this.Cities = new List<SelectListItem>();
-        var countries = this.CountryService
-        .GetAllHavingCities();
-
-        this.Countries = countries
-            .Select(x => new SelectListItem()
-            {
-                Text = x.Name,
-                Value = x.Id.ToString(),
-            })
-            .ToList();
-
         this.FormId = this.Parameters.Get<int>("FormId");
         BlazoredModal.SetTitle("Add Address");
-    }
-
-    private async Task GetCities(ChangeEventArgs e)
-    {
-        if (!int.TryParse(e.Value.ToString(), out int countryId))
-        {
-            return;
-        }
-
-        this.Address.CountryId = countryId;
-
-        if (!await this.CountryService.CheckIfCountryExists(this.Address.CountryId))
-        {
-            return;
-        }
-
-        var cities = await this.CityService.GetByCountryIdAsync(this.Address.CountryId);
-
-        this.Cities = cities
-            .Select(x => new SelectListItem()
-            {
-                Text = x.Name,
-                Value = x.Id.ToString(),
-            })
-            .ToList();
     }
 
     private async Task SubmitForm()
@@ -177,7 +113,7 @@ else
     private async Task<bool> ServerValidate(EditContext editContext)
     {
         var serverChecksValid = await this.CountryService.CheckIfCountryExists(this.Address.CountryId)
-            && await this.CityService.CheckIfCityExists(this.Address.CityId);
+            && await this.CityService.CheckIfCityExistsAsync(this.Address.CityId);
 
         return serverChecksValid;
     }
