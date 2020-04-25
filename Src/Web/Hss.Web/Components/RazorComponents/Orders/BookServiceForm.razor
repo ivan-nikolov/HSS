@@ -1,10 +1,15 @@
-﻿@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
+﻿@using System.Globalization
+@using System.Text.Json
+
+@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
 @using Hss.Web.ViewModels.Components.RazorComponents.Orders
 @using Hss.Web.Components.RazorComponents.Dashboard
+
 @inject Hss.Services.Data.Addresses.IAddressesService AddressesService
 @inject Hss.Services.Data.Services.IServicesService ServicesService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IJSRuntime JSRuntime
+
 
 <BlazoredModal />
 <div class="row h-100">
@@ -12,16 +17,16 @@
         <CascadingAuthenticationState>
             <AddressesList CanSelectAddress="true" OnAddressSelect="this.SelectAddress"></AddressesList>
         </CascadingAuthenticationState>
-        <EditForm Model="this.input">
+        <EditForm EditContext="this.editContext" OnSubmit="HandleValidSubmitAsync">
             <DataAnnotationsValidator />
-            <ValidationSummary />
+            <ValidationSummary style="color: red" />
 
             @if (this.services.Count > 0)
             {
                 <div class="mt-5 form-group">
                     <label for="ServiceId">Select Sevice</label>
                     <select class="form-control" @bind="@this.input.ServiceId">
-                        <option disabled="disabled" value="">Select service</option>
+                        <option selected="@true.ToString()" value="">Select service</option>
                         @foreach (var service in this.services)
                         {
                             <option value="@service.Id">@service.Name</option>
@@ -30,7 +35,7 @@
                     </select>
                 </div>
             }
-            @if (this.SelectedService.IsRecurrant)
+            @if (this.SelectedService.IsRecurrent)
             {
                 <div class="form-group">
                     <label for="ServiceFrequency">Service Frequency</label>
@@ -45,53 +50,32 @@
             @if (this.SelectedService.Name != null)
             {
                 <div class="form-group">
-                    <input @bind-value="this.input.AppointmentDate" @bind-value:format="dd.MM.yyyy" type="text" class="form-control" id="datepicker">
+                    <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
+
+                <HoursList @bind-SelectedDate="this.input.AppointmentDate" @bind-CityId="this.selectedAddress.CityId" SelectedHour="this.input.AppointmentDate.Hour" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceFrequency="this.input.ServiceFrequency"></HoursList>
             }
+            <div class="mt-4">
+                <button style="display: @this.submitButtonDisplay" class="btn btn-lg btn-outline-primary" type="submit">Book Service</button>
+            </div>
         </EditForm>
     </div>
     <div class="col-4">
-        <div class="row">
-            <div class="table-responsive-sm">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">City</th>
-                            <th scope="col">Neighborhood</th>
-                            <th scope="col">Street Name</th>
-                            <th scope="col">Building Number</th>
-                            <th scope="col">Appartment</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@selectedAddress.CityName</td>
-                            <td>@selectedAddress.Neighborhood</td>
-                            <td>@selectedAddress.StreetName</td>
-                            <td>@selectedAddress.BuildingNumber</td>
-                            <td>@selectedAddress.Appartment</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <p>Service: @this.SelectedService.Name</p>
-        </div>
-        @if (this.SelectedService.IsRecurrant)
-        {
-            <div class="row">
-                <p>Service frequency: @input.ServiceFrequency.ToString()</p>
-            </div>
-        }
+        <CurrentOrder SelectedAddress="this.selectedAddress" DisplayHour="@this.submitButtonDisplay" Order="@this.input" SelectedService="this.SelectedService"></CurrentOrder>
     </div>
 </div>
 
 @code {
+    private EditContext editContext;
+
+    private string submitButtonDisplay = "none";
     private bool isReccurant;
     private AddressViewModel selectedAddress;
     private CreateOrderInputModel input;
     private List<ServiceInputModel> services;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     public ServiceInputModel SelectedService
     {
@@ -106,43 +90,59 @@
         }
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        this.input = new CreateOrderInputModel() { AppointmentDate = DateTime.UtcNow.Date};
+        this.editContext = new EditContext(this.input);
+
         this.selectedAddress = new AddressViewModel();
         this.services = new List<ServiceInputModel>();
-        this.input = new CreateOrderInputModel();
+
+        var userId = (await this.AuthenticationStateProvider.GetAuthenticationStateAsync()).User.GetId();
+        this.input.ClientId = userId;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    await this.JSRuntime.InvokeVoidAsync("addDatePicker");
+    //    await base.OnAfterRenderAsync(firstRender);
+    //}
+
+    private void HandleValidSubmitAsync()
     {
-        await this.JSRuntime.InvokeVoidAsync("addDatePicker");
-        await base.OnAfterRenderAsync(firstRender);
+        var isValid = this.editContext.Validate() && this.ServerValidate(editContext);
+        if (isValid)
+        {
+            this.input.IsRecurrent = this.SelectedService.IsRecurrent;
+            this.input.ServiceDuration = this.SelectedService.Duration;
+            var result = JsonSerializer.Serialize<CreateOrderInputModel>(this.input);
+            Console.WriteLine(result);
+        }
+    }
+
+    private bool ServerValidate(EditContext editContext)
+    {
+        var serverChecksValid = this.AddressesService.CheckIfAddressIsValidForUser(this.input.AddressId, this.input.ClientId)
+            && this.ServicesService.CheckIfServiceExists(this.input.ServiceId)
+            && this.input.AppointmentDate.Hour >= 0
+            && this.input.AppointmentDate.Hour <= 18;
+
+        return serverChecksValid;
     }
 
     private void SelectAddress(AddressViewModel address)
     {
         this.selectedAddress = address;
         this.input.AddressId = selectedAddress.Id;
-        this.services = new List<ServiceInputModel>()
-        {
-                new ServiceInputModel()
-                {
-                    Id = 1,
-                    Name = "End of Tenency cleaning",
-                    IsRecurrant = true,
-                },
-                new ServiceInputModel()
-                {
-                    Id = 2,
-                    Name = "Housekeeping",
-                    IsRecurrant = true,
-                },
-                new ServiceInputModel()
-                {
-                    Id = 3,
-                    Name = "Fence installation",
-                    IsRecurrant = false,
-                },
-        };
+        this.input.ServiceId = default;
+        this.services = this.ServicesService
+            .GetAllByTeamCity<ServiceInputModel>(address.CityId)
+            .ToList();
+    }
+
+    private void OnHourSelect(int hour)
+    {
+        this.submitButtonDisplay = "block";
+        this.input.AppointmentDate = this.input.AppointmentDate.Date.AddHours(hour);
     }
 }

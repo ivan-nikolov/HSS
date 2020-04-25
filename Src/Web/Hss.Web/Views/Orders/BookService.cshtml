@@ -9,6 +9,7 @@
             });
         });
     </script>
+
 <component type="@typeof(BookServiceForm)" render-mode="ServerPrerendered" />
 
 
@@ -17,7 +18,7 @@
         window.addDatePicker = () => $(document).ready(function () {
             $('#datepicker').datepicker({
                 defaultDate: new Date(),
-                dateFormat: "dd.mm.yy",
+                dateFormat: "yy-mm-dd",
                 beforeShowDay: $.datepicker.noWeekends,
                 minDate: new Date()
             });

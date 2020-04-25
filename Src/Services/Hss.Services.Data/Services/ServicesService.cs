@@ -97,5 +97,17 @@
             .ToList()
             .Intersect(serviceIds)
             .Count() == serviceIds.Count();
+
+        public decimal GetServicePrice(int id)
+            => this.serviceRepository.All()
+            .Where(s => s.Id == id)
+            .Select(s => s.Price)
+            .FirstOrDefault();
+
+        public int GetServiceDuration(int id)
+            => this.serviceRepository.All()
+            .Where(s => s.Id == id)
+            .Select(s => s.DurationInHours)
+            .FirstOrDefault();
     }
 }

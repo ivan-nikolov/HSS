@@ -1,0 +1,79 @@
+﻿@using Hss.Data.Models.Enums
+@using Hss.Web.ViewModels.Components.RazorComponents.Orders
+@inject Hss.Services.Data.Teams.ITeamsService TeamsService
+
+@if (this.hours == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    foreach (var hour in this.hours)
+    {
+
+        var disabled = !hour.IsFree;
+        string active = string.Empty;
+        if (hour.Hour == this.SelectedHour)
+        {
+            active = "active";
+        }
+
+        <button type="button" disabled="@disabled" class="btn btn-outline-info @active" @onclick="@(e => this.OnHourSelect(hour.Hour))">@hour.Hour:00</button>
+    }
+}
+
+@code {
+    private List<HourViewModel> hours;
+    private bool firstRender = true;
+
+    [Parameter]
+    public int WorkingHours { get; set; }
+
+    [Parameter]
+    public ServiceFrequency ServiceFrequency { get; set; }
+
+    [Parameter]
+    public int SelectedHour { get; set; }
+
+    [Parameter]
+    public EventCallback<int> HourChanged { get; set; }
+
+    [Parameter]
+    public DateTime SelectedDate { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> SelectedDateChanged { get; set; }
+
+    [Parameter]
+    public int CityId { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CityIdChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        this.hours = new List<HourViewModel>();
+        this.firstRender = true;
+    }
+
+    protected override void OnParametersSet()
+    {
+        this.hours = new List<HourViewModel>();
+        var hours = Enumerable.Range(8, WorkingHours);
+        var date = SelectedDate.Date;
+        foreach (var hour in hours)
+        {
+            this.hours.Add(new HourViewModel()
+            {
+                Hour = hour,
+                IsFree = this.TeamsService.HasFreeTeams(date.AddHours(hour), this.ServiceFrequency, this.CityId),
+            });
+        }
+    }
+
+    private async Task OnHourSelect(int hour)
+    {
+        this.SelectedHour = hour;
+        await this.HourChanged.InvokeAsync(hour);
+    }
+}

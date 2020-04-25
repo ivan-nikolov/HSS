@@ -19,6 +19,11 @@
             this.addressesRepository = addressesRepository;
         }
 
+        public bool CheckIfAddressIsValidForUser(int addressId, string userId)
+            => this.addressesRepository.All()
+            .Where(a => a.Id == addressId && a.UserId == userId)
+            .Count() > 0;
+
         public async Task CreateAsync(AddressServiceModel input)
         {
             var address = input.To<Address>();

@@ -26,5 +26,9 @@
         bool CheckIfServiceExists(int id);
 
         bool CheckIfServicesExist(IEnumerable<int> serviceIds);
+
+        decimal GetServicePrice(int id);
+
+        int GetServiceDuration(int id);
     }
 }

@@ -3,7 +3,6 @@
     using System;
 
     using Hss.Data.Common.Models;
-    using Hss.Data.Models.Enums;
 
     public class Appointment : BaseDeletableModel<string>
     {

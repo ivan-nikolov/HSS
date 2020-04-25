@@ -16,5 +16,7 @@
         Task DeleteAsync(int id);
 
         Task DeleteByCityIdAsync(int cityId);
+
+        bool CheckIfAddressIsValidForUser(int addressId, string userId);
     }
 }

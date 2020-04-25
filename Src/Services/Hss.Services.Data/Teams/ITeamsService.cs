@@ -1,8 +1,10 @@
 ﻿namespace Hss.Services.Data.Teams
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Hss.Data.Models.Enums;
     using Hss.Services.Models.Teams;
 
     public interface ITeamsService
@@ -18,5 +20,7 @@
         Task<bool> CheckIfTeamExistsAsync(string id);
 
         Task DeleteAsync(string id);
+
+        bool HasFreeTeams(DateTime currentDate, ServiceFrequency serviceFrequency, int cityId);
     }
 }

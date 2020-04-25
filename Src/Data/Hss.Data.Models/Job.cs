@@ -3,6 +3,7 @@
     using System;
 
     using Hss.Data.Common.Models;
+    using Hss.Data.Models.Enums;
 
     public class Job : BaseDeletableModel<string>
     {
@@ -10,6 +11,8 @@
         {
             this.Id = Guid.NewGuid().ToString();
         }
+
+        public JobStatus JobStatus { get; set; }
 
         public DateTime StartDate { get; set; }
 

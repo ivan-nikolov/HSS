@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Hss.Data.Common\Hss.Data.Common.csproj" />
     <ProjectReference Include="..\..\Data\Hss.Data.Models\Hss.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Hss.Common\Hss.Common.csproj" />
     <ProjectReference Include="..\Hss.Services.Mapping\Hss.Services.Mapping.csproj" />
     <ProjectReference Include="..\Hss.Services.Models\Hss.Services.Models.csproj" />
   </ItemGroup>

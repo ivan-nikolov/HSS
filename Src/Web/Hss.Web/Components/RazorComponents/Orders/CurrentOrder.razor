@@ -1,0 +1,63 @@
+﻿@using Hss.Web.ViewModels.Components.RazorComponents.Orders
+@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
+
+<div class="row">
+    <div class="table-responsive-sm">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">City</th>
+                    <th scope="col">Neighborhood</th>
+                    <th scope="col">Street Name</th>
+                    <th scope="col">Building Number</th>
+                    <th scope="col">Appartment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@SelectedAddress.CityName</td>
+                    <td>@SelectedAddress.Neighborhood</td>
+                    <td>@SelectedAddress.StreetName</td>
+                    <td>@SelectedAddress.BuildingNumber</td>
+                    <td>@SelectedAddress.Appartment</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <p>Service: @this.SelectedService.Name</p>
+</div>
+@if (this.SelectedService.IsRecurrent)
+{
+    <div class="row">
+        <p>Service frequency: @this.Order.ServiceFrequency.ToString()</p>
+    </div>
+}
+
+<div class="row">
+    <p style="display: @this.DisplayHour">@this.Order.AppointmentDate.ToShortDateString() @this.Order.AppointmentDate.Hour:00</p>
+</div>
+
+@code {
+    [Parameter]
+    public CreateOrderInputModel Order { get; set; }
+
+    [Parameter]
+    public ServiceInputModel SelectedService { get; set; }
+
+    [Parameter]
+    public string DisplayHour { get; set; }
+
+    [Parameter]
+    public AddressViewModel SelectedAddress { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (this.Order.AppointmentDate.Hour == 0)
+        {
+            this.DisplayHour = "none";
+        }
+        base.OnParametersSet();
+    }
+}

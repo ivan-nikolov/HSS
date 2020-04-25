@@ -69,7 +69,7 @@
             var serviceModel = input.To<TeamServiceModel>();
             var id = await this.teamsService.CreateAsync(serviceModel);
 
-            return this.RedirectToAction("Details", new { id });
+            return this.Redirect("/Administration/Teams");
         }
 
         public async Task<IActionResult> Edit(string id)

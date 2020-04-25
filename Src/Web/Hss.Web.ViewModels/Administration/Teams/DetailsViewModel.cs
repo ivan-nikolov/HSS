@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Hss.Web.ViewModels.Administration.Teams
+﻿namespace Hss.Web.ViewModels.Administration.Teams
 {
-    public class DetailsViewModel
+    using System.ComponentModel.DataAnnotations;
+
+    using Hss.Data.Models;
+    using Hss.Services.Mapping;
+
+    public class DetailsViewModel : IMapFrom<Team>
     {
         public string Id { get; set; }
 

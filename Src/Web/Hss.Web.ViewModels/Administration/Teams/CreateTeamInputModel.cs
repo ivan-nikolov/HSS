@@ -3,10 +3,12 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using Hss.Services.Mapping;
+    using Hss.Services.Models.Teams;
     using Hss.Web.ViewModels.Common;
     using Microsoft.AspNetCore.Mvc.Rendering;
 
-    public class CreateTeamInputModel
+    public class CreateTeamInputModel : IMapTo<TeamServiceModel>
     {
         [Required]
         [StringLength(ValidationConstants.TeamNameMaxLength, MinimumLength = ValidationConstants.TeamNameMinLength, ErrorMessage = ValidationConstants.StringLengthErrorMessage)]
