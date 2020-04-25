@@ -1,6 +1,7 @@
 ﻿namespace Hss.Services.Data.Orders
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Hss.Services.Models.Orders;
@@ -11,6 +12,8 @@
 
         int GetUnpaidRecurrentJobsCount(string id);
 
-        int GetTotalMontJobsTime(int serviceId, DateTime appointmentDate, string teamId = null);
+        int GetTotalMonthJobsTime(int serviceId, DateTime appointmentDate, string teamId = null);
+
+        IEnumerable<T> GetAllWithUnpaidJobs<T>();
     }
 }

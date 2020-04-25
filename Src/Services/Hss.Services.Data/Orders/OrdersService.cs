@@ -1,6 +1,7 @@
 ﻿namespace Hss.Services.Data.Orders
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@
     using Hss.Services.Data.Invoices;
     using Hss.Services.Data.JobsService;
     using Hss.Services.Data.Services;
+    using Hss.Services.Mapping;
     using Hss.Services.Models.Orders;
 
     public class OrdersService : IOrdersService
@@ -64,11 +66,17 @@
 
             if (input.IsRecurrent || order.BillingFrequency == BillingFrequency.Once)
             {
-                await this.invoicesService.CreateAsync(order.Id, order.ClientId, order.ServiceId, order.ServiceFrequency, order.AddresId);
+                var jobsCount = this.GetUnpaidRecurrentJobsCount(order.Id);
+                await this.invoicesService.CreateAsync(order.Id, order.ClientId, order.ServiceId, order.ServiceFrequency, order.AddresId, jobsCount);
             }
         }
 
-        public int GetTotalMontJobsTime(int serviceId, DateTime appointmentDate, string teamId = null)
+        public IEnumerable<T> GetAllWithUnpaidJobs<T>()
+            => this.ordersRepository.AllAsNoTracking()
+            .Where(o => o.Jobs.Any(j => j.JobStatus == JobStatus.Done))
+            .To<T>();
+
+        public int GetTotalMonthJobsTime(int serviceId, DateTime appointmentDate, string teamId = null)
         {
             var daysInMonth = DateTime.DaysInMonth(appointmentDate.Year, appointmentDate.Month);
             var daysLeft = daysInMonth - appointmentDate.Day;

@@ -4,9 +4,11 @@
     using System.Reflection;
 
     using CloudinaryDotNet;
+
     using Hangfire;
     using Hangfire.Dashboard;
     using Hangfire.SqlServer;
+
     using Hss.Common;
     using Hss.Data;
     using Hss.Data.Common;
@@ -16,17 +18,22 @@
     using Hss.Data.Seeding;
     using Hss.Services;
     using Hss.Services.BlazorModal;
+    using Hss.Services.Cron;
     using Hss.Services.Data;
     using Hss.Services.Data.Addresses;
+    using Hss.Services.Data.Appointments;
     using Hss.Services.Data.Categories;
     using Hss.Services.Data.CIties;
     using Hss.Services.Data.Countries;
+    using Hss.Services.Data.Invoices;
+    using Hss.Services.Data.JobsService;
+    using Hss.Services.Data.Orders;
     using Hss.Services.Data.Services;
     using Hss.Services.Data.Teams;
+    using Hss.Services.Data.Users;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
-    using Hss.Web.Filters;
     using Hss.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -116,12 +123,17 @@
             services.AddTransient<IAddressesService, AddressesService>();
             services.AddTransient<ICloudinaryService, CloudinaryService>();
             services.AddTransient<ITeamsService, TeamsService>();
+            services.AddTransient<IOrdersService, OrdersService>();
+            services.AddTransient<IInvoicesService, InvoicesService>();
+            services.AddTransient<IJobsService, JobsService>();
+            services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IAppointmentsService, AppointmentsService>();
 
             services.AddScoped<IModalService, ModalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager)
         {
             AutoMapperConfig.RegisterMappings(
                 typeof(ErrorViewModel).GetTypeInfo().Assembly,
@@ -162,8 +174,9 @@
 
             app.UseHangfireServer(new BackgroundJobServerOptions { WorkerCount = 2 });
             app.UseHangfireDashboard(
-                "/hangfire",
+                "/Administration/Hangfire",
                 new DashboardOptions { Authorization = new[] { new HangfireAuthorizationFilter() } });
+            this.SeedHangfireJobs(recurringJobManager);
 
             app.UseEndpoints(
                 endpoints =>
@@ -174,6 +187,11 @@
                         endpoints.MapBlazorHub();
                         endpoints.MapFallbackToController("Blazor", "Home");
                     });
+        }
+
+        private void SeedHangfireJobs(IRecurringJobManager recurringJobManager)
+        {
+            recurringJobManager.AddOrUpdate<RecurrentOrdersInvoiceGeneratorJob>("MainNewsGetterJob", x => x.GenerateInvoices(), Cron.Monthly(1, 4));
         }
 
         private class HangfireAuthorizationFilter : IDashboardAuthorizationFilter

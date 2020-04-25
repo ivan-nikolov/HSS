@@ -23,7 +23,7 @@
         [StringLength(200, MinimumLength = 3, ErrorMessage = ValidationConstants.StringLengthErrorMessage)]
         public string Neighborhood { get; set; }
 
-        public int PostCode { get; set; }
+        public string PostCode { get; set; }
 
         public int CityId { get; set; }
 

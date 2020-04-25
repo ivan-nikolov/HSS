@@ -75,7 +75,7 @@
             var category = this.categoryRepository
                 .All().Where(c => c.Id == id);
             var secondcategory = category.To<T>();
-            var result =   await secondcategory.FirstOrDefaultAsync();
+            var result = await secondcategory.FirstOrDefaultAsync();
 
             return result;
         }
