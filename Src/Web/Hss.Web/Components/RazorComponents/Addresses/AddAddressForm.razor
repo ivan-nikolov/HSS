@@ -24,7 +24,7 @@
         <div class="form-group">
             <label>
                 PostCode:
-                <InputNumber class="form-control" id="PostCode" @bind-Value="Address.PostCode" />
+                <InputText class="form-control" id="PostCode" @bind-Value="Address.PostCode" />
             </label>
         </div>
         <div class="form-group">
@@ -59,7 +59,7 @@ else
 }
 
 
-@code {
+@code { // TODO: PostCode TypeChange
     private EditContext editContext;
 
     [CascadingParameter]

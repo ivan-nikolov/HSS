@@ -1,8 +1,24 @@
 ﻿@page "/Dashboard"
-@using Hss.Web.Components.RazorComponents.Dashboard
 @layout AccountsLayout
+
+@using Hss.Web.Components.RazorComponents.Dashboard
+@attribute [Authorize]
+
+<div class="mt-4">
     <AddressesList></AddressesList>
-
+</div>
+<div class="d-flex justify-content-center mt-3 mb-3">
+    <a class="btn btn-lg text-primary btn-outline-primary" href="/Orders/BookService">Book Service</a>
+</div>
+<ActiveOrdersList UserId="@this.userId"></ActiveOrdersList>
 @code {
+    private string userId;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        this.userId = (await this.AuthenticationStateTask).User.GetId();
+    }
 }

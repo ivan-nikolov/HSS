@@ -12,8 +12,10 @@
     using Hss.Services.Data.Invoices;
     using Hss.Services.Data.JobsService;
     using Hss.Services.Data.Services;
+    using Hss.Services.Data.Teams;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Orders;
+    using Microsoft.EntityFrameworkCore;
 
     public class OrdersService : IOrdersService
     {
@@ -21,30 +23,40 @@
         private readonly IJobsService jobsService;
         private readonly IInvoicesService invoicesService;
         private readonly IServicesService servicesService;
+        private readonly ITeamsService teamsService;
 
         public OrdersService(
             IDeletableEntityRepository<Order> ordersRepository,
             IAppointmentsService appointmentsService,
             IJobsService jobsService,
             IInvoicesService invoicesService,
-            IServicesService servicesService)
+            IServicesService servicesService,
+            ITeamsService teamsService)
         {
             this.ordersRepository = ordersRepository;
             this.AppointmentsService = appointmentsService;
             this.jobsService = jobsService;
             this.invoicesService = invoicesService;
             this.servicesService = servicesService;
+            this.teamsService = teamsService;
         }
 
         public IAppointmentsService AppointmentsService { get; }
 
         public async Task CreateAsync(OrderServiceModel input)
         {
+            await this.ordersRepository.SaveChangesAsync();
             var billingFrequency = BillingFrequency.Once;
             if (input.ServiceFrequency != ServiceFrequency.Once)
             {
                 billingFrequency = BillingFrequency.Monthly;
             }
+
+            var totalOrdersTime = this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate);
+            var teamId = this.teamsService
+                .GetFreeTeams(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId)
+                .OrderBy(t => this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate, t))
+                .ToList();
 
             var order = new Order()
             {
@@ -54,6 +66,7 @@
                 AddresId = input.AddressId,
                 BillingFrequency = billingFrequency,
                 ServiceFrequency = input.ServiceFrequency,
+                TeamId = teamId.FirstOrDefault(),
             };
 
             await this.ordersRepository.AddAsync(order);
@@ -64,15 +77,27 @@
 
             await this.jobsService.CreateAsync(order.Id, order.ServiceFrequency, appointment.StartDate, appointment.EndDate);
 
-            if (input.IsRecurrent || order.BillingFrequency == BillingFrequency.Once)
+            if (!input.IsRecurrent || order.BillingFrequency == BillingFrequency.Once)
             {
-                var jobsCount = this.GetUnpaidRecurrentJobsCount(order.Id);
+                var jobsCount = this.ordersRepository.All()
+                    .Where(o => o.Id == order.Id)
+                    .SelectMany(o => o.Jobs)
+                    .Where(j => j.JobStatus == JobStatus.InProgress)
+                    .Count();
                 await this.invoicesService.CreateAsync(order.Id, order.ClientId, order.ServiceId, order.ServiceFrequency, order.AddresId, jobsCount);
             }
         }
 
+        public async Task<IEnumerable<T>> GetActiveOrdersByUserId<T>(string userId)
+            => await this.ordersRepository
+            .All()
+            .Where(o => o.Status == OrderStatus.Pending && o.ClientId == userId)
+            .OrderByDescending(o => o.CreatedOn)
+            .To<T>()
+            .ToListAsync();
+
         public IEnumerable<T> GetAllWithUnpaidJobs<T>()
-            => this.ordersRepository.AllAsNoTracking()
+            => this.ordersRepository.All()
             .Where(o => o.Jobs.Any(j => j.JobStatus == JobStatus.Done))
             .To<T>();
 
@@ -82,7 +107,7 @@
             var daysLeft = daysInMonth - appointmentDate.Day;
             var serviceDuration = this.servicesService.GetServiceDuration(serviceId);
             var orders = this.ordersRepository.All()
-                .Where(o => o.ServiceId == serviceId && o.Status == OrderStatus.InProgress);
+                .Where(o => o.ServiceId == serviceId);
             if (teamId != null)
             {
                 orders = orders.Where(o => o.TeamId == teamId);
@@ -90,7 +115,7 @@
 
             var totalTime = 0;
 
-            totalTime += this.GetDoneJobsTotalTime(serviceId, appointmentDate, serviceDuration);
+            totalTime += this.GetDoneJobsTotalTime(serviceId, appointmentDate, serviceDuration, orders);
             totalTime += this.GetSingleOrdersTotalTime(appointmentDate, serviceDuration, orders);
             totalTime += this.GetDailyOrdersTotalTime(daysLeft, orders);
             totalTime += this.GetWeeklyOrdersTotalTime(daysLeft, orders);
@@ -107,11 +132,13 @@
             .Where(j => j.JobStatus == JobStatus.Done)
             .Count();
 
-        private int GetDoneJobsTotalTime(int serviceId, DateTime appointmentDate, int serviceDuration)
-            => this.ordersRepository.All()
-                            .Where(o => o.ServiceId == serviceId)
+        private int GetDoneJobsTotalTime(int serviceId, DateTime appointmentDate, int serviceDuration, IQueryable<Order> orders)
+            => orders
                             .SelectMany(o => o.Jobs)
-                            .Where(j => j.StartDate.Day > 1 && j.StartDate.Day < appointmentDate.Day)
+                            .Where(j => j.StartDate.Day > 1
+                            && j.StartDate.Month <= appointmentDate.Month
+                            && j.StartDate.Year <= appointmentDate.Year
+                            && j.StartDate < appointmentDate)
                             .Count() * serviceDuration;
 
         private int GetSingleOrdersTotalTime(DateTime appointmentDate, int serviceDuration, IQueryable<Order> orders)

@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+                <tr class="text-muted">
                     <td>@SelectedAddress.CityName</td>
                     <td>@SelectedAddress.Neighborhood</td>
                     <td>@SelectedAddress.StreetName</td>
@@ -26,17 +26,17 @@
     </div>
 </div>
 <div class="row">
-    <p>Service: @this.SelectedService.Name</p>
+    <p>Service: <span class="text-muted">@this.SelectedService.Name</span></p>
 </div>
 @if (this.SelectedService.IsRecurrent)
 {
     <div class="row">
-        <p>Service frequency: @this.Order.ServiceFrequency.ToString()</p>
+        <p>Service frequency: <span class="text-muted">@this.Order.ServiceFrequency.ToString()</span></p>
     </div>
 }
 
 <div class="row">
-    <p style="display: @this.DisplayHour">@this.Order.AppointmentDate.ToShortDateString() @this.Order.AppointmentDate.Hour:00</p>
+    <p style="display: @this.DisplayHour"><span class="text-muted">@this.Order.AppointmentDate.ToShortDateString() @this.Order.AppointmentDate.Hour:00</span></p>
 </div>
 
 @code {

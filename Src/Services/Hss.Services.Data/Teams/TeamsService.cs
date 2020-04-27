@@ -16,6 +16,10 @@
 
     public class TeamsService : ITeamsService
     {
+        private readonly Func<Team, DateTime, bool> checkSingleOrders = (t, cd) => !t.Orders
+                       .Select(o => o.Appointment)
+                       .Any(a => cd >= a.StartDate && cd <= a.EndDate);
+
         private readonly IDeletableEntityRepository<Team> teamsRepository;
 
         public TeamsService(IDeletableEntityRepository<Team> teamsRepository)
@@ -78,74 +82,38 @@
             await this.teamsRepository.SaveChangesAsync();
         }
 
-        public bool HasFreeTeams(DateTime currentDate, ServiceFrequency serviceFrequency, int cityId)
+        public IEnumerable<string> GetFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId)
         {
-            var weekOfMonth = currentDate.GetWeekOfMonth();
-            var dayOfWeek = (int)currentDate.DayOfWeek;
+            var weekOfMonth = startDate.GetWeekOfMonth();
+            var dayOfWeek = (int)startDate.DayOfWeek;
+            var teams = this.teamsRepository.All()
+                .Where(t => t.CityId == cityId && t.Services.Select(s => s.ServiceId).Contains(serviceId));
 
-            var hasFreeTeams = false;
+            var freeTeams = new List<string>();
 
-            if (serviceFrequency == ServiceFrequency.Once)
-            {
-                hasFreeTeams = this.teamsRepository.All()
-                    .Where(t => t.CityId == cityId)
-                    .Where(t => !t.Orders
-                        .Select(o => o.Appointment)
-                        .Any(a => currentDate >= a.StartDate && currentDate <= a.EndDate))
-                    .Count() > 0;
-            }
-            else if (serviceFrequency == ServiceFrequency.Daily)
-            {
-                hasFreeTeams = this.teamsRepository.All()
-                    .Where(t => t.CityId == cityId)
-                    .Where(t => !t.Orders
-                        .Select(o => o.Appointment)
-                        .Any(a => currentDate.TimeOfDay >= a.StartDate.TimeOfDay
-                        && currentDate.TimeOfDay <= a.EndDate.TimeOfDay))
-                    .Count() > 0;
-            }
-            else if (serviceFrequency == ServiceFrequency.Weekly)
-            {
-                hasFreeTeams = this.teamsRepository.All()
-                    .Where(t => t.CityId == cityId)
-                    .Where(t => !t.Orders
-                        .Select(o => o.Appointment)
-                        .Any(a => a.DayOfWeek == dayOfWeek
-                        && currentDate.TimeOfDay >= a.StartDate.TimeOfDay
-                        && currentDate.TimeOfDay <= a.EndDate.TimeOfDay))
-                    .Count() > 0;
-            }
-            else if (serviceFrequency == ServiceFrequency.Monthly)
-            {
-                hasFreeTeams = this.teamsRepository.All()
-                    .Where(t => t.CityId == cityId)
+            freeTeams = teams
                     .Where(t =>
                     !t.Orders
                         .Where(o => o.ServiceFrequency == ServiceFrequency.Once)
                         .Select(o => o.Appointment)
-                        .Any(a => a.StartDate == currentDate)
+                        .Any(a => (startDate >= a.StartDate && startDate <= a.EndDate)
+                            || (startDate < a.StartDate && endDate >= a.StartDate))
                     && !t.Orders
                         .Where(o => o.ServiceFrequency == ServiceFrequency.Daily)
                         .Select(o => o.Appointment)
-                        .Any(a => currentDate.TimeOfDay >= a.StartDate.TimeOfDay
-                            && currentDate.TimeOfDay <= a.EndDate.TimeOfDay)
+                        .Any(a => (startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
+                            || (startDate.TimeOfDay < a.StartDate.TimeOfDay && endDate.TimeOfDay >= a.StartDate.TimeOfDay))
                     && !t.Orders
                         .Where(o => o.ServiceFrequency == ServiceFrequency.Weekly)
                         .Select(o => o.Appointment)
                         .Any(a => a.DayOfWeek == dayOfWeek
-                            && currentDate.TimeOfDay >= a.StartDate.TimeOfDay
-                            && currentDate.TimeOfDay <= a.EndDate.TimeOfDay)
-                    && !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly)
-                        .Select(o => o.Appointment)
-                        .Any(a => a.WeekOfMonth == weekOfMonth
-                            && a.DayOfWeek == dayOfWeek
-                            && currentDate.TimeOfDay >= this.GetCurrentMothAppointmentDate(a, currentDate).TimeOfDay
-                            && currentDate.TimeOfDay <= this.GetCurrentMothAppointmentDate(a, currentDate).AddHours(a.EndDate.Hour).TimeOfDay))
-                .Count() > 0;
-            }
+                            && ((startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
+                            || (startDate.TimeOfDay < a.StartDate.TimeOfDay && endDate.TimeOfDay >= a.StartDate.TimeOfDay)))
+                    && this.CheckMonthlyFreeTeams(startDate, endDate, teams))
+                    .Select(t => t.Id)
+                    .ToList();
 
-            return hasFreeTeams;
+            return freeTeams;
         }
 
         private DateTime GetCurrentMothAppointmentDate(Appointment apt, DateTime appointment)
@@ -159,6 +127,41 @@
             }
 
             return currentDate;
+        }
+
+        private bool CheckMonthlyAppointments(Appointment appointment, DateTime startDate, DateTime endDate)
+        {
+            var currentMonthAppointmentStartDate = this.GetCurrentMothAppointmentDate(appointment, startDate);
+            var currentMontAppointmentEndDate = currentMonthAppointmentStartDate.Date.AddHours(appointment.EndDate.Hour);
+            var result = (startDate >= currentMonthAppointmentStartDate && startDate <= currentMontAppointmentEndDate)
+                    || (startDate < currentMonthAppointmentStartDate && endDate >= currentMonthAppointmentStartDate);
+
+            return result;
+        }
+
+        private bool CheckMonthlyFreeTeams(DateTime currentDate, DateTime endDate, IQueryable<Team> teams)
+        {
+            var allTeams = teams
+                   .Select(t => new Team()
+                   {
+                       Id = t.Id,
+                       Orders = t.Orders
+                       .Select(o => new Order()
+                       {
+                           ServiceFrequency = o.ServiceFrequency,
+                           Appointment = o.Appointment,
+                       }).ToList(),
+                   }).ToList();
+
+            var resulst = allTeams
+                .Where(t => !t.Orders
+                    .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly)
+                    .Select(o => o.Appointment)
+                    .Any(a => this.CheckMonthlyAppointments(a, currentDate, endDate)))
+                .Select(t => t.Id)
+                .ToList().Count > 0;
+
+            return resulst;
         }
 
         private void GenerateTeamServices(TeamServiceModel input, Team team)

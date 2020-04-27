@@ -36,7 +36,7 @@
 
             builder.HasOne(o => o.Appointment)
                 .WithOne(a => a.Order)
-                .HasForeignKey<Order>(o => o.AppointmetnId)
+                .HasForeignKey<Appointment>(a => a.OrderId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

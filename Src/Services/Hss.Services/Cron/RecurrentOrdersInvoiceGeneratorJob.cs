@@ -12,7 +12,7 @@
 
     public class RecurrentOrdersInvoiceGeneratorJob
     {
-        private const string CronSchedule = "0 4 1 * *";
+        public const string CronSchedule = "0 4 1 * *";
 
         private readonly IOrdersService ordersService;
         private readonly IInvoicesService invoicesService;

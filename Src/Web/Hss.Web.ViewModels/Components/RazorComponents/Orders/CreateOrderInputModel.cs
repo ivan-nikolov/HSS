@@ -4,13 +4,17 @@
     using System.ComponentModel.DataAnnotations;
 
     using Hss.Data.Models.Enums;
+    using Hss.Services.Mapping;
+    using Hss.Services.Models.Orders;
     using Hss.Web.Infrastructure.Attributes;
 
-    public class CreateOrderInputModel
+    public class CreateOrderInputModel : IMapTo<OrderServiceModel>
     {
         public int AddressId { get; set; }
 
         public int ServiceId { get; set; }
+
+        public int CityId { get; set; }
 
         public int ServiceDuration { get; set; }
 

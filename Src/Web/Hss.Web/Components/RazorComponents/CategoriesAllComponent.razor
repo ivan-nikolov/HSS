@@ -28,7 +28,7 @@
         this.category = new CategoriesAllModel();
     }
 
-    private async Task OnCategorySelect(int categoryId)
+    private void OnCategorySelect(int categoryId)
     {
         this.DisableBackButton(categoryId);
         this.category = this.categoriesService.GetAllCategories<CategoriesAllModel>().FirstOrDefault(c => c.Id == categoryId);
@@ -37,7 +37,7 @@
         this.StateHasChanged();
     }
 
-    private async Task OnBackClicked()
+    private void OnBackClicked()
     {
         this.DisableBackButton(this.category.ParentCategoryId);
         if (this.category.ParentCategoryId.HasValue)

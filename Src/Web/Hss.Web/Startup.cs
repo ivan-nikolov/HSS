@@ -191,7 +191,7 @@
 
         private void SeedHangfireJobs(IRecurringJobManager recurringJobManager)
         {
-            recurringJobManager.AddOrUpdate<RecurrentOrdersInvoiceGeneratorJob>("MainNewsGetterJob", x => x.GenerateInvoices(), Cron.Monthly(1, 4));
+            recurringJobManager.AddOrUpdate<RecurrentOrdersInvoiceGeneratorJob>("MainNewsGetterJob", x => x.GenerateInvoices(), RecurrentOrdersInvoiceGeneratorJob.CronSchedule);
         }
 
         private class HangfireAuthorizationFilter : IDashboardAuthorizationFilter

@@ -237,7 +237,7 @@ namespace Hss.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OrderId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -248,6 +248,10 @@ namespace Hss.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
 
                     b.ToTable("Appointments");
                 });
@@ -475,7 +479,7 @@ namespace Hss.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AppointmetnId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BillingFrequency")
                         .HasColumnType("int");
@@ -511,10 +515,6 @@ namespace Hss.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddresId");
-
-                    b.HasIndex("AppointmetnId")
-                        .IsUnique()
-                        .HasFilter("[AppointmetnId] IS NOT NULL");
 
                     b.HasIndex("ClientId");
 
@@ -797,6 +797,14 @@ namespace Hss.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("Hss.Data.Models.Appointment", b =>
+                {
+                    b.HasOne("Hss.Data.Models.Order", "Order")
+                        .WithOne("Appointment")
+                        .HasForeignKey("Hss.Data.Models.Appointment", "OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("Hss.Data.Models.Category", b =>
                 {
                     b.HasOne("Hss.Data.Models.Category", "ParentCategory")
@@ -851,11 +859,6 @@ namespace Hss.Data.Migrations
                         .HasForeignKey("AddresId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Hss.Data.Models.Appointment", "Appointment")
-                        .WithOne("Order")
-                        .HasForeignKey("Hss.Data.Models.Order", "AppointmetnId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Hss.Data.Models.ApplicationUser", "Client")
                         .WithMany("Orders")

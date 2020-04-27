@@ -2,12 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-
+    using Hss.Data.Models;
     using Hss.Data.Models.Enums;
+    using Hss.Services.Mapping;
     using Hss.Services.Models.Jobs;
     using Hss.Services.Models.Services;
 
-    public class OrderServiceModel
+    public class OrderServiceModel : IMapFrom<Order>, IMapTo<Order>
     {
         public OrderServiceModel()
         {
@@ -23,6 +24,8 @@
         public virtual ServiceServiceModel Service { get; set; }
 
         public int ServiceDuration { get; set; }
+
+        public int CityId { get; set; }
 
         public bool IsRecurrent { get; set; }
 

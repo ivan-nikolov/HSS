@@ -21,7 +21,7 @@
 
         public bool CategoryExists(int id)
         {
-            return this.categoryRepository.AllAsNoTracking().Count(c => c.Id == id) > 0;
+            return this.categoryRepository.All().Count(c => c.Id == id) > 0;
         }
 
         public async Task<int> CreateAsync(CategoryServiceModel input)

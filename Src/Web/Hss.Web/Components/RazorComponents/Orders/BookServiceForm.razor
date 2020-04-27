@@ -1,14 +1,15 @@
-﻿@using System.Globalization
-@using System.Text.Json
-
+﻿@using Hss.Services.Models.Orders
 @using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Addresses
 @using Hss.Web.ViewModels.Components.RazorComponents.Orders
 @using Hss.Web.Components.RazorComponents.Dashboard
 
 @inject Hss.Services.Data.Addresses.IAddressesService AddressesService
 @inject Hss.Services.Data.Services.IServicesService ServicesService
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavManager
 @inject IJSRuntime JSRuntime
+
 
 
 <BlazoredModal />
@@ -53,7 +54,7 @@
                     <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
 
-                <HoursList @bind-SelectedDate="this.input.AppointmentDate" @bind-CityId="this.selectedAddress.CityId" SelectedHour="this.input.AppointmentDate.Hour" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceFrequency="this.input.ServiceFrequency"></HoursList>
+                <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited"></HoursList>
             }
             <div class="mt-4">
                 <button style="display: @this.submitButtonDisplay" class="btn btn-lg btn-outline-primary" type="submit">Book Service</button>
@@ -67,6 +68,8 @@
 
 @code {
     private EditContext editContext;
+    private int selectedHour;
+    private bool isSubmited = false;
 
     private string submitButtonDisplay = "none";
     private bool isReccurant;
@@ -108,15 +111,16 @@
     //    await base.OnAfterRenderAsync(firstRender);
     //}
 
-    private void HandleValidSubmitAsync()
+    private async Task HandleValidSubmitAsync()
     {
         var isValid = this.editContext.Validate() && this.ServerValidate(editContext);
         if (isValid)
         {
             this.input.IsRecurrent = this.SelectedService.IsRecurrent;
-            this.input.ServiceDuration = this.SelectedService.Duration;
-            var result = JsonSerializer.Serialize<CreateOrderInputModel>(this.input);
-            Console.WriteLine(result);
+            this.input.ServiceDuration = this.SelectedService.DurationInHours;
+            this.isSubmited = true;
+            await this.OrdersService.CreateAsync(this.input.To<OrderServiceModel>());
+            NavManager.NavigateTo("/Dashboard", true);
         }
     }
 
@@ -135,6 +139,7 @@
         this.selectedAddress = address;
         this.input.AddressId = selectedAddress.Id;
         this.input.ServiceId = default;
+        input.CityId = address.CityId;
         this.services = this.ServicesService
             .GetAllByTeamCity<ServiceInputModel>(address.CityId)
             .ToList();
@@ -143,6 +148,6 @@
     private void OnHourSelect(int hour)
     {
         this.submitButtonDisplay = "block";
-        this.input.AppointmentDate = this.input.AppointmentDate.Date.AddHours(hour);
+        this.input.AppointmentDate = input.AppointmentDate.Date.AddHours(hour);
     }
 }

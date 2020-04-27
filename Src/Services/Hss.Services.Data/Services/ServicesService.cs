@@ -62,7 +62,7 @@
 
         public bool CheckIfServiceExists(int id)
         {
-            return this.serviceRepository.AllAsNoTracking().Count(s => s.Id == id) > 0;
+            return this.serviceRepository.All().Count(s => s.Id == id) > 0;
         }
 
         public async Task UpdateAsync(ServiceServiceModel input)

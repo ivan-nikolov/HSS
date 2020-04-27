@@ -13,7 +13,7 @@ else
 
         var disabled = !hour.IsFree;
         string active = string.Empty;
-        if (hour.Hour == this.SelectedHour)
+        if (hour.Hour == this.selectedHour)
         {
             active = "active";
         }
@@ -25,55 +25,55 @@ else
 @code {
     private List<HourViewModel> hours;
     private bool firstRender = true;
+    private int selectedHour;
 
     [Parameter]
     public int WorkingHours { get; set; }
 
     [Parameter]
-    public ServiceFrequency ServiceFrequency { get; set; }
-
-    [Parameter]
-    public int SelectedHour { get; set; }
+    public int ServiceDuration { get; set; }
 
     [Parameter]
     public EventCallback<int> HourChanged { get; set; }
 
     [Parameter]
+    public bool IsSubmitted { get; set; }
+
+    [Parameter]
     public DateTime SelectedDate { get; set; }
 
     [Parameter]
-    public EventCallback<DateTime> SelectedDateChanged { get; set; }
+    public int SelecteServiceId { get; set; }
 
     [Parameter]
     public int CityId { get; set; }
 
-    [Parameter]
-    public EventCallback<int> CityIdChanged { get; set; }
-
     protected override void OnInitialized()
     {
         this.hours = new List<HourViewModel>();
-        this.firstRender = true;
     }
 
     protected override void OnParametersSet()
     {
-        this.hours = new List<HourViewModel>();
-        var hours = Enumerable.Range(8, WorkingHours);
-        var date = SelectedDate.Date;
-        foreach (var hour in hours)
+        if (!this.IsSubmitted)
         {
-            this.hours.Add(new HourViewModel()
+            this.hours = new List<HourViewModel>();
+            var workingHours = Enumerable.Range(8, WorkingHours);
+            var date = SelectedDate.Date;
+            foreach (var hour in workingHours)
             {
-                Hour = hour,
-                IsFree = this.TeamsService.HasFreeTeams(date.AddHours(hour), this.ServiceFrequency, this.CityId),
-            });
+                this.hours.Add(new HourViewModel()
+                {
+                    Hour = hour,
+                    IsFree = this.TeamsService.GetFreeTeams(date.AddHours(hour), date.AddHours(hour + ServiceDuration), this.CityId, this.SelecteServiceId).Count() > 0,
+                });
+            }
         }
     }
 
     private async Task OnHourSelect(int hour)
     {
-        this.SelectedHour = hour;
+        this.selectedHour = hour;
         await this.HourChanged.InvokeAsync(hour);
     }
 }

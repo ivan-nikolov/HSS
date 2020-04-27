@@ -2,9 +2,11 @@
 {
     using System;
 
+    using Hss.Data.Models;
     using Hss.Data.Models.Enums;
+    using Hss.Services.Mapping;
 
-    public class AppointmentServiceModel
+    public class AppointmentServiceModel : IMapFrom<Appointment>, IMapTo<Appointment>
     {
         public string Id { get; set; }
 

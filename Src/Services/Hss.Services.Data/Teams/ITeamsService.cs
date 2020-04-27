@@ -21,6 +21,6 @@
 
         Task DeleteAsync(string id);
 
-        bool HasFreeTeams(DateTime currentDate, ServiceFrequency serviceFrequency, int cityId);
+        IEnumerable<string> GetFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId);
     }
 }

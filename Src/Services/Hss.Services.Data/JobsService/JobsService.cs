@@ -18,11 +18,14 @@
 
         public async Task CreateAsync(string orderId, ServiceFrequency serviceFrequency, DateTime appointmentStartDate, DateTime appointmetnEndDate)
         {
+            var startDate = this.GetNextJobStartDate(serviceFrequency, appointmentStartDate);
+
             var job = new Job()
             {
                 OrderId = orderId,
-                StartDate = this.GetNextJobStartDate(serviceFrequency, appointmentStartDate),
-                FinishDate = appointmentStartDate.AddHours(appointmetnEndDate.TimeOfDay.Hours),
+                StartDate = startDate,
+                FinishDate = startDate.Date.AddHours(appointmetnEndDate.TimeOfDay.Hours),
+                JobStatus = JobStatus.InProgress,
             };
 
             await this.jobsRepository.AddAsync(job);
