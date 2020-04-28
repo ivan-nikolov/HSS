@@ -1,0 +1,79 @@
+﻿@using Hss.Common
+@using Hss.Web.ViewModels.Invoices
+@using Hss.Web.Components.RazorComponents.Shared
+@inject Hss.Services.Data.Invoices.IInvoicesService InvoicesService
+
+@if (this.invoices == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="mt-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Service</th>
+                    <th scope="col">Created On</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in this.invoices)
+                {
+                    <tr>
+                        <th scope="row"><a href="/Invoices/Details/@invoice.Id">@invoice.Id</a></th>
+                        <td>@invoice.OrderServiceName</td>
+                        <td>@invoice.CreatedOn</td>
+                        <td>@invoice.Status</td>
+                        <td>@invoice.TotalAmount</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    //Pagination
+    <PaginationComponent PageChanged="this.OnPageChange" PageIndex="this.invoices.PageIndex" TotalPages="this.invoices.TotalPages"></PaginationComponent>
+}
+
+
+@code {
+    private PaginatedList<InvoiceViewModel> invoices;
+
+    [Parameter]
+    public InvoicesListParameters InvoicesParameters { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    [Parameter]
+    public int? PageNumber { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        this.InvoicesParameters = new InvoicesListParameters();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await this.GetInvoicesAsync();
+    }
+
+    private async Task GetInvoicesAsync()
+    {
+        var filteredInvoices = this.InvoicesService.GetByClientId<InvoiceViewModel>(this.UserId, this.InvoicesParameters.BeforeDate, this.InvoicesParameters.AfterDate, this.InvoicesParameters.IsDescendingOrder, this.InvoicesParameters.InvoiceStatus);
+
+        this.invoices = await PaginatedList<InvoiceViewModel>
+                .CreateAsync(filteredInvoices, this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+
+    private async Task OnPageChange(int pageNumber)
+    {
+        this.PageNumber = pageNumber;
+        await this.GetInvoicesAsync();
+    }
+}

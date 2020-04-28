@@ -4,6 +4,8 @@
     {
         public const string StringLengthErrorMessage = "{0} must be less then {1} and more then {2} characters long.";
 
+        public const string DateRangeErrorMessage = "To date must be greater than From date.";
+
         public const int CategoryNameMinLength = 3;
         public const int CategoryNameMaxLength = 30;
 

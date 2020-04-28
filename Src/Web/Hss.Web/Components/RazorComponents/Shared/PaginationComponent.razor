@@ -1,0 +1,74 @@
+﻿<nav aria-label="Invoice Pages">
+    <ul class="pagination justify-content-center">
+        @if (this.PageIndex > 1)
+        {
+            <li class="page-item">
+                <button class="page-link" @onclick="@(e => this.OnPageChange(this.PageIndex-1))" aria-label="Previouse">
+                    <span aria-hidden="true">&laquo;</span>
+                </button>
+            </li>
+        }
+        @{
+            int MorePagesToShow = 3;
+            var pagesToShow = new List<int>();
+            for (var i = 1; i <= MorePagesToShow; i++)
+            {
+                pagesToShow.Add(i);
+            }
+            for (var i = this.PageIndex - MorePagesToShow; i <= this.PageIndex + MorePagesToShow; i++)
+            {
+                if (i > 0)
+                {
+                    pagesToShow.Add(i);
+                }
+            }
+            for (var i = this.TotalPages - MorePagesToShow + 1; i <= this.TotalPages; i++)
+            {
+                if (i > 0)
+                {
+                    pagesToShow.Add(i);
+                }
+            }
+            pagesToShow = pagesToShow.Where(x => x <= this.TotalPages).Distinct().OrderBy(x => x).ToList();
+        }
+        @for (var i = 0; i < pagesToShow.Count; i++)
+        {
+            var className = string.Empty;
+            var pageNumber = pagesToShow[i];
+            if (pageNumber == this.PageIndex)
+            {
+                className = "active";
+            }
+            if (i > 0 && pageNumber - 1 != pagesToShow[i - 1])
+            {
+                <li class="page-item @className"><button class="page-link" @onclick="@(() => this.OnPageChange(pagesToShow[i - 1] + 1))">...</button></li>
+            }
+            <li class="page-item @className"><button class="page-link" @onclick="@(() => this.OnPageChange(pageNumber))">@pageNumber</button></li>
+        }
+        @if (this.PageIndex < this.TotalPages)
+        {
+            <li class="page-item">
+                <button class="page-link" @onclick="@(() => this.OnPageChange(this.PageIndex+1))" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </button>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code {
+    [Parameter]
+    public int TotalPages { get; set; }
+
+    [Parameter]
+    public int PageIndex { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+
+    private async Task OnPageChange(int pageNumber)
+    {
+        PageIndex = pageNumber;
+        await PageChanged.InvokeAsync(pageNumber);
+    }
+}

@@ -1,0 +1,70 @@
+﻿@page "/Invoices"
+@page "/Invoices/{PageNumber:int}"
+@layout AccountsLayout
+
+@using Hss.Web.Components.RazorComponents.Invoices
+@using Hss.Web.ViewModels.Invoices
+
+    <EditForm Model="this.InvoicesParameters">
+        <DataAnnotationsValidator />
+        <ValidationSummary style="color: red" />
+        <div class="mt-5 d-flex justify-content-between">
+            <div class="form-group">
+                <label>From</label>
+                <InputDate class="form-control" @bind-Value="this.InvoicesParameters.AfterDate">
+                </InputDate>
+            </div>
+            <div class="form-group">
+                <label>To</label>
+                <InputDate class="form-control" @bind-Value="this.InvoicesParameters.BeforeDate">
+                </InputDate>
+            </div>
+            <div class="form-group">
+                <label>Invoice status</label>
+                <select class="form-control" @bind="@this.InvoicesParameters.InvoiceStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Order by date:</label>
+                <button class="btn btn-secondary" @onclick="this.ToggleOrdering">@((MarkupString)this.InvoicesParameters.ButtonValue)</button>
+            </div>
+        </div>
+    </EditForm>
+
+<InvoicesList InvoicesParameters="this.InvoicesParameters" PageNumber="this.PageNumber" UserId="@this.userId"></InvoicesList>
+
+@code {
+    private string userId;
+
+    [Parameter]
+    public int? PageNumber { get; set; }
+
+    public InvoicesListParameters InvoicesParameters { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.userId = (await this.AuthenticationStateTask).User.GetId();
+        this.InvoicesParameters = new InvoicesListParameters();
+    }
+
+    private void ToggleOrdering()
+    {
+        this.InvoicesParameters.IsDescendingOrder = !this.InvoicesParameters.IsDescendingOrder;
+        if (this.InvoicesParameters.IsDescendingOrder)
+        {
+            this.InvoicesParameters.ButtonValue = "Date &uarr;";
+        }
+        else
+        {
+            this.InvoicesParameters.ButtonValue = "Date &darr;";
+        }
+        
+        this.ShouldRender();
+    }
+}

@@ -1,6 +1,8 @@
 ﻿namespace Hss.Services.Data.Invoices
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Common;
@@ -10,6 +12,7 @@
     using Hss.Services.Data.Services;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Invoices;
+    using Microsoft.EntityFrameworkCore;
 
     public class InvoicesService : IInvoicesService
     {
@@ -55,6 +58,32 @@
             }
 
             await this.invoicesRepository.SaveChangesAsync();
+        }
+
+        public async Task<T> GetByIdAsync<T>(string id)
+            => await this.invoicesRepository.All()
+            .Where(i => i.Id == id)
+            .To<T>()
+            .FirstOrDefaultAsync();
+
+        public IQueryable<T> GetByClientId<T>(string clientId, DateTime beforeDate, DateTime afterDate, bool orderByCreatedDateDesc, InvoiceStatus status = InvoiceStatus.Pending)
+        {
+            var invoices = this.invoicesRepository.All()
+                .Where(i => i.ClientId == clientId
+                && i.Status == status
+                && i.CreatedOn < beforeDate
+                && i.CreatedOn > afterDate);
+
+            if (orderByCreatedDateDesc)
+            {
+                invoices = invoices.OrderByDescending(i => i.CreatedOn);
+            }
+            else
+            {
+                invoices= invoices.OrderBy(i => i.CreatedOn);
+            }
+
+            return invoices.To<T>();
         }
     }
 }

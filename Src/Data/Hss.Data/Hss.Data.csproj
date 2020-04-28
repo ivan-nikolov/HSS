@@ -17,6 +17,10 @@
     <Compile Remove="Migrations\20200419115307_AddAppointment.Designer.cs" />
     <Compile Remove="Migrations\20200419121437_UpdateOrders.cs" />
     <Compile Remove="Migrations\20200419121437_UpdateOrders.Designer.cs" />
+    <Compile Remove="Migrations\20200428124606_SomeChange.cs" />
+    <Compile Remove="Migrations\20200428124606_SomeChange.Designer.cs" />
+    <Compile Remove="Migrations\20200428132402_SomeChange.cs" />
+    <Compile Remove="Migrations\20200428132402_SomeChange.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,10 +16,6 @@
 
     public class TeamsService : ITeamsService
     {
-        private readonly Func<Team, DateTime, bool> checkSingleOrders = (t, cd) => !t.Orders
-                       .Select(o => o.Appointment)
-                       .Any(a => cd >= a.StartDate && cd <= a.EndDate);
-
         private readonly IDeletableEntityRepository<Team> teamsRepository;
 
         public TeamsService(IDeletableEntityRepository<Team> teamsRepository)
@@ -94,17 +90,17 @@
             freeTeams = teams
                     .Where(t =>
                     !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Once)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Once && o.Status == OrderStatus.InProgress)
                         .Select(o => o.Appointment)
                         .Any(a => (startDate >= a.StartDate && startDate <= a.EndDate)
                             || (startDate < a.StartDate && endDate >= a.StartDate))
                     && !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Daily)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Daily && o.Status == OrderStatus.InProgress)
                         .Select(o => o.Appointment)
                         .Any(a => (startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
                             || (startDate.TimeOfDay < a.StartDate.TimeOfDay && endDate.TimeOfDay >= a.StartDate.TimeOfDay))
                     && !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Weekly)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Weekly && o.Status == OrderStatus.InProgress)
                         .Select(o => o.Appointment)
                         .Any(a => a.DayOfWeek == dayOfWeek
                             && ((startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
@@ -155,7 +151,7 @@
 
             var resulst = allTeams
                 .Where(t => !t.Orders
-                    .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly)
+                    .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly && o.Status == OrderStatus.InProgress)
                     .Select(o => o.Appointment)
                     .Any(a => this.CheckMonthlyAppointments(a, currentDate, endDate)))
                 .Select(t => t.Id)

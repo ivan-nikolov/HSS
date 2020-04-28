@@ -1,6 +1,7 @@
 ﻿namespace Hss.Services.Data.JobsService
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Data.Common.Repositories;
@@ -14,6 +15,21 @@
         public JobsService(IDeletableEntityRepository<Job> jobsRepository)
         {
             this.jobsRepository = jobsRepository;
+        }
+
+        public async Task CancelByOrderIdAsync(string orderId)
+        {
+            var jobs = this.jobsRepository.All()
+                .Where(j => j.OrderId == orderId && j.JobStatus == JobStatus.InProgress)
+                .ToList();
+
+            foreach (var job in jobs)
+            {
+                job.JobStatus = JobStatus.Cancelled;
+                this.jobsRepository.Update(job);
+            }
+
+            await this.jobsRepository.SaveChangesAsync();
         }
 
         public async Task CreateAsync(string orderId, ServiceFrequency serviceFrequency, DateTime appointmentStartDate, DateTime appointmetnEndDate)
@@ -52,8 +68,8 @@
             var startDate = serviceFrequency switch
             {
                 ServiceFrequency.Once => appointmentStartDate,
-                ServiceFrequency.Daily => todaysDate.AddDays(1).AddHours(appointmentStartDate.TimeOfDay.Hours),
-                ServiceFrequency.Weekly => todaysDate.AddDays(7).AddHours(appointmentStartDate.TimeOfDay.Hours),
+                ServiceFrequency.Daily => todaysDate < appointmentStartDate ? appointmentStartDate : todaysDate.AddDays(1).AddHours(appointmentStartDate.TimeOfDay.Hours),
+                ServiceFrequency.Weekly => todaysDate < appointmentStartDate ? appointmentStartDate : todaysDate.AddDays(7).AddHours(appointmentStartDate.TimeOfDay.Hours),
                 ServiceFrequency.Monthly => this.GetCurrentMothJobsDate(appointmentStartDate, todaysDate),
                 _ => default,
             };

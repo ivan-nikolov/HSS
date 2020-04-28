@@ -38,7 +38,7 @@
 
         private InvoiceServiceModel GenerateInvoice(OrderServiceModel order)
         {
-            var servicePrice = order.Service.Price; // this.servicesService.GetServicePrice(serviceId);
+            var servicePrice = order.Service.Price;
 
             var discount = order.ServiceFrequency != ServiceFrequency.Once ? GlobalConstants.DiscountForRecurrentService : 0;
             var netAmount = (order.Jobs.Count * servicePrice) * (1 - discount);

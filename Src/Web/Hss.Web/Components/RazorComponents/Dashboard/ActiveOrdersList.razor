@@ -1,0 +1,57 @@
+﻿@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Orders
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
+
+@if (this.Orders == null)
+{
+    <p>Loading...</p>
+}
+else if (this.Orders.Count == 0)
+{
+    <h3>No Active Services</h3>
+}
+else
+{
+<p>
+    <button class="btn btn-large btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseActive" aria-expanded="false" aria-controls="collapseActive">
+        Active Bookings
+    </button>
+</p>
+    <div class="collapse" id="collapseActive">
+        <div id="accordion">
+            @for (int i = 0; i < this.Orders.Count; i++)
+            {
+                <div class="card">
+                    <div class="card-header" id="heading@(i)">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse@(i)" aria-expanded="false" aria-controls="collapse@(i)">
+                                <b>@this.Orders[i].ServiceName</b>
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse@(i)" class="collapse" aria-labelledby="heading@(i)" data-parent="#accordion">
+                        <div class="card-body">
+                            <h5 class="card-title">Team Name: @this.Orders[i].TeamName</h5>
+                            <p class="card-text"><b>Service frequency:</b> @this.Orders[i].ServiceFrequency.ToString()</p>
+                            @if (this.Orders[i].ServiceFrequency.ToString() == "Weekly")
+                            {
+                                <p class="card-text"><b>Every:</b> @Orders[i].DayOfWeek</p>
+                            }
+                            <p class="card-text"><b>Next visit:</b> from <b>@this.Orders[i].StartDate</b> to <b>@this.Orders[i].EndDate</b></p>
+                            <p class="card-text"><b>Address:</b> @this.Orders[i].Address.CityName @this.Orders[i].Address.Neighborhood @this.Orders[i].Address.StreetName @this.Orders[i].Address.BuildingNumber @this.Orders[i].Address.Appartment</p>
+                            <div></div>
+                            <a href="/Orders/Cancel/@this.Orders[i].Id" class="btn btn-warning">Cancel Service</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    //Pending
+
+}
+
+@code {
+    [Parameter]
+    public List<OrderViewModel> Orders { get; set; }
+}

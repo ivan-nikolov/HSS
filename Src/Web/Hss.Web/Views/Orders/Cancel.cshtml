@@ -1,0 +1,40 @@
+﻿@model Hss.Web.ViewModels.Orders.CancelOrderViewModel
+
+@{
+    ViewData["Title"] = "Cancel Order";
+}
+
+<h3>Are you sure you want to cancel this Service?</h3>
+<div class="w-75">
+    <hr />
+    <div class="form-group">
+        <label asp-for="ServiceName" class="control-label"></label>
+        <input disabled="disabled" asp-for="ServiceName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="TeamName" class="control-label"></label>
+        <input disabled="disabled" asp-for="TeamName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="StartDate" class="control-label">Next visit:</label>
+        <input disabled="disabled" asp-for="StartDate" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="ServiceFrequency" class="control-label"></label>
+        <input disabled="disabled" asp-for="ServiceFrequency" class="form-control" />
+    </div>
+    <div class="form-group">
+        <p class="card-text"><b>Address:</b> @Model.Address.CityName @Model.Address.Neighborhood @Model.Address.StreetName @Model.Address.BuildingNumber @Model.Address.Appartment</p>
+    </div>
+    <hr />
+    <form asp-action="Cancel" method="post">
+        <div class="d-flex justify-content-between">
+            <div>
+                <a class="btn btn-info" href="/Dashboard">Back to Dashboard</a>
+            </div>
+            <div>
+                <input type="submit" value="Cancel Service" class="btn btn-danger" />
+            </div>
+        </div>
+    </form>
+</div>

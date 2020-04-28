@@ -2,6 +2,10 @@
 @layout AccountsLayout
 
 @using Hss.Web.Components.RazorComponents.Dashboard
+@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Orders
+@using Data.Models.Enums
+
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
 @attribute [Authorize]
 
 <div class="mt-4">
@@ -10,15 +14,19 @@
 <div class="d-flex justify-content-center mt-3 mb-3">
     <a class="btn btn-lg text-primary btn-outline-primary" href="/Orders/BookService">Book Service</a>
 </div>
-<ActiveOrdersList UserId="@this.userId"></ActiveOrdersList>
+<ActiveOrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.InProgress).ToList()"></ActiveOrdersList>
+<PendingOrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.Pending).ToList()"></PendingOrdersList>
 @code {
     private string userId;
+    private List<OrderViewModel> orders;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
+
         this.userId = (await this.AuthenticationStateTask).User.GetId();
+        this.orders = this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId).Where(o => o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending).ToList();
     }
 }

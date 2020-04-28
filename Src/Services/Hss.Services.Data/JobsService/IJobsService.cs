@@ -8,5 +8,7 @@
     public interface IJobsService
     {
         Task CreateAsync(string orderId, ServiceFrequency serviceFrequency, DateTime appointmentStartDate, DateTime appointmetnEndDate);
+
+        Task CancelByOrderIdAsync(string orderId);
     }
 }

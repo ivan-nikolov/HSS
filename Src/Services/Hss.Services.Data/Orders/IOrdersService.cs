@@ -2,13 +2,20 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Services.Models.Orders;
 
     public interface IOrdersService
     {
+        Task CancelAsync(string id);
+
         Task CreateAsync(OrderServiceModel input);
+
+        bool CheckIfOrderExists(string id);
+
+        Task<T> GetByIdAsync<T>(string id);
 
         int GetUnpaidRecurrentJobsCount(string id);
 
@@ -16,6 +23,6 @@
 
         IEnumerable<T> GetAllWithUnpaidJobs<T>();
 
-        Task<IEnumerable<T>> GetActiveOrdersByUserId<T>(string userId);
+        IQueryable<T> GetOrdersByUserId<T>(string userId);
     }
 }

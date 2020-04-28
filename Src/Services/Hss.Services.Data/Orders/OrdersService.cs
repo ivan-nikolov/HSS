@@ -20,6 +20,7 @@
     public class OrdersService : IOrdersService
     {
         private readonly IDeletableEntityRepository<Order> ordersRepository;
+        private readonly IAppointmentsService appointmentsService;
         private readonly IJobsService jobsService;
         private readonly IInvoicesService invoicesService;
         private readonly IServicesService servicesService;
@@ -34,14 +35,29 @@
             ITeamsService teamsService)
         {
             this.ordersRepository = ordersRepository;
-            this.AppointmentsService = appointmentsService;
+            this.appointmentsService = appointmentsService;
+            this.appointmentsService = appointmentsService;
             this.jobsService = jobsService;
             this.invoicesService = invoicesService;
             this.servicesService = servicesService;
             this.teamsService = teamsService;
         }
 
-        public IAppointmentsService AppointmentsService { get; }
+        public async Task CancelAsync(string id)
+        {
+            var order = await this.ordersRepository.All()
+                .FirstAsync(o => o.Id == id);
+            if (order.Status != OrderStatus.InProgress)
+            {
+                throw new InvalidOperationException("Order is not in porgress!");
+            }
+
+            order.Status = OrderStatus.Cancelled;
+            this.ordersRepository.Update(order);
+            await this.ordersRepository.SaveChangesAsync();
+
+            await this.jobsService.CancelByOrderIdAsync(id);
+        }
 
         public async Task CreateAsync(OrderServiceModel input)
         {
@@ -72,7 +88,7 @@
             await this.ordersRepository.AddAsync(order);
             await this.ordersRepository.SaveChangesAsync();
 
-            var appointment = await this.AppointmentsService.CreateAsync(input.AppointmentDate, input.ServiceDuration, order.Id);
+            var appointment = await this.appointmentsService.CreateAsync(input.AppointmentDate, input.ServiceDuration, order.Id);
             order.AppointmetnId = appointment.Id;
 
             await this.jobsService.CreateAsync(order.Id, order.ServiceFrequency, appointment.StartDate, appointment.EndDate);
@@ -88,18 +104,27 @@
             }
         }
 
-        public async Task<IEnumerable<T>> GetActiveOrdersByUserId<T>(string userId)
-            => await this.ordersRepository
+        public bool CheckIfOrderExists(string id)
+            => this.ordersRepository.All()
+            .Any(o => o.Id == id);
+
+        public IQueryable<T> GetOrdersByUserId<T>(string userId)
+            => this.ordersRepository
             .All()
-            .Where(o => o.Status == OrderStatus.Pending && o.ClientId == userId)
+            .Where(o => o.ClientId == userId)
             .OrderByDescending(o => o.CreatedOn)
-            .To<T>()
-            .ToListAsync();
+            .To<T>();
 
         public IEnumerable<T> GetAllWithUnpaidJobs<T>()
             => this.ordersRepository.All()
-            .Where(o => o.Jobs.Any(j => j.JobStatus == JobStatus.Done))
+            .Where(o => o.ServiceFrequency != ServiceFrequency.Once && o.Jobs.Any(j => j.JobStatus == JobStatus.Done))
             .To<T>();
+
+        public async Task<T> GetByIdAsync<T>(string id)
+            => await this.ordersRepository.All()
+            .Where(o => o.Id == id)
+            .To<T>()
+            .FirstOrDefaultAsync();
 
         public int GetTotalMonthJobsTime(int serviceId, DateTime appointmentDate, string teamId = null)
         {
@@ -115,7 +140,7 @@
 
             var totalTime = 0;
 
-            totalTime += this.GetDoneJobsTotalTime(serviceId, appointmentDate, serviceDuration, orders);
+            totalTime += this.GetDoneJobsTotalTime(appointmentDate, serviceDuration, orders);
             totalTime += this.GetSingleOrdersTotalTime(appointmentDate, serviceDuration, orders);
             totalTime += this.GetDailyOrdersTotalTime(daysLeft, orders);
             totalTime += this.GetWeeklyOrdersTotalTime(daysLeft, orders);
@@ -132,7 +157,7 @@
             .Where(j => j.JobStatus == JobStatus.Done)
             .Count();
 
-        private int GetDoneJobsTotalTime(int serviceId, DateTime appointmentDate, int serviceDuration, IQueryable<Order> orders)
+        private int GetDoneJobsTotalTime(DateTime appointmentDate, int serviceDuration, IQueryable<Order> orders)
             => orders
                             .SelectMany(o => o.Jobs)
                             .Where(j => j.StartDate.Day > 1

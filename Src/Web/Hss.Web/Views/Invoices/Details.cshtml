@@ -1,0 +1,100 @@
+﻿@model Hss.Web.ViewModels.Invoices.InvoiceDetailsViewModel
+@using Hss.Common
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                Invoice
+                <strong>@Model.Id/@Model.CreatedOn.Date</strong>
+                <span class="float-right"> <strong>Status:</strong> Pending</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <h6 class="mb-3">From:</h6>
+                        <div>
+                            <strong>@Model.ClientName</strong>
+                        </div>
+                        <div>@Model.Address.StreetName @Model.Address.BuildingNumber</div>
+                        <div>@Model.Address.PostCode @Model.Address.CityName, @Model.Address.CityCountryName</div>
+                        <div>Email: @Model.ClientEmail</div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h6 class="mb-3">To:</h6>
+                        <div>
+                            <strong>HSS</strong>
+                        </div>
+                        <div>Attn: Georgi Georgiev</div>
+                        <div>9010 Varna, Bulgaria</div>
+                        <div>Email: hss@hss.com</div>
+                        <div>Phone: +359 123 456 789</div>
+                    </div>
+                </div>
+
+                <div class="table-responsive-sm">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Service Start Date</th>
+                                <th>Service End Date</th>
+
+                                <th class="right">Service Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var job in Model.Jobs)
+                            {
+                                <tr>
+                                    <td class="left strong">@job.StartDate</td>
+                                    <td class="left">@job.FinishDate</td>
+
+                                    <td class="right">@Model.OrderServicePrice</td>
+                                    <td class="center">1</td>
+                                    <td class="right">@Model.OrderServicePrice</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-5">
+                    </div>
+                    <div class="col-lg-4 col-sm-5 ml-auto">
+                        <table class="table table-clear">
+                            <tbody>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Subtotal</strong>
+                                    </td>
+                                    <td class="right">@Model.NetAmount</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Discount (@(Model.Discount * 100)%)</strong>
+                                    </td>
+                                    <td class="right">$@(Model.NetAmount * Model.Discount)</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>VAT (@(GlobalConstants.VAT * 100)%)</strong>
+                                    </td>
+                                    <td class="right">$@((Model.NetAmount * (1 - Model.Discount)) * GlobalConstants.VAT)</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Total</strong>
+                                    </td>
+                                    <td class="right">
+                                        <strong>$@Model.TotalAmount</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a class="btn btn-primary" href="/Invoices">Back to List</a>
+        </div>
+    </div>

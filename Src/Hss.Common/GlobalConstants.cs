@@ -11,5 +11,8 @@
         public const decimal DiscountForRecurrentService = 0.05M;
 
         public const decimal VAT = 0.2M;
+
+        public const int DefaultPageNumber = 1;
+        public const int DefaultPageSize = 10;
     }
 }
