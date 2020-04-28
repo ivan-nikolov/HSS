@@ -1,9 +1,90 @@
 ﻿@page "/history"
 @layout AccountsLayout
 @attribute [Authorize]
-<h3>History</h3>
+
+@using Hss.Common
+@using Hss.Web.Components.RazorComponents.Shared
+@using Hss.Web.Components.RazorComponents.Dashboard
+@using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Orders
+@using Data.Models.Enums
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
+
+@if (this.orders == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <div class="mt-5">
+        <PaginationComponent PageChanged="this.OnPageChange" PageIndex="this.orders.PageIndex" TotalPages="this.orders.TotalPages"></PaginationComponent>
+    </div>
+
+    <div id="accordion" class="mt-5">
+        @for (int i = 0; i < this.orders.Count; i++)
+        {
+            <div class="card">
+                <div class="card-header" id="heading@(i)">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse@(i)" aria-expanded="false" aria-controls="collapse@(i)">
+                            <b>@this.orders[i].ServiceName</b>
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse@(i)" class="collapse" aria-labelledby="heading@(i)" data-parent="#accordion">
+                    <div class="card-body">
+                        <h5 class="card-title">Team Name: @this.orders[i].TeamName</h5>
+                        <p class="card-text"><b>Service frequency:</b> @this.orders[i].ServiceFrequency.ToString()</p>
+                        @if (this.orders[i].ServiceFrequency.ToString() == "Weekly")
+                        {
+                            <p class="card-text"><b>Every:</b> @orders[i].DayOfWeek</p>
+                        }
+                        <p class="card-text"><b>Next visit:</b> from <b>@this.orders[i].StartDate</b> to <b>@this.orders[i].EndDate</b></p>
+                        <p class="card-text"><b>Address:</b> @this.orders[i].Address.CityName @this.orders[i].Address.Neighborhood @this.orders[i].Address.StreetName @this.orders[i].Address.BuildingNumber @this.orders[i].Address.Appartment</p>
+                        <div></div>
+                        <a href="/Orders/Cancel/@this.orders[i].Id" class="btn btn-warning">Cancel Service</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+    <div class="mt-5">
+        <PaginationComponent PageChanged="this.OnPageChange" PageIndex="this.orders.PageIndex" TotalPages="this.orders.TotalPages"></PaginationComponent>
+    </div>
+}
 
 
 @code {
+    private string userId;
+    private PaginatedList<OrderViewModel> orders;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    [Parameter]
+    public int? PageNumber { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        this.userId = (await this.AuthenticationStateTask).User.GetId();
+
+        this.orders = await PaginatedList<OrderViewModel>
+                .CreateAsync(this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId), this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+
+    private async Task OnPageChange(int pageNumber)
+    {
+        this.PageNumber = pageNumber;
+        await this.GetOrders();
+    }
+
+    private async Task GetOrders()
+    {
+        this.orders = await PaginatedList<OrderViewModel>
+                .CreateAsync(this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId), this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/Dashboard"
 @layout AccountsLayout
 
+@using Hss.Web.Components.RazorComponents.Orders
 @using Hss.Web.Components.RazorComponents.Dashboard
 @using Hss.Web.ViewModels.Components.RazorComponents.Dashboard.Orders
 @using Data.Models.Enums
@@ -14,8 +15,8 @@
 <div class="d-flex justify-content-center mt-3 mb-3">
     <a class="btn btn-lg text-primary btn-outline-primary" href="/Orders/BookService">Book Service</a>
 </div>
-<ActiveOrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.InProgress).ToList()"></ActiveOrdersList>
-<PendingOrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.Pending).ToList()"></PendingOrdersList>
+<OrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.InProgress).ToList()" OrdersType="Active"></OrdersList>
+<OrdersList Orders="this.orders.Where(o => o.Status == OrderStatus.Pending).ToList()" OrdersType="Pending"></OrdersList>
 @code {
     private string userId;
     private List<OrderViewModel> orders;
