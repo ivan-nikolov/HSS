@@ -18,7 +18,7 @@
             <a class="btn btn-danger" asp-area="Administration" asp-controller="Categories" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
         </div>
     </div>
-    <p>@Model.Description</p>
+    <p>@Html.Raw(Model.SanitizedDescription)</p>
 </div>
 <hr />
 @if(this.Model.ChildCategoriesCount > 0)

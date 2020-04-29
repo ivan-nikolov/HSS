@@ -1,5 +1,6 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Categories
 {
+    using Ganss.XSS;
     using Hss.Data.Models;
     using Hss.Services.Mapping;
 
@@ -10,6 +11,8 @@
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
 
         public string ImageUrl { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿namespace Hss.Web.ViewModels.Services
 {
+    using Ganss.XSS;
     using Hss.Data.Models;
     using Hss.Services.Mapping;
 
@@ -12,6 +13,8 @@
         public string CategoryName { get; set; }
 
         public string Description { get; set; }
+
+        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
 
         public int DurationInHours { get; set; }
 

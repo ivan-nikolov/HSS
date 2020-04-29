@@ -1,5 +1,6 @@
 ﻿namespace Hss.Web.ViewModels.Administration.Categories
 {
+    using Ganss.XSS;
     using Hss.Data.Models;
     using Hss.Services.Mapping;
     using Microsoft.AspNetCore.Http;
@@ -15,6 +16,8 @@
         public IFormFile Image { get; set; }
 
         public string Description { get; set; }
+
+        public string SanitizedDescription => new HtmlSanitizer().Sanitize(this.Description);
 
         public int? ParentCategoryId { get; set; }
 

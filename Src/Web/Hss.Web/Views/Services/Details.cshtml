@@ -25,7 +25,7 @@
         }
     </div>
     <hr class="mt-3"/>
-    <p>@Model.Description</p>
+    <p>@Html.Raw(Model.SanitizedDescription)</p>
     <hr />
     <p>Duration: @Model.DurationInHours</p>
     <p>Price: @Model.Price per hour</p>

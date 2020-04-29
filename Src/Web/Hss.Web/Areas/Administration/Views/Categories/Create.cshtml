@@ -4,11 +4,21 @@
     ViewData["Title"] = "Create";
 }
 
+<script src="/lib/tinymce/tinymce.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: "textarea",
+        plugins: [
+            "image paste table link code media"
+        ]
+    });
+</script>
+
 <h1>Create Service Category</h1>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row d-flex justify-content-center ">
+    <div class="col-md-8">
         <form asp-area="Administration" asp-controller="Categories" asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -16,9 +26,9 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-                <label for="parentCategory">Parant Category</label>
-                <component type="typeof(SelectCategoryComponent)" render-mode="ServerPrerendered" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <label for="parentCategory">Parant Category</label>
+            <component type="typeof(SelectCategoryComponent)" render-mode="ServerPrerendered" />
+            <span asp-validation-for="Name" class="text-danger"></span>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <textarea asp-for="Description" class="form-control"></textarea>
