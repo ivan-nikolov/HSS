@@ -65,7 +65,7 @@ else
                 this.hours.Add(new HourViewModel()
                 {
                     Hour = hour,
-                    IsFree = this.TeamsService.GetFreeTeams(date.AddHours(hour), date.AddHours(hour + ServiceDuration), this.CityId, this.SelecteServiceId).Count() > 0,
+                    IsFree = this.TeamsService.HasFreeTeams(date.AddHours(hour), date.AddHours(hour + ServiceDuration), this.CityId, this.SelecteServiceId),
                 });
             }
         }

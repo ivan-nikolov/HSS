@@ -72,8 +72,7 @@ else
 
         this.userId = (await this.AuthenticationStateTask).User.GetId();
 
-        this.orders = await PaginatedList<OrderViewModel>
-                .CreateAsync(this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId), this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+        await this.GetOrders();
     }
 
     private async Task OnPageChange(int pageNumber)
@@ -85,6 +84,6 @@ else
     private async Task GetOrders()
     {
         this.orders = await PaginatedList<OrderViewModel>
-                .CreateAsync(this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId), this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+                .CreateAsync(this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId).Where(o => o.Status == OrderStatus.Done), this.PageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
     }
 }

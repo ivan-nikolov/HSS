@@ -7,16 +7,16 @@
 }
 else if (this.Orders.Count == 0)
 {
-    <h3>No Active Services</h3>
+<h3>No @this.OrdersType Services</h3>
 }
 else
 {
 <p>
-    <button class="btn btn-large btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseActive" aria-expanded="false" aria-controls="collapseActive">
+    <button class="btn btn-large btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapse@(this.OrdersType)" aria-expanded="false" aria-controls="collapse@(this.OrdersType)">
         @this.OrdersType Bookings
     </button>
 </p>
-    <div class="collapse" id="collapseActive">
+    <div class="collapse" id="collapse@(this.OrdersType)">
         <div id="accordion">
             @for (int i = 0; i < this.Orders.Count; i++)
             {

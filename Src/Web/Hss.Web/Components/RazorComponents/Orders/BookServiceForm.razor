@@ -13,7 +13,7 @@
 
 
 <BlazoredModal />
-<div class="row h-100">
+<div class="row h-100 mt-5">
     <div class="col-8 border-right">
         <CascadingAuthenticationState>
             <AddressesList CanSelectAddress="true" OnAddressSelect="this.SelectAddress"></AddressesList>
@@ -54,9 +54,9 @@
                     <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
 
-                <div class="form-group">
-                    <input type="text" id="datepicker"/>
-                </div>
+                @*<div class="form-group">
+                    <input type="text" @bind-value="this.input.AppointmentDate" @bind-value:format="yyyy-MM-dd" id="datepicker"/>
+                </div>*@
                 <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited"></HoursList>
             }
             <div class="mt-4">
@@ -98,7 +98,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.input = new CreateOrderInputModel() { AppointmentDate = DateTime.UtcNow.Date};
+        this.input = new CreateOrderInputModel() { AppointmentDate = DateTime.UtcNow.Date };
         this.editContext = new EditContext(this.input);
 
         this.selectedAddress = new AddressViewModel();
@@ -123,7 +123,7 @@
             this.input.ServiceDuration = this.SelectedService.DurationInHours;
             this.isSubmited = true;
             await this.OrdersService.CreateAsync(this.input.To<OrderServiceModel>());
-            NavManager.NavigateTo("/Dashboard", true);
+            NavManager.NavigateTo("/Accounts/Dashboard", true);
         }
     }
 

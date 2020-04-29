@@ -78,16 +78,21 @@
             await this.teamsRepository.SaveChangesAsync();
         }
 
-        public IEnumerable<string> GetFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId)
+        public bool HasFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId)
+        {
+            var freeTeams = this.GetFreeTeams<TeamServiceModel>(startDate, endDate, cityId, serviceId).ToList();
+
+            return freeTeams.Count > 0;
+        }
+
+        public IEnumerable<T> GetFreeTeams<T>(DateTime startDate, DateTime endDate, int cityId, int serviceId)
         {
             var weekOfMonth = startDate.GetWeekOfMonth();
             var dayOfWeek = (int)startDate.DayOfWeek;
             var teams = this.teamsRepository.All()
                 .Where(t => t.CityId == cityId && t.Services.Select(s => s.ServiceId).Contains(serviceId));
 
-            var freeTeams = new List<string>();
-
-            freeTeams = teams
+            var freeTeams = teams
                     .Where(t =>
                     !t.Orders
                         .Where(o => o.ServiceFrequency == ServiceFrequency.Once && o.Status == OrderStatus.InProgress)
@@ -106,7 +111,7 @@
                             && ((startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
                             || (startDate.TimeOfDay < a.StartDate.TimeOfDay && endDate.TimeOfDay >= a.StartDate.TimeOfDay)))
                     && this.CheckMonthlyFreeTeams(startDate, endDate, teams))
-                    .Select(t => t.Id)
+                    .To<T>()
                     .ToList();
 
             return freeTeams;

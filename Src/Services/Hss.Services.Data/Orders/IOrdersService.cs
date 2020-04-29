@@ -13,6 +13,8 @@
 
         Task CreateAsync(OrderServiceModel input);
 
+        Task<T> GetById<T>(string id);
+
         bool CheckIfOrderExists(string id);
 
         Task<T> GetByIdAsync<T>(string id);
@@ -24,5 +26,9 @@
         IEnumerable<T> GetAllWithUnpaidJobs<T>();
 
         IQueryable<T> GetOrdersByUserId<T>(string userId);
+
+        IQueryable<T> GetPendingOrders<T>();
+
+        Task ConfirmAsync(string id, string teamId);
     }
 }

@@ -1,0 +1,74 @@
+﻿@page "/Administration/Dashboard"
+@layout AdminLayout
+@using Hss.Common
+@using Hss.Web.Components.RazorComponents.Shared
+@using Hss.Web.ViewModels.Administration.Dashboard
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
+
+@if (this.orders == null)
+{
+    <p>Loading</p>
+}
+else if (this.orders.Count == 0)
+{
+    <h3>No pending orders!</h3>
+}
+else
+{
+    <h2>Pending orders</h2>
+
+    <div class="mt-3 mb-3">
+        <PaginationComponent PageIndex="this.orders.PageIndex" TotalPages="this.orders.TotalPages" PageChanged="this.OnPageChange"></PaginationComponent>
+    </div>
+
+    foreach (var order in this.orders)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    @order.ServiceName
+                </h5>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Team Name: @order.TeamName</h5>
+                <p class="card-text"><b>Service frequency:</b> @order.ServiceFrequency.ToString()</p>
+                @if (order.ServiceFrequency.ToString() == "Weekly")
+                {
+                    <p class="card-text"><b>Every:</b> @order.DayOfWeek</p>
+                }
+                <p class="card-text"><b>Next visit:</b> from <b>@order.StartDate</b> to <b>@order.EndDate</b></p>
+                <p class="card-text"><b>Address:</b> @order.Address.CityName @order.Address.Neighborhood @order.Address.StreetName @order.Address.BuildingNumber @order.Address.Appartment</p>
+                <div></div>
+                <a href="/Administration/Orders/Confirm/@order.Id" class="btn btn-info">Confirm Booking</a>
+            </div>
+        </div>
+    }
+
+    <div class="mt-3 mb-3">
+        <PaginationComponent PageIndex="this.orders.PageIndex" TotalPages="this.orders.TotalPages" PageChanged="this.OnPageChange"></PaginationComponent>
+    </div>
+}
+
+
+@code {
+    private PaginatedList<DashboardOrderViewModel> orders;
+
+    private int? pageNumber;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.GetOrders();
+    }
+
+    private async Task OnPageChange(int pageNumber)
+    {
+        this.pageNumber = pageNumber;
+        await this.GetOrders();
+    }
+
+    private async Task GetOrders()
+    {
+        this.orders = await PaginatedList<DashboardOrderViewModel>
+                .CreateAsync(this.OrdersService.GetPendingOrders<DashboardOrderViewModel>(), this.pageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+}

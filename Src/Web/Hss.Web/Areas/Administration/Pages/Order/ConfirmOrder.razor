@@ -1,0 +1,120 @@
+﻿@page "/Administration/Orders/Confirm/{id}"
+@layout AdminLayout
+
+@using Hss.Data.Models.Enums
+@using Hss.Web.ViewModels.Administration.Orders
+
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
+@inject Hss.Services.Data.Teams.ITeamsService TeamsService
+@inject NavigationManager NavManager
+
+@if (this.input == null)
+{
+    <p>Loading</p>
+}
+else
+{
+    <div class="card mt-5">
+        <div class="card-header">
+            <h5 class="mb-0">
+                @input.ServiceName
+            </h5>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Team Name: @input.TeamName</h5>
+            <p class="card-text"><b>Service frequency:</b> @input.ServiceFrequency.ToString()</p>
+            @if (input.ServiceFrequency.ToString() == "Weekly")
+            {
+                <p class="card-text"><b>Every:</b> @input.DayOfWeek</p>
+            }
+            <p class="card-text"><b>Next visit:</b> from <b>@input.StartDate</b> to <b>@input.EndDate</b></p>
+            <p class="card-text"><b>Address:</b> @input.Address.CityName @input.Address.Neighborhood @input.Address.StreetName @input.Address.BuildingNumber @input.Address.Appartment</p>
+            <div class="d-flex justify-content-between">
+                <button @onclick="@(() => this.OnConfirmAsync())" class="btn btn-primary">Confirm Booking</button>
+                <a href="/Administration/Dashboard" class="btn btn-info">Back to List</a>
+                <button @onclick="@(() => this.OnCancelAsync())" class="btn btn-warning">Cancel Booking</button>
+            </div>
+        </div>
+    </div>
+
+    if (this.teams == null)
+    {
+        <p>Loading</p>
+    }
+    else
+    {
+        <EditForm Model="this.input">
+            <div class="mt-5 form-group">
+                <label for="TeamId">Change Team</label>
+                <select class="form-control" @onchange="@(e => this.OnTeamChange(e))">
+                    <option disabled="disabled" value="">Select Team</option>
+                    @foreach (var team in this.teams)
+                    {
+                        <option value="@team.Id">@team.Name</option>
+                    }
+                </select>
+            </div>
+        </EditForm>
+    }
+
+}
+
+@code {
+    private ConfirmOrderInputModel input;
+    private List<FreeTeamsViewModel> teams;
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.input = await this.GetOrder(this.Id);
+
+        this.teams = this.TeamsService.GetFreeTeams<FreeTeamsViewModel>(input.StartDate, input.EndDate, input.Address.CityId, input.ServiceId).ToList();
+    }
+
+    private async Task OnConfirmAsync()
+    {
+        var order = await this.GetOrder(this.Id);
+
+        if (!this.teams.Any(t => t.Id == this.input.TeamId))
+        {
+            this.NavManager.NavigateTo("/Administration/Dashboard", true);
+        }
+
+        await this.OrdersService.ConfirmAsync(this.input.Id, this.input.TeamId);
+        this.NavManager.NavigateTo("/Administration/Dashboard", true);
+    }
+
+    private async Task OnCancelAsync()
+    {
+        var order = await this.GetOrder(this.Id);
+
+        await this.OrdersService.CancelAsync(this.input.Id);
+        this.NavManager.NavigateTo("/Administration/Dashboard", true);
+    }
+
+    private void OnTeamChange(ChangeEventArgs eventArgs)
+    {
+
+        var id = eventArgs.Value.ToString();
+
+        if (this.teams.Any(t => t.Id == id))
+        {
+            this.input.TeamId = id;
+            this.input.TeamName = this.teams.FirstOrDefault(t => t.Id == id).Name;
+        }
+    }
+
+    private async Task<ConfirmOrderInputModel> GetOrder(string id)
+    {
+        var order = await this.OrdersService.GetById<ConfirmOrderInputModel>(this.Id);
+
+        if (order == null || order.Status != OrderStatus.Pending)
+        {
+            this.NavManager.NavigateTo("/Administration/Dashboard", true);
+        }
+
+        return order;
+    }
+}

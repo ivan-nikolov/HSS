@@ -15,6 +15,7 @@
     using Hss.Services.Data.Teams;
     using Hss.Services.Mapping;
     using Hss.Services.Models.Orders;
+    using Hss.Services.Models.Teams;
     using Microsoft.EntityFrameworkCore;
 
     public class OrdersService : IOrdersService
@@ -47,9 +48,9 @@
         {
             var order = await this.ordersRepository.All()
                 .FirstAsync(o => o.Id == id);
-            if (order.Status != OrderStatus.InProgress)
+            if (order.Status != OrderStatus.InProgress && order.Status != OrderStatus.Pending)
             {
-                throw new InvalidOperationException("Order is not in porgress!");
+                throw new InvalidOperationException("Order can not be cancelled!");
             }
 
             order.Status = OrderStatus.Cancelled;
@@ -70,9 +71,9 @@
 
             var totalOrdersTime = this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate);
             var teamId = this.teamsService
-                .GetFreeTeams(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId)
-                .OrderBy(t => this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate, t))
-                .ToList();
+                .GetFreeTeams<TeamServiceModel>(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId)
+                .OrderBy(t => this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate, t.Id))
+                .FirstOrDefault().Id;
 
             var order = new Order()
             {
@@ -82,7 +83,7 @@
                 AddresId = input.AddressId,
                 BillingFrequency = billingFrequency,
                 ServiceFrequency = input.ServiceFrequency,
-                TeamId = teamId.FirstOrDefault(),
+                TeamId = teamId,
             };
 
             await this.ordersRepository.AddAsync(order);
@@ -103,6 +104,28 @@
                 await this.invoicesService.CreateAsync(order.Id, order.ClientId, order.ServiceId, order.ServiceFrequency, order.AddresId, jobsCount);
             }
         }
+
+        public async Task ConfirmAsync(string id, string teamId)
+        {
+            var order = await this.ordersRepository.GetByIdAsync(id);
+            order.TeamId = teamId;
+            order.Status = OrderStatus.InProgress;
+            this.ordersRepository.Update(order);
+            await this.ordersRepository.SaveChangesAsync();
+        }
+
+        public async Task<T> GetById<T>(string id)
+            => await this.ordersRepository
+            .All()
+            .Where(o => o.Id == id)
+            .To<T>()
+            .FirstOrDefaultAsync();
+
+        public IQueryable<T> GetPendingOrders<T>()
+            => this.ordersRepository.All()
+            .Where(o => o.Status == OrderStatus.Pending)
+            .OrderBy(o => o.Appointment.StartDate)
+            .To<T>();
 
         public bool CheckIfOrderExists(string id)
             => this.ordersRepository.All()
@@ -193,5 +216,6 @@
                     && o.Appointment.StartDate.Year <= appointmentDate.Year
                     && o.Appointment.StartDate.Month <= appointmentDate.Month)
                 .Sum(o => o.Service.DurationInHours);
+
     }
 }
