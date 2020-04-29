@@ -13,7 +13,7 @@
 
         Task CreateAsync(OrderServiceModel input);
 
-        Task<T> GetById<T>(string id);
+        Task CompleteAsync(string id);
 
         bool CheckIfOrderExists(string id);
 

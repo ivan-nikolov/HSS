@@ -1,0 +1,116 @@
+﻿@page "/Team/Jobs"
+@layout TeamLayout
+
+@using Data.Models.Enums
+@using Hss.Common
+@using Hss.Web.ViewModels.Team.Jobs
+@using Hss.Web.Components.RazorComponents.Shared
+
+@inject Hss.Services.Data.JobsService.IJobsService JobsService
+@inject Hss.Services.Data.Users.IUsersService UsersService
+@inject Hss.Services.Data.Orders.IOrdersService OrdersService
+@inject NavigationManager NavManager
+
+@if (this.jobs == null)
+{
+    <p>Loading</p>
+}
+else if (this.jobs.Count == 0)
+{
+    <h3>No active jobs.</h3>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Service</th>
+                <th scope="col">Start date</th>
+                <th scope="col">End date</th>
+                <th scope="col">Neighborhood</th>
+                <th scope="col">Street</th>
+                <th scope="col">Building number</th>
+                <th scope="col">Appartment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in this.jobs)
+            {
+                <tr>
+                    <td>@job.OrderServiceName</td>
+                    <td>@job.StartDate</td>
+                    <td>@job.FinishDate</td>
+                    <td>@job.OrderAddress.Neighborhood</td>
+                    <td>@job.OrderAddress.StreetName</td>
+                    <td>@job.OrderAddress.BuildingNumber</td>
+                    <td>@job.OrderAddress.Appartment</td>
+                    @if (job.StartDate < DateTime.UtcNow)
+                    {
+                        <td><button class="btn btn-primary" @onclick="@(() => this.OnJobComplete(job.Id, job.OrderId))">Complete job</button></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="mt-5">
+        <PaginationComponent PageChanged="this.OnPageChange" PageIndex="this.jobs.PageIndex" TotalPages="this.jobs.TotalPages"></PaginationComponent>
+    </div>
+}
+
+@code {
+    private PaginatedList<JobsViewModel> jobs;
+    private string userId;
+    private string teamId;
+
+    private int? pageNumber;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.userId = (await this.AuthenticationStateTask).User.GetId();
+        this.teamId = await this.UsersService.GetTeamId(this.userId);
+
+        if (this.teamId == null)
+        {
+            NavManager.NavigateTo("/", true);
+        }
+
+        this.jobs = await PaginatedList<JobsViewModel>
+                .CreateAsync(this.JobsService.GetByTeamId<JobsViewModel>(this.teamId).Where(j => j.JobStatus == JobStatus.InProgress), this.pageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+
+    private async Task OnJobComplete(string id, string orderId)
+    {
+        var order = await this.OrdersService.GetByIdAsync<OrderInputModel>(orderId);
+
+        if (this.jobs.FirstOrDefault(j => j.Id == id).StartDate > DateTime.UtcNow)
+        {
+            this.NavManager.NavigateTo("/Team/Jobs", true);
+        }
+
+        await this.JobsService.CompleteJobAsync(id, orderId, order.ServiceFrequency, order.AppointmentStartDate, order.AppointmentEndDate);
+
+        if (order.ServiceFrequency == ServiceFrequency.Once)
+        {
+            await this.OrdersService.CompleteAsync(orderId);
+        }
+
+        await this.GetJobs();
+    }
+
+    private async Task OnPageChange(int pageNumber)
+    {
+        this.pageNumber = pageNumber;
+        await this.GetJobs();
+    }
+
+    private async Task GetJobs()
+    {
+        var jobs = this.JobsService.GetByTeamId<JobsViewModel>(this.teamId).Where(j => j.JobStatus == JobStatus.InProgress);
+        this.jobs = await PaginatedList<JobsViewModel>
+                .CreateAsync(jobs, this.pageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+}

@@ -108,7 +108,7 @@ else
 
     private async Task<ConfirmOrderInputModel> GetOrder(string id)
     {
-        var order = await this.OrdersService.GetById<ConfirmOrderInputModel>(this.Id);
+        var order = await this.OrdersService.GetByIdAsync<ConfirmOrderInputModel>(this.Id);
 
         if (order == null || order.Status != OrderStatus.Pending)
         {

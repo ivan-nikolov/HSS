@@ -44,6 +44,12 @@
                     {
                         <partial name="_AdminNavBar" />
                     }
+                    @if (this.User.IsInRole(GlobalConstants.TeamMemberRoleName))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/Team/Jobs">Jobs</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>

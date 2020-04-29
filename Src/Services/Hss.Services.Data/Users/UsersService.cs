@@ -1,9 +1,11 @@
 ﻿namespace Hss.Services.Data.Users
 {
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Hss.Data.Common.Repositories;
     using Hss.Data.Models;
+    using Microsoft.EntityFrameworkCore;
 
     public class UsersService : IUsersService
     {
@@ -17,5 +19,11 @@
         public IQueryable<ApplicationUser> GetAllUsers()
             => this.usersRepository
             .All();
+
+        public async Task<string> GetTeamId(string id)
+            => (await this.usersRepository
+            .All()
+            .FirstOrDefaultAsync(u => u.Id == id))
+            .TeamId;
     }
 }

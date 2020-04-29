@@ -60,6 +60,16 @@
             await this.jobsService.CancelByOrderIdAsync(id);
         }
 
+        public async Task CompleteAsync(string id)
+        {
+            var order = await this.ordersRepository.All()
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            order.Status = OrderStatus.Done;
+            this.ordersRepository.Update(order);
+            await this.ordersRepository.SaveChangesAsync();
+        }
+
         public async Task CreateAsync(OrderServiceModel input)
         {
             await this.ordersRepository.SaveChangesAsync();
@@ -113,13 +123,6 @@
             this.ordersRepository.Update(order);
             await this.ordersRepository.SaveChangesAsync();
         }
-
-        public async Task<T> GetById<T>(string id)
-            => await this.ordersRepository
-            .All()
-            .Where(o => o.Id == id)
-            .To<T>()
-            .FirstOrDefaultAsync();
 
         public IQueryable<T> GetPendingOrders<T>()
             => this.ordersRepository.All()
