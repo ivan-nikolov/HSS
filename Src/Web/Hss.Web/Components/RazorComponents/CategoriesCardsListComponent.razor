@@ -22,7 +22,7 @@
                     <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:13rem;">
                     <div class="card-body">
                         <h5 class="card-title">@category.Name</h5>
-                        <p class="card-text">@category.ShortDescription</p>
+                        <p class="card-text">@((MarkupString)category.ShortDescription)</p>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
                                 <div>

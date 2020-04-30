@@ -1,5 +1,6 @@
 ﻿namespace Hss.Web.ViewModels.Components.RazorComponents
 {
+    using Ganss.XSS;
     using Hss.Data.Models;
     using Hss.Services.Mapping;
 
@@ -15,7 +16,9 @@
 
         public string Description { get; set; }
 
-        public string ShortDescription => this.Description.Substring(0, 100) + "...";
+        public string ShortDescription => this.Description.Length < 100 ? this.Description : this.Description.Substring(0, 100) + "...";
+
+        public string SanitizeShortDescription => new HtmlSanitizer().Sanitize(this.ShortDescription);
 
         public string CategoryName { get; set; }
 

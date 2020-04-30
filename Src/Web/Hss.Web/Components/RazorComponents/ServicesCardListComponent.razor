@@ -1,4 +1,5 @@
 ﻿@using Hss.Web.ViewModels.Components.RazorComponents
+@inject Microsoft.AspNetCore.Html.IHtmlContent Html
 
 @inject Hss.Services.Data.Services.IServicesService serviceService
 
@@ -17,7 +18,7 @@ else
                     <img class="card-img-top" src="@service.ImageUrl" alt="@service.Name image" style="width:18rem;">
                     <div class="card-body">
                         <h5 class="card-title">@service.Name</h5>
-                        <p class="card-text">@service.ShortDescription</p>
+                        <p class="card-text">@((MarkupString)service.SanitizeShortDescription)</p>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
 
