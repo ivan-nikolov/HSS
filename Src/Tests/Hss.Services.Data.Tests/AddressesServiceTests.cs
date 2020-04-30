@@ -2,37 +2,24 @@
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
 
     using Hss.Data;
     using Hss.Data.Models;
     using Hss.Data.Repositories;
     using Hss.Services.Data.Addresses;
-    using Hss.Services.Mapping;
     using Hss.Services.Models.Addresses;
-    using Hss.Services.Models.Categories;
-    using Hss.Web.ViewModels;
     using Microsoft.EntityFrameworkCore;
-
-    using Moq;
 
     using Xunit;
 
-    public class AddressesServiceTests
+    public class AddressesServiceTests : TestsBase
     {
-        public AddressesServiceTests()
-        {
-            AutoMapperConfig.RegisterMappings(
-                typeof(ErrorViewModel).GetTypeInfo().Assembly,
-                typeof(CategoryServiceModel).GetTypeInfo().Assembly);
-        }
-
         [Fact]
         public async Task CreateAsyncWorksCorrectly()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "AddressesDb").Options;
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             var dbContext = new ApplicationDbContext(options);
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
@@ -54,13 +41,15 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
                 UserId = Guid.NewGuid().ToString(),
             };
+
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
             var result = service.CheckIfAddressIsValidForUser(1, address.UserId);
 
             Assert.True(result);
@@ -75,13 +64,15 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
                 UserId = Guid.NewGuid().ToString(),
             };
+
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
             var result = service.CheckIfAddressIsValidForUser(1, Guid.NewGuid().ToString());
 
             Assert.False(result);
@@ -96,12 +87,14 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
             };
+
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
             await service.DeleteAsync(1);
             var addressesInDbCount = repository.All().ToList().Count();
 
@@ -117,12 +110,14 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
             };
+
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
             await service.DeleteAsync(2);
             var addressesInDbCount = repository.All().ToList().Count();
 
@@ -138,20 +133,23 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
                 CityId = 1,
             };
 
-            var addressTwo = new AddressServiceModel()
+            var addressTwo = new Address()
             {
                 Id = 2,
                 CityId = 1,
             };
+
+            dbContext.Add(address);
+            dbContext.Add(addressTwo);
+            await dbContext.SaveChangesAsync();
+
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
-            await service.CreateAsync(addressTwo);
             await service.DeleteByCityIdAsync(1);
             var addressesInDbCount = repository.All().ToList().Count();
 
@@ -167,7 +165,7 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
                 CityId = 1,
@@ -178,8 +176,9 @@
                 StreetName = "1",
             };
 
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
 
             var editedAddress = new AddressServiceModel()
             {
@@ -212,7 +211,7 @@
 
             var repository = new EfDeletableEntityRepository<Address>(dbContext);
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
             };
@@ -222,8 +221,9 @@
                 Id = 2,
             };
 
+            dbContext.Add(address);
+            await dbContext.SaveChangesAsync();
             var service = new AddressesService(repository);
-            await service.CreateAsync(address);
             await service.EditAsync(editedAddress);
             var addressesInDbCount = repository.All().ToList().Count();
 
@@ -241,24 +241,32 @@
 
             var userId = Guid.NewGuid().ToString();
 
-            var address = new AddressServiceModel()
+            var address = new Address()
             {
                 Id = 1,
                 UserId = userId,
             };
 
-            var addressTwo = new AddressServiceModel()
+            var addressTwo = new Address()
             {
                 Id = 2,
                 UserId = userId,
             };
-            var service = new AddressesService(repository);
-            await service.CreateAsync(address);
-            await service.CreateAsync(addressTwo);
-            var addresses = service.GetUserAddresses<AddressServiceModel>(userId);
-            var addressesInDbCount = repository.All().ToList().Count();
 
-            Assert.Equal(addresses.Count(), addressesInDbCount);
+            var addressThree = new Address()
+            {
+                Id = 3,
+                UserId = Guid.NewGuid().ToString(),
+            };
+
+            dbContext.Add(address);
+            dbContext.Add(addressTwo);
+            dbContext.Add(addressThree);
+            await dbContext.SaveChangesAsync();
+            var service = new AddressesService(repository);
+            var addresses = service.GetUserAddresses<AddressServiceModel>(userId);
+
+            Assert.Equal(2, addresses.Count());
         }
     }
 }

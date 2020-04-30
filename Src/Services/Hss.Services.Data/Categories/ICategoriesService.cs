@@ -9,8 +9,6 @@
     {
         Task<int> CreateAsync(CategoryServiceModel input);
 
-        Task<T> GetByIdWithDeletedAsync<T>(int id);
-
         Task<T> GetByIdAsync<T>(int id);
 
         IEnumerable<T> GetAllRootCategories<T>();

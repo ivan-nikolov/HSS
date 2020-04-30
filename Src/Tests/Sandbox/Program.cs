@@ -5,6 +5,8 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using CommandLine;
+
     using Hss.Data;
     using Hss.Data.Common;
     using Hss.Data.Common.Repositories;
@@ -13,8 +15,6 @@
     using Hss.Data.Seeding;
     using Hss.Services.Data;
     using Hss.Services.Messaging;
-
-    using CommandLine;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

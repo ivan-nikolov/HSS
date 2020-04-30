@@ -74,17 +74,10 @@
         {
             var category = this.categoryRepository
                 .All().Where(c => c.Id == id);
-            var secondcategory = category.To<T>();
-            var result = await secondcategory.FirstOrDefaultAsync();
+            var secondCategory = category.To<T>();
+            var result = await secondCategory.FirstOrDefaultAsync();
 
             return result;
-        }
-
-        public async Task<T> GetByIdWithDeletedAsync<T>(int id)
-        {
-            var category = await this.categoryRepository.GetByIdWithDeletedAsync(id);
-
-            return category.To<T>();
         }
 
         public async Task UpdateAsync(CategoryServiceModel input)
