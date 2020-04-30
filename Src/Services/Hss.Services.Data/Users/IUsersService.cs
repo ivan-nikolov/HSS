@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
+
     using Hss.Data.Models;
 
     public interface IUsersService

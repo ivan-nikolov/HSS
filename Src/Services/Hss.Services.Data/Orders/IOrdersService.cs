@@ -11,11 +11,13 @@
     {
         Task CancelAsync(string id);
 
-        Task CreateAsync(OrderServiceModel input);
+        Task<string> CreateAsync(OrderServiceModel input);
 
         Task CompleteAsync(string id);
 
         bool CheckIfOrderExists(string id);
+
+        T GetById<T>(string id);
 
         Task<T> GetByIdAsync<T>(string id);
 

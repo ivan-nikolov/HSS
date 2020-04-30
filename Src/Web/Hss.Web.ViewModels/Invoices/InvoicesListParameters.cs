@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
+
     using Hss.Data.Models.Enums;
     using Hss.Web.Infrastructure.Attributes;
     using Hss.Web.ViewModels.Common;
@@ -23,6 +24,7 @@
         [Display(Name = "From")]
         public DateTime AfterDate { get; set; }
 
+        [ComparisonAttribute(nameof(AfterDate), ComparisonType.GreaterThanOrEqualTo, ErrorMessage = ValidationConstants.DateRangeErrorMessage)]
         [Display(Name = "To")]
         public DateTime BeforeDate { get; set; }
 

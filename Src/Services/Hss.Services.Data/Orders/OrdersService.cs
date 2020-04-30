@@ -70,7 +70,7 @@
             await this.ordersRepository.SaveChangesAsync();
         }
 
-        public async Task CreateAsync(OrderServiceModel input)
+        public async Task<string> CreateAsync(OrderServiceModel input)
         {
             await this.ordersRepository.SaveChangesAsync();
             var billingFrequency = BillingFrequency.Once;
@@ -113,6 +113,8 @@
                     .Count();
                 await this.invoicesService.CreateAsync(order.Id, order.ClientId, order.ServiceId, order.ServiceFrequency, order.AddresId, jobsCount);
             }
+
+            return order.Id;
         }
 
         public async Task ConfirmAsync(string id, string teamId)
@@ -145,6 +147,12 @@
             => this.ordersRepository.All()
             .Where(o => o.ServiceFrequency != ServiceFrequency.Once && o.Jobs.Any(j => j.JobStatus == JobStatus.Done))
             .To<T>();
+
+        public T GetById<T>(string id)
+            => this.ordersRepository.All()
+            .Where(o => o.Id == id)
+            .To<T>()
+            .FirstOrDefault();
 
         public async Task<T> GetByIdAsync<T>(string id)
             => await this.ordersRepository.All()
@@ -219,6 +227,5 @@
                     && o.Appointment.StartDate.Year <= appointmentDate.Year
                     && o.Appointment.StartDate.Month <= appointmentDate.Month)
                 .Sum(o => o.Service.DurationInHours);
-
     }
 }

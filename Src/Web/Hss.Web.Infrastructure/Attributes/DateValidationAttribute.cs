@@ -24,7 +24,7 @@
         {
             var date = (DateTime)value;
 
-            if (date < DateTime.UtcNow.Date 
+            if (date < DateTime.UtcNow.Date
                 || date.DayOfWeek == DayOfWeek.Saturday
                 || date.DayOfWeek == DayOfWeek.Sunday
                 || date.Hour < this.minHour

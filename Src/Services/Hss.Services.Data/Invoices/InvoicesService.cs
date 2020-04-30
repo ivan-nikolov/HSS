@@ -80,7 +80,7 @@
             }
             else
             {
-                invoices= invoices.OrderBy(i => i.CreatedOn);
+                invoices = invoices.OrderBy(i => i.CreatedOn);
             }
 
             return invoices.To<T>();

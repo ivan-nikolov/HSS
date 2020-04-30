@@ -2,11 +2,11 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
+
     using Hss.Data.Models;
     using Hss.Services.Mapping;
     using Hss.Web.ViewModels.Administration.Users;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 

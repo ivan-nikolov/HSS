@@ -8,6 +8,7 @@
 @inject Hss.Services.Data.Orders.IOrdersService OrdersService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavManager
+@inject Hss.Services.Notifier.Notifier Notifier
 @inject IJSRuntime JSRuntime
 
 
@@ -54,9 +55,6 @@
                     <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
 
-                @*<div class="form-group">
-                    <input type="text" @bind-value="this.input.AppointmentDate" @bind-value:format="yyyy-MM-dd" id="datepicker"/>
-                </div>*@
                 <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited"></HoursList>
             }
             <div class="mt-4">
@@ -108,12 +106,6 @@
         this.input.ClientId = userId;
     }
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    await this.JSRuntime.InvokeVoidAsync("addDatePicker");
-    //    await base.OnAfterRenderAsync(firstRender);
-    //}
-
     private async Task HandleValidSubmitAsync()
     {
         var isValid = this.editContext.Validate() && this.ServerValidate(editContext);
@@ -122,7 +114,7 @@
             this.input.IsRecurrent = this.SelectedService.IsRecurrent;
             this.input.ServiceDuration = this.SelectedService.DurationInHours;
             this.isSubmited = true;
-            await this.OrdersService.CreateAsync(this.input.To<OrderServiceModel>());
+            var orderId = await this.OrdersService.CreateAsync(this.input.To<OrderServiceModel>());
             NavManager.NavigateTo("/Accounts/Dashboard", true);
         }
     }
@@ -131,7 +123,7 @@
     {
         var serverChecksValid = this.AddressesService.CheckIfAddressIsValidForUser(this.input.AddressId, this.input.ClientId)
             && this.ServicesService.CheckIfServiceExists(this.input.ServiceId)
-            && this.input.AppointmentDate.Hour >= 0
+            && this.input.AppointmentDate.Hour >= 8
             && this.input.AppointmentDate.Hour <= 18;
 
         return serverChecksValid;

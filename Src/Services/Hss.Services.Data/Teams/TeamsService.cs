@@ -95,17 +95,20 @@
             var freeTeams = teams
                     .Where(t =>
                     !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Once && o.Status == OrderStatus.InProgress)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Once 
+                            && (o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending))
                         .Select(o => o.Appointment)
                         .Any(a => (startDate >= a.StartDate && startDate <= a.EndDate)
                             || (startDate < a.StartDate && endDate >= a.StartDate))
                     && !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Daily && o.Status == OrderStatus.InProgress)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Daily 
+                            && (o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending))
                         .Select(o => o.Appointment)
                         .Any(a => (startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)
                             || (startDate.TimeOfDay < a.StartDate.TimeOfDay && endDate.TimeOfDay >= a.StartDate.TimeOfDay))
                     && !t.Orders
-                        .Where(o => o.ServiceFrequency == ServiceFrequency.Weekly && o.Status == OrderStatus.InProgress)
+                        .Where(o => o.ServiceFrequency == ServiceFrequency.Weekly 
+                            && (o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending))
                         .Select(o => o.Appointment)
                         .Any(a => a.DayOfWeek == dayOfWeek
                             && ((startDate.TimeOfDay >= a.StartDate.TimeOfDay && startDate.TimeOfDay <= a.EndDate.TimeOfDay)

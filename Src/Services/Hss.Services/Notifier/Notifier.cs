@@ -14,7 +14,7 @@
 
         public event Func<List<string>, Task> OnCancelProcessingBooking;
 
-        public event EventHandler<CreateOrderEventArgs> OnCreatedOrder;
+        public event Func<string, Task> OnCreatedOrder;
 
         public async Task ProcessingBooking(string orderId)
         {
@@ -36,9 +36,9 @@
             await this.OnCancelProcessingBooking?.Invoke(this.bookingsInProcess);
         }
 
-        public void OrderCreated(object sender, CreateOrderEventArgs eventArgs)
+        public async Task OrderCreated(string orderId)
         {
-            this.OnCreatedOrder?.Invoke(sender, eventArgs);
+            await this.OnCreatedOrder?.Invoke(orderId);
         }
     }
 }
