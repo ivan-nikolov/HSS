@@ -122,7 +122,7 @@
             DateTime currentDate;
             var currentMonth = apt.StartDate.AddMonths(appointment.Month - apt.StartDate.Month);
             currentDate = currentMonth.AddDays((double)(apt.DayOfWeek - currentMonth.DayOfWeek));
-            if (currentDate > currentMonth)
+            if (currentDate.Month > currentMonth.Month)
             {
                 currentDate = currentDate.AddDays(-7);
             }
@@ -151,18 +151,20 @@
                        {
                            ServiceFrequency = o.ServiceFrequency,
                            Appointment = o.Appointment,
+                           Status = o.Status,
                        }).ToList(),
                    }).ToList();
 
-            var resulst = allTeams
+            var result = allTeams
                 .Where(t => !t.Orders
-                    .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly && o.Status == OrderStatus.InProgress)
+                    .Where(o => o.ServiceFrequency == ServiceFrequency.Monthly
+                        && (o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending))
                     .Select(o => o.Appointment)
-                    .Any(a => this.CheckMonthlyAppointments(a, currentDate, endDate)))
+                    .All(a => this.CheckMonthlyAppointments(a, currentDate, endDate)))
                 .Select(t => t.Id)
                 .ToList().Count > 0;
 
-            return resulst;
+            return result;
         }
 
         private void GenerateTeamServices(TeamServiceModel input, Team team)

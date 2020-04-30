@@ -80,7 +80,11 @@
         private DateTime GetCurrentMothJobsDate(DateTime appointmentStartDate, DateTime appointment)
         {
             DateTime currentDate;
-            var currentMonth = appointmentStartDate.AddMonths(appointment.Month - appointmentStartDate.Month);
+
+            var currentMonth = appointment < appointmentStartDate
+                ? appointmentStartDate
+                : appointmentStartDate.AddMonths(appointment.Month - appointmentStartDate.Month);
+
             currentDate = currentMonth.AddDays((double)(appointmentStartDate.DayOfWeek - currentMonth.DayOfWeek));
             if (currentDate > currentMonth)
             {
