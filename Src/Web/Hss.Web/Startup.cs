@@ -34,6 +34,7 @@
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
+    using Hss.Services.Notifier;
     using Hss.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -113,6 +114,9 @@
             Cloudinary cloudinary = new Cloudinary(account);
             services.AddSingleton(cloudinary);
 
+            // Notifier
+            services.AddSingleton<Notifier>();
+
             // Application services
             services.AddTransient<IEmailSender>(serviceProvider => new SendGridEmailSender(this.configuration["SendGrid:ApiKey"]));
             services.AddTransient<ISettingsService, SettingsService>();
@@ -130,6 +134,7 @@
             services.AddTransient<IAppointmentsService, AppointmentsService>();
 
             services.AddScoped<IModalService, ModalService>();
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -144,11 +149,7 @@
             {
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-                if (env.IsDevelopment())
-                {
-                    dbContext.Database.Migrate();
-                }
-
+                dbContext.Database.Migrate();
                 new ApplicationDbContextSeeder().SeedAsync(dbContext, serviceScope.ServiceProvider).GetAwaiter().GetResult();
             }
 

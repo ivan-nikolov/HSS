@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Hss.Web.ViewModels.Administration.Teams
+﻿namespace Hss.Web.ViewModels.Administration.Teams
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class DeleteTeamViewModel
     {
         public string Id { get; set; }

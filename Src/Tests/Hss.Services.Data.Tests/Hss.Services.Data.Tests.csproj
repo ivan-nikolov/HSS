@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Hss.Data\Hss.Data.csproj" />
     <ProjectReference Include="..\..\Services\Hss.Services.Data\Hss.Services.Data.csproj" />
+    <ProjectReference Include="..\..\Web\Hss.Web.ViewModels\Hss.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

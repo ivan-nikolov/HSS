@@ -3,7 +3,11 @@
 @using Hss.Common
 @using Hss.Web.Components.RazorComponents.Shared
 @using Hss.Web.ViewModels.Administration.Dashboard
+@using Hss.Services.Notifier.EventArgs
 @inject Hss.Services.Data.Orders.IOrdersService OrdersService
+@inject Hss.Services.Notifier.Notifier Notifier
+@inject NavigationManager NavManager
+@implements IDisposable
 
 @if (this.orders == null)
 {
@@ -30,7 +34,13 @@ else
                 </h5>
             </div>
             <div class="card-body">
-                <h5 class="card-title">Team Name: @order.TeamName</h5>
+                <h5 class="card-title">
+                    Team Name: @order.TeamName
+                    @if (this.processingOrders.Contains(order.Id))
+                    {
+                        <span class="text-danger">Processing...</span>
+                    }
+                </h5>
                 <p class="card-text"><b>Service frequency:</b> @order.ServiceFrequency.ToString()</p>
                 @if (order.ServiceFrequency.ToString() == "Weekly")
                 {
@@ -39,7 +49,7 @@ else
                 <p class="card-text"><b>Next visit:</b> from <b>@order.StartDate</b> to <b>@order.EndDate</b></p>
                 <p class="card-text"><b>Address:</b> @order.Address.CityName @order.Address.Neighborhood @order.Address.StreetName @order.Address.BuildingNumber @order.Address.Appartment</p>
                 <div></div>
-                <a href="/Administration/Orders/Confirm/@order.Id" class="btn btn-info">Confirm Booking</a>
+                <button @onclick="@(() => this.ProcessBooking(order.Id))" class="btn btn-info">Confirm Booking</button>
             </div>
         </div>
     }
@@ -52,12 +62,18 @@ else
 
 @code {
     private PaginatedList<DashboardOrderViewModel> orders;
-
     private int? pageNumber;
+    private List<string> processingOrders;
+
 
     protected override async Task OnInitializedAsync()
     {
+        this.processingOrders = new List<string>();
+
         await this.GetOrders();
+        this.Notifier.OnProcessPendingBookind += this.OnProcessingBooking;
+        this.Notifier.OnCancelProcessingBooking += this.OnCancelledProcessing;
+        await this.Notifier.ProcessingBooking(string.Empty);
     }
 
     private async Task OnPageChange(int pageNumber)
@@ -70,5 +86,37 @@ else
     {
         this.orders = await PaginatedList<DashboardOrderViewModel>
                 .CreateAsync(this.OrdersService.GetPendingOrders<DashboardOrderViewModel>(), this.pageNumber ?? GlobalConstants.DefaultPageNumber, GlobalConstants.DefaultPageSize);
+    }
+
+    public async Task OnProcessingBooking(List<string> bookingsInProcess)
+    {
+        await this.InvokeAsync(() =>
+        {
+            this.processingOrders = bookingsInProcess;
+
+            this.StateHasChanged();
+        });
+    }
+
+    public async Task OnCancelledProcessing(List<string> bookingsInProcess)
+    {
+        await this.InvokeAsync(() =>
+        {
+            this.processingOrders = bookingsInProcess;
+
+            this.StateHasChanged();
+        });
+    }
+
+    private async Task ProcessBooking(string orderId)
+    {
+        await this.Notifier.ProcessingBooking(orderId);
+        this.NavManager.NavigateTo($"/Administration/Orders/Confirm/{orderId}");
+    }
+
+    public void Dispose()
+    {
+        this.Notifier.OnProcessPendingBookind -= this.OnProcessingBooking;
+        this.Notifier.OnCancelProcessingBooking += this.OnCancelledProcessing;
     }
 }

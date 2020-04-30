@@ -7,6 +7,7 @@
 @inject Hss.Services.Data.Orders.IOrdersService OrdersService
 @inject Hss.Services.Data.Teams.ITeamsService TeamsService
 @inject NavigationManager NavManager
+@inject Hss.Services.Notifier.Notifier Notifier
 
 @if (this.input == null)
 {
@@ -31,7 +32,7 @@ else
             <p class="card-text"><b>Address:</b> @input.Address.CityName @input.Address.Neighborhood @input.Address.StreetName @input.Address.BuildingNumber @input.Address.Appartment</p>
             <div class="d-flex justify-content-between">
                 <button @onclick="@(() => this.OnConfirmAsync())" class="btn btn-primary">Confirm Booking</button>
-                <a href="/Administration/Dashboard" class="btn btn-info">Back to List</a>
+                <button @onclick="@(() => this.OnBackClick())" class="btn btn-info">Back to List</button>
                 <button @onclick="@(() => this.OnCancelAsync())" class="btn btn-warning">Cancel Booking</button>
             </div>
         </div>
@@ -116,5 +117,11 @@ else
         }
 
         return order;
+    }
+
+    private async Task OnBackClick()
+    {
+        await this.Notifier.CancelProcessingBookings(this.Id);
+        this.NavManager.NavigateTo("/Administration/Dashboard", true);
     }
 }

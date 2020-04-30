@@ -17,7 +17,8 @@
         private readonly IOrdersService ordersService;
         private readonly IInvoicesService invoicesService;
 
-        public RecurrentOrdersInvoiceGeneratorJob(IOrdersService ordersService,
+        public RecurrentOrdersInvoiceGeneratorJob(
+            IOrdersService ordersService,
             IInvoicesService invoicesService)
         {
             this.ordersService = ordersService;

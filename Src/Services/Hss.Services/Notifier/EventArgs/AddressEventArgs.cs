@@ -1,10 +1,9 @@
-﻿namespace Hss.Web.ViewModels.Administration.Dashboard
+﻿namespace Hss.Services.Notifier.EventArgs
 {
     using Hss.Data.Models;
     using Hss.Services.Mapping;
-    using Hss.Services.Notifier.EventArgs;
 
-    public class AddressDashboardViewModel : IMapFrom<Address>, IMapFrom<AddressEventArgs>
+    public class AddressEventArgs : IMapFrom<Address>
     {
         public string BuildingNumber { get; set; }
 
