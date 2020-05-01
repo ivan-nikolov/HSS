@@ -49,7 +49,9 @@
 
         public async Task DeleteByCountryIdAsync(int countryId)
         {
-            var cities = await this.GetByCountryIdAsync<City>(countryId);
+            var cities = this.citiesRepository.All()
+                .Where(c => c.CountryId == countryId)
+                .ToList();
             foreach (var city in cities)
             {
                 await this.addressesService.DeleteByCityIdAsync(city.Id);
