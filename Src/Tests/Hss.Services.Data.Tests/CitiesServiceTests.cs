@@ -18,7 +18,7 @@
     public class CitiesServiceTests : TestsBase
     {
         [Fact]
-        public async Task CategoryExistsReturnsTrueIfCategoryExists()
+        public async Task CheckIfCityExistsAsyncReturnsTrueIfCityExists()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
@@ -42,7 +42,7 @@
         }
 
         [Fact]
-        public async Task CategoryExistsReturnsFalseIfCategoryDoesntExists()
+        public async Task CheckIfCityExistsAsyncReturnsFalseIfCityDoesntExists()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
@@ -316,6 +316,46 @@
             var citiesInDb = dbContext.Cities.ToList();
 
             Assert.Single(citiesInDb);
+        }
+
+        [Fact]
+        public async Task GetAllAsyncWorksCorrectly()
+        {
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
+            var dbContext = new ApplicationDbContext(options);
+
+            var addressesService = new Mock<IAddressesService>();
+
+            var repository = new EfDeletableEntityRepository<City>(dbContext);
+
+            var service = new CitiesService(repository, addressesService.Object);
+            var city = new City()
+            {
+                Id = 1,
+                CountryId = 1,
+            };
+
+            var city2 = new City()
+            {
+                Id = 2,
+                CountryId = 1,
+            };
+
+            var city3 = new City()
+            {
+                Id = 3,
+                CountryId = 2,
+            };
+
+            dbContext.Add(city);
+            dbContext.Add(city2);
+            dbContext.Add(city3);
+            await dbContext.SaveChangesAsync();
+
+            var result = await service.GetAllAsync<CityServiceModel>();
+
+            Assert.Equal(3, result.Count());
         }
     }
 }
