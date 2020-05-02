@@ -1,5 +1,7 @@
 ﻿namespace Hss.Services.Models.Invoices
 {
+    using System;
+
     using Hss.Data.Models;
     using Hss.Data.Models.Enums;
     using Hss.Services.Mapping;
@@ -23,5 +25,7 @@
         public bool UseDiscountPercentage { get; set; }
 
         public string OrderId { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }

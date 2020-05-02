@@ -1,5 +1,6 @@
 ﻿namespace Hss.Services.Cron
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -46,6 +47,7 @@
 
             var invoice = new InvoiceServiceModel()
             {
+                Id = Guid.NewGuid().ToString(),
                 AddressId = order.AddressId,
                 ClientId = order.ClientId,
                 Discount = discount,

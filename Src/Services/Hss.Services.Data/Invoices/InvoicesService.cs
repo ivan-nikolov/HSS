@@ -71,8 +71,8 @@
             var invoices = this.invoicesRepository.All()
                 .Where(i => i.ClientId == clientId
                 && i.Status == status
-                && i.CreatedOn < beforeDate
-                && i.CreatedOn > afterDate);
+                && i.CreatedOn <= beforeDate
+                && i.CreatedOn >= afterDate);
 
             if (orderByCreatedDateDesc)
             {
