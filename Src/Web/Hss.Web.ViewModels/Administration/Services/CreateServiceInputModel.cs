@@ -29,6 +29,9 @@
 
         public int ParentCategoryId { get; set; }
 
+        [Display(Name = "Recurrent Service")]
+        public bool IsRecurrent { get; set; }
+
         public void CreateMappings(IProfileExpression configuration)
         {
             configuration.CreateMap<CreateServiceInputModel, ServiceServiceModel>()
