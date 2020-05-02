@@ -4,12 +4,13 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Hss.Data.Models.Enums;
     using Hss.Services.Models.Teams;
 
     public interface ITeamsService
     {
         Task<string> CreateAsync(TeamServiceModel input);
+
+        Task<IEnumerable<T>> GetAll<T>();
 
         IEnumerable<T> GetTeamsInLocation<T>(int cityId);
 

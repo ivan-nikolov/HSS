@@ -1,4 +1,6 @@
-﻿@model Hss.Web.ViewModels.Administration.Users.UserAllListModel
+﻿@using Hss.Common
+
+@model Hss.Web.ViewModels.Administration.Users.UserAllListModel
 
 @{
     ViewData["Title"] = "All Users";
@@ -8,7 +10,7 @@
         <div class="form-group">
             <label for="SearchString">
                 Username: <input class="form-control" type="text" name="SearchString">
-                <input class="btn btn-primary" type="submit" value="Username" />
+                <input class="btn btn-primary" type="submit" value="Search" />
             </label>
         </div>
     </form>
@@ -32,6 +34,10 @@
                 <th scope="col">@user.LastName</th>
                 <th scope="col">@user.Email</th>
                 <th scope="col">@(string.Join(", ", user.UserRoles))</th>
+                @if (user.UserRoles.Any(x => x == GlobalConstants.ClientRoleName))
+                {
+                    <th><a class="btn btn-primary" asp-area="Administration" asp-controller="Users" asp-action="AssignUserToTeam" asp-route-id="@user.Id">Assign to team</a></th>
+                }
             </tr>
             }
         </tbody>

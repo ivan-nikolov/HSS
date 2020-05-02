@@ -1,0 +1,22 @@
+﻿@model Hss.Web.ViewModels.Administration.Users.AssignUserToTeamInputModel
+
+@{
+    ViewData["Title"] = "Assign user to team";
+}
+
+    <form asp-area="Administration" asp-controller="Users" asp-action="AssignUserToTeam" method="post">
+        <div class="form-group">
+            <label  asp-for="Username"></label>
+            <input type="text" class="form-control" asp-for="Username" value="@Model.Username" disabled="disabled">
+        </div>
+        <div class="form-group">
+            <label asp-for="UserId"></label>
+            <input type="text"asp-for="UserId" class="form-control" value="@Model.UserId" hidden="hidden">
+        </div>
+        <div class="form-group">
+            <label asp-for="TeamId">Select Team</label>
+            <select class="form-control" asp-for="TeamId" asp-items="@Model.Teams">
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>

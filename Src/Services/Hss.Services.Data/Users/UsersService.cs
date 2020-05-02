@@ -16,6 +16,17 @@
             this.usersRepository = usersRepository;
         }
 
+        public async Task AssignUserToTeam(string userId, string teamId)
+        {
+            var user = this.usersRepository.All()
+                .Where(u => u.Id == userId)
+                .FirstOrDefault();
+
+            user.TeamId = teamId;
+            this.usersRepository.Update(user);
+            await this.usersRepository.SaveChangesAsync();
+        }
+
         public IQueryable<ApplicationUser> GetAllUsers()
             => this.usersRepository
             .All();

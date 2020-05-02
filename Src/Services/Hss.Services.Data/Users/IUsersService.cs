@@ -10,5 +10,7 @@
         IQueryable<ApplicationUser> GetAllUsers();
 
         Task<string> GetTeamId(string id);
+
+        Task AssignUserToTeam(string userId, string teamId);
     }
 }

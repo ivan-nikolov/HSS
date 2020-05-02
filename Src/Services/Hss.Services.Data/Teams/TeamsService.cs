@@ -53,6 +53,11 @@
             await this.teamsRepository.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAll<T>()
+            => await this.teamsRepository.All()
+            .To<T>()
+            .ToListAsync();
+
         public T GetById<T>(string id)
             => this.teamsRepository.All()
             .Where(t => t.Id == id)
@@ -90,7 +95,10 @@
             var weekOfMonth = startDate.GetWeekOfMonth();
             var dayOfWeek = (int)startDate.DayOfWeek;
             var teams = this.teamsRepository.All()
-                .Where(t => t.CityId == cityId && t.Services.Select(s => s.ServiceId).Contains(serviceId));
+                .Where(t => 
+                t.CityId == cityId
+                && t.Services.Select(s => s.ServiceId).Contains(serviceId)
+                && t.TeamMembers.Any());
 
             var freeTeams = teams
                     .Where(t =>

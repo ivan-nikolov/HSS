@@ -1,9 +1,10 @@
 ﻿@page "/Administration/Dashboard"
 @layout AdminLayout
+
 @using Hss.Common
 @using Hss.Web.Components.RazorComponents.Shared
 @using Hss.Web.ViewModels.Administration.Dashboard
-@using Hss.Services.Notifier.EventArgs
+
 @inject Hss.Services.Data.Orders.IOrdersService OrdersService
 @inject Hss.Services.Notifier.Notifier Notifier
 @inject NavigationManager NavManager
