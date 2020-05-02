@@ -33,7 +33,10 @@
                 this.bookingsInProcess.Remove(orderId);
             }
 
-            await this.OnCancelProcessingBooking?.Invoke(this.bookingsInProcess);
+            if (this.OnCancelProcessingBooking != null)
+            {
+                await this.OnCancelProcessingBooking?.Invoke(this.bookingsInProcess);
+            }
         }
 
         public async Task OrderCreated(string orderId)
