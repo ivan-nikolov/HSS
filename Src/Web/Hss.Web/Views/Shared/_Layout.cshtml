@@ -23,8 +23,8 @@
         <link href="~/css/blazored-modal.css" rel="stylesheet" />
     </environment>
     @RenderSection("Styles", false)
-    <base href="~/" />
     @Html.Raw(JavaScriptSnippet.FullScript)
+    <base href="~/" />
 </head>
 <body>
     <header>
@@ -91,7 +91,7 @@
 
     <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
 
-    <script src="_framework/blazor.server.js"></script>
+    <script src="_framework/blazor.server.js" ></script>
     @this.RenderSection("Scripts", required: false)
 </body>
 </html>

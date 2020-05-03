@@ -55,7 +55,7 @@
                     <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
 
-                <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="11" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited"></HoursList>
+                <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="workingHours" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited"></HoursList>
             }
             <div class="mt-4">
                 <button style="display: @this.submitButtonDisplay" class="btn btn-lg btn-outline-primary" type="submit">Book Service</button>
@@ -68,12 +68,11 @@
 </div>
 
 @code {
+    private const int workingHours = 11;
     private EditContext editContext;
-    private int selectedHour;
     private bool isSubmited = false;
 
     private string submitButtonDisplay = "none";
-    private bool isReccurant;
     private AddressViewModel selectedAddress;
     private CreateOrderInputModel input;
     private List<ServiceInputModel> services;

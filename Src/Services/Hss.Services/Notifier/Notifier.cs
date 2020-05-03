@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Hss.Services.Notifier.EventArgs;
-
     public class Notifier
     {
         private readonly List<string> bookingsInProcess = new List<string>();

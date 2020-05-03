@@ -95,7 +95,7 @@
             var weekOfMonth = startDate.GetWeekOfMonth();
             var dayOfWeek = (int)startDate.DayOfWeek;
             var teams = this.teamsRepository.All()
-                .Where(t => 
+                .Where(t =>
                 t.CityId == cityId
                 && t.Services.Select(s => s.ServiceId).Contains(serviceId)
                 && t.TeamMembers.Any());

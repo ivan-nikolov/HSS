@@ -1,5 +1,4 @@
-﻿@using Hss.Data.Models.Enums
-@using Hss.Web.ViewModels.Components.RazorComponents.Orders
+﻿@using Hss.Web.ViewModels.Components.RazorComponents.Orders
 @inject Hss.Services.Data.Teams.ITeamsService TeamsService
 
 @if (this.hours == null)
@@ -23,8 +22,8 @@ else
 }
 
 @code {
+    private const int workdayStartHour = 8;
     private List<HourViewModel> hours;
-    private bool firstRender = true;
     private int selectedHour;
 
     [Parameter]
@@ -58,7 +57,7 @@ else
         if (!this.IsSubmitted)
         {
             this.hours = new List<HourViewModel>();
-            var workingHours = Enumerable.Range(8, WorkingHours);
+            var workingHours = Enumerable.Range(workdayStartHour, WorkingHours);
             var date = SelectedDate.Date;
             foreach (var hour in workingHours)
             {
