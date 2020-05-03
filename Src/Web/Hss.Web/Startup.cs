@@ -25,12 +25,14 @@
     using Hss.Services.Data.Categories;
     using Hss.Services.Data.CIties;
     using Hss.Services.Data.Countries;
+    using Hss.Services.Data.DateTime;
     using Hss.Services.Data.Invoices;
     using Hss.Services.Data.JobsService;
     using Hss.Services.Data.Orders;
     using Hss.Services.Data.Services;
     using Hss.Services.Data.Teams;
     using Hss.Services.Data.Users;
+    using Hss.Services.DateTime;
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
@@ -132,6 +134,7 @@
             services.AddTransient<IJobsService, JobsService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IAppointmentsService, AppointmentsService>();
+            services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
             services.AddScoped<IModalService, ModalService>();
             services.AddApplicationInsightsTelemetry();

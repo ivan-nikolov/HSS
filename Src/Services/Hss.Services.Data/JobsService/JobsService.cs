@@ -1,22 +1,24 @@
 ﻿namespace Hss.Services.Data.JobsService
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Data.Common.Repositories;
     using Hss.Data.Models;
     using Hss.Data.Models.Enums;
+    using Hss.Services.Data.DateTime;
     using Hss.Services.Mapping;
 
     public class JobsService : IJobsService
     {
         private readonly IDeletableEntityRepository<Job> jobsRepository;
+        private readonly IDateTimeProvider dateTimeProvider;
 
-        public JobsService(IDeletableEntityRepository<Job> jobsRepository)
+        public JobsService(IDeletableEntityRepository<Job> jobsRepository, IDateTimeProvider dateTimeProvider)
         {
             this.jobsRepository = jobsRepository;
+            this.dateTimeProvider = dateTimeProvider;
         }
 
         public async Task CancelByOrderIdAsync(string orderId)
@@ -77,33 +79,33 @@
             .OrderByDescending(j => j.StartDate)
             .To<T>();
 
-        private DateTime GetCurrentMothJobsDate(DateTime appointmentStartDate, DateTime appointment)
+        private DateTime GetCurrentMothJobsDate(DateTime appointmentStartDate, DateTime currentDate)
         {
-            DateTime currentDate;
+            DateTime nextJobDate;
 
-            var currentMonth = appointment < appointmentStartDate
+            var currentMonth = currentDate < appointmentStartDate
                 ? appointmentStartDate
-                : appointmentStartDate.AddMonths(appointment.Month - appointmentStartDate.Month);
+                : appointmentStartDate.AddMonths(currentDate.Month - appointmentStartDate.Month + 1);
 
-            currentDate = currentMonth.AddDays((double)(appointmentStartDate.DayOfWeek - currentMonth.DayOfWeek));
-            if (currentDate > currentMonth)
+            nextJobDate = currentMonth.AddDays((double)(appointmentStartDate.DayOfWeek - currentMonth.DayOfWeek));
+            if (nextJobDate > currentMonth)
             {
-                currentDate = currentDate.AddDays(-7);
+                nextJobDate = nextJobDate.AddDays(-7);
             }
 
-            return currentDate;
+            return nextJobDate;
         }
 
         private DateTime GetNextJobStartDate(ServiceFrequency serviceFrequency, DateTime appointmentStartDate)
         {
-            var todaysDate = DateTime.UtcNow.Date;
+            var todaysDate = this.dateTimeProvider.GetUtcNow().Date;
 
             var startDate = serviceFrequency switch
             {
                 ServiceFrequency.Once => appointmentStartDate,
                 ServiceFrequency.Daily => todaysDate < appointmentStartDate.Date
                     ? appointmentStartDate
-                    : todaysDate.AddDays(1).AddHours(appointmentStartDate.TimeOfDay.Hours),
+                    : todaysDate.AddDays(todaysDate.DayOfWeek == DayOfWeek.Friday ? 3 : 1).AddHours(appointmentStartDate.TimeOfDay.Hours),
                 ServiceFrequency.Weekly => todaysDate.Date < appointmentStartDate.Date
                     ? appointmentStartDate
                     : todaysDate.AddDays(7).AddHours(appointmentStartDate.TimeOfDay.Hours),
