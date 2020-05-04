@@ -81,7 +81,7 @@
 
             var totalOrdersTime = this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate);
             var teamId = this.teamsService
-                .GetFreeTeams<TeamServiceModel>(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId)
+                .GetFreeTeams<TeamServiceModel>(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId, input.ServiceFrequency)
                 .OrderBy(t => this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate, t.Id))
                 .FirstOrDefault().Id;
 

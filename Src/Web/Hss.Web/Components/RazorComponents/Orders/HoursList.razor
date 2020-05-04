@@ -1,4 +1,5 @@
-﻿@using Hss.Web.ViewModels.Components.RazorComponents.Orders
+﻿@using Hss.Data.Models.Enums
+@using Hss.Web.ViewModels.Components.RazorComponents.Orders
 @inject Hss.Services.Data.Teams.ITeamsService TeamsService
 
 @if (this.hours == null)
@@ -47,6 +48,9 @@ else
     [Parameter]
     public int CityId { get; set; }
 
+    [Parameter]
+    public ServiceFrequency ServiceFrequency { get; set; }
+
     protected override void OnInitialized()
     {
         this.hours = new List<HourViewModel>();
@@ -64,7 +68,7 @@ else
                 this.hours.Add(new HourViewModel()
                 {
                     Hour = hour,
-                    IsFree = this.TeamsService.HasFreeTeams(date.AddHours(hour), date.AddHours(hour + ServiceDuration), this.CityId, this.SelecteServiceId),
+                    IsFree = this.TeamsService.HasFreeTeams(date.AddHours(hour), date.AddHours(hour + ServiceDuration), this.CityId, this.SelecteServiceId, this.ServiceFrequency),
                 });
             }
         }

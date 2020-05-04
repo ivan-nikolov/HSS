@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Hss.Data.Models.Enums;
     using Hss.Services.Models.Teams;
 
     public interface ITeamsService
@@ -22,8 +23,8 @@
 
         Task DeleteAsync(string id);
 
-        bool HasFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId);
+        bool HasFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId, ServiceFrequency serviceFrequency);
 
-        IEnumerable<T> GetFreeTeams<T>(DateTime startDate, DateTime endDate, int cityId, int serviceId);
+        IEnumerable<T> GetFreeTeams<T>(DateTime startDate, DateTime endDate, int cityId, int serviceId, ServiceFrequency serviceFrequency);
     }
 }

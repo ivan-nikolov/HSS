@@ -71,7 +71,7 @@ else
     {
         this.input = await this.GetOrder(this.Id);
 
-        this.teams = this.TeamsService.GetFreeTeams<FreeTeamsViewModel>(input.StartDate, input.EndDate, input.Address.CityId, input.ServiceId).ToList();
+        this.teams = this.TeamsService.GetFreeTeams<FreeTeamsViewModel>(input.StartDate, input.EndDate, input.Address.CityId, input.ServiceId, input.ServiceFrequency).ToList();
     }
 
     private async Task OnConfirmAsync()

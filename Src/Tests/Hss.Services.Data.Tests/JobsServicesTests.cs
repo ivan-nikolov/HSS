@@ -37,7 +37,6 @@
             Assert.Equal(expectedFinishDate, result.FinishDate);
         }
 
-
         [Theory]
         [InlineData(ServiceFrequency.Once, 1)]
         [InlineData(ServiceFrequency.Weekly, 2)]
@@ -48,7 +47,7 @@
             var dbContext = new ApplicationDbContext(options);
 
             var id = Guid.NewGuid().ToString();
-            var job = new Job() 
+            var job = new Job()
             {
                 Id = id,
             };
