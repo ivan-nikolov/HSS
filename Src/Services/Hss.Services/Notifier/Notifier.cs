@@ -12,7 +12,9 @@
 
         public event Func<List<string>, Task> OnCancelProcessingBooking;
 
-        public event Func<string, Task> OnCreatedOrder;
+        public event Func<Task> OnCreatedOrder;
+
+        public event Func<Task> OnOrderStatusChange;
 
         public async Task ProcessingBooking(string orderId)
         {
@@ -37,9 +39,20 @@
             }
         }
 
-        public async Task OrderCreated(string orderId)
+        public async Task OrderCreated()
         {
-            await this.OnCreatedOrder?.Invoke(orderId);
+            if (this.OnCreatedOrder != null)
+            {
+                await this.OnCreatedOrder?.Invoke();
+            }
+        }
+
+        public async Task OrderStatusChanged()
+        {
+            if (this.OnOrderStatusChange != null)
+            {
+                await this.OnOrderStatusChange.Invoke();
+            }
         }
     }
 }

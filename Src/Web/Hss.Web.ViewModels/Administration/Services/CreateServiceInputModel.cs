@@ -29,6 +29,9 @@
 
         public int ParentCategoryId { get; set; }
 
+        [Range(1, 40)]
+        public int Duration { get; set; }
+
         [Display(Name = "Recurrent Service")]
         public bool IsRecurrent { get; set; }
 

@@ -2,16 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using Hss.Data;
     using Hss.Data.Common.Repositories;
     using Hss.Data.Models;
     using Hss.Data.Models.Enums;
-    using Hss.Data.Repositories;
-    using Hss.Services.Data.DateTime;
     using Hss.Services.Data.Teams;
     using Hss.Services.Models.Teams;
     using Microsoft.EntityFrameworkCore;
@@ -177,6 +173,18 @@
                     ServiceFrequency.Weekly,
                     new DateTime(2020, 5, 4, 10, 0, 0),
                     new DateTime(2020, 5, 4, 12, 0, 0),
+                    0,
+                },
+
+                new object[]
+                {
+                    ServiceFrequency.Monthly,
+                    new DateTime(2020, 5, 11, 10, 0, 0),
+                    new DateTime(2020, 5, 11, 12, 0, 0),
+
+                    ServiceFrequency.Weekly,
+                    new DateTime(2020, 5, 18, 10, 0, 0),
+                    new DateTime(2020, 5, 18, 12, 0, 0),
                     0,
                 },
             };

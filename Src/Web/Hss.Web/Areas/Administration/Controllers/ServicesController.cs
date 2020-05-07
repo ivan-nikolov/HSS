@@ -58,7 +58,7 @@
                 return this.NotFound();
             }
 
-            return this.View();
+            return this.View(serviceModel);
         }
 
         [HttpPost]

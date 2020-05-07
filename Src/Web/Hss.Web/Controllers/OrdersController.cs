@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
 
     using Hss.Services.Data.Orders;
+    using Hss.Services.Notifier;
     using Hss.Web.ViewModels.Orders;
 
     using Microsoft.AspNetCore.Authorization;
@@ -12,10 +13,12 @@
     public class OrdersController : BaseController
     {
         private readonly IOrdersService ordersService;
+        private readonly Notifier notifier;
 
-        public OrdersController(IOrdersService ordersService)
+        public OrdersController(IOrdersService ordersService, Notifier notifier)
         {
             this.ordersService = ordersService;
+            this.notifier = notifier;
         }
 
         public IActionResult BookService()
@@ -43,8 +46,9 @@
             }
 
             await this.ordersService.CancelAsync(input.Id);
+            await this.notifier.OrderStatusChanged();
 
-            return this.Redirect("/Dashboard");
+            return this.Redirect("/Accounts/Dashboard");
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace Hss.Web.Areas.Administration.Controllers
 {
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Hss.Services;
@@ -9,15 +8,10 @@
     using Hss.Services.Models.Categories;
     using Hss.Web.Filters;
     using Hss.Web.ViewModels.Administration.Categories;
-    using Hss.Web.ViewModels.Categories;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class CategoriesController : AdministrationController
     {
-        private const string CategoryNotFoundErrorKey = "CategoryNotFound";
-        private const string CategoryNotFoundErrorMessage = "Category Not Found";
-
         private readonly ICategoriesService categoriesService;
         private readonly ICloudinaryService cloudinaryService;
 
@@ -54,7 +48,7 @@
             category.ImageUrl = await this.cloudinaryService.UploadAsync(input.Image);
             await this.categoriesService.CreateAsync(category);
 
-            return this.RedirectToAction("All");
+            return this.RedirectToAction("/");
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -83,7 +77,7 @@
 
             await this.categoriesService.DeleteAsync(input.Id);
 
-            return this.RedirectToAction("All");
+            return this.RedirectToAction("/");
         }
 
         public async Task<IActionResult> Details(int id)
@@ -122,7 +116,7 @@
 
             await this.categoriesService.UpdateAsync(input.To<CategoryServiceModel>());
 
-            return this.RedirectToAction("All");
+            return this.RedirectToAction("/");
         }
     }
 }

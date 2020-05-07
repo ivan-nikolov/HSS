@@ -84,6 +84,7 @@ else
         }
 
         await this.OrdersService.ConfirmAsync(this.input.Id, this.input.TeamId);
+        await this.Notifier.OrderStatusChanged();
         this.NavManager.NavigateTo("/Administration/Dashboard", true);
     }
 
@@ -92,6 +93,8 @@ else
         var order = await this.GetOrder(this.Id);
 
         await this.OrdersService.CancelAsync(this.input.Id);
+        await this.Notifier.OrderStatusChanged();
+
         this.NavManager.NavigateTo("/Administration/Dashboard", true);
     }
 

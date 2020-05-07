@@ -74,6 +74,8 @@ else
         await this.GetOrders();
         this.Notifier.OnProcessPendingBookind += this.OnProcessingBooking;
         this.Notifier.OnCancelProcessingBooking += this.OnCancelledProcessing;
+        this.Notifier.OnCreatedOrder += this.OnOrderCreated;
+        this.Notifier.OnOrderStatusChange += this.OnOrderStatusChange;
         await this.Notifier.ProcessingBooking(string.Empty);
     }
 
@@ -109,6 +111,26 @@ else
         });
     }
 
+    private async Task OnOrderCreated()
+    {
+        await this.GetOrders();
+
+        await this.InvokeAsync(() =>
+        {
+            this.StateHasChanged();
+        });
+    }
+
+    private async Task OnOrderStatusChange()
+    {
+        await this.GetOrders();
+
+        await this.InvokeAsync(() =>
+        {
+            this.StateHasChanged();
+        });
+    }
+
     private async Task ProcessBooking(string orderId)
     {
         await this.Notifier.ProcessingBooking(orderId);
@@ -119,5 +141,7 @@ else
     {
         this.Notifier.OnProcessPendingBookind -= this.OnProcessingBooking;
         this.Notifier.OnCancelProcessingBooking -= this.OnCancelledProcessing;
+        this.Notifier.OnCreatedOrder -= this.OnOrderCreated;
+        this.Notifier.OnOrderStatusChange -= this.OnOrderStatusChange;
     }
 }

@@ -114,6 +114,7 @@
             this.input.ServiceDuration = this.SelectedService.DurationInHours;
             this.isSubmited = true;
             var orderId = await this.OrdersService.CreateAsync(this.input.To<OrderServiceModel>());
+            await this.Notifier.OrderCreated();
             NavManager.NavigateTo("/Accounts/Dashboard", true);
         }
     }

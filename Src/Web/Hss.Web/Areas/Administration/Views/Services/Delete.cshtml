@@ -4,7 +4,7 @@
     ViewData["Title"] = "Delete";
 }
 
-<h3>Are you sure you want to delete this category and all it's subcategories?</h3>
+<h3>Are you sure you want to delete this service?</h3>
 <div>
     <hr />
     <div class="form-group">
@@ -16,14 +16,14 @@
         <input disabled="disabled" asp-for="CategoryName" class="form-control" />
     </div>
     <div class="form-group">
-        <label asp-for="SanitizedDescription" class="control-label"></label>
-        <input disabled="disabled" asp-for="SanitizedDescription" class="form-control" />
+        <label asp-for="SanitizedDescription" class="control-label">Description</label>
+        <p>@Html.Raw(Model.SanitizedDescription)</p>
     </div>
     <div class="form-group">
         <label asp-for="Price" class="control-label"></label>
         <input disabled="disabled" asp-for="Price" class="form-control" />
     </div>
-    <img href="@Model.IamgeUrl"/>
+    <img href="@Model.ImageUrl"/>
     <hr />
     <form asp-action="Delete" method="post">
         <div class="d-flex justify-content-between">

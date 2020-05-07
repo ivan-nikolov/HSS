@@ -170,18 +170,7 @@
 
         private IEnumerable<T> CheckMonthlyFreeTeams<T>(DateTime currentDate, DateTime endDate, IQueryable<Team> teams, ServiceFrequency serviceFrequency)
         {
-            var allTeams = teams
-                   .Select(t => new Team()
-                   {
-                       Id = t.Id,
-                       Orders = t.Orders
-                       .Select(o => new Order()
-                       {
-                           ServiceFrequency = o.ServiceFrequency,
-                           Appointment = o.Appointment,
-                           Status = o.Status,
-                       }).ToList(),
-                   }).ToList();
+            var allTeams = teams.ToList();
 
             var result = allTeams
                 .Where(t => !t.Orders
