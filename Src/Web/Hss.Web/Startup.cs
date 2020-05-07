@@ -35,6 +35,7 @@
     using Hss.Services.Mapping;
     using Hss.Services.Messaging;
     using Hss.Services.Models.Categories;
+    using Hss.Services.Notifications;
     using Hss.Services.Notifier;
     using Hss.Web.ViewModels;
 
@@ -136,6 +137,7 @@
             services.AddTransient<IDateTimeProvider, DateTimeProvider>();
 
             services.AddScoped<IModalService, ModalService>();
+            services.AddScoped<IToastService, ToastService>();
             services.AddApplicationInsightsTelemetry();
         }
 

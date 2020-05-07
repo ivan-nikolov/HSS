@@ -3,6 +3,13 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using Hss.Web.Components.RazorComponents
 @using Hss.Web.Components.RazorComponents.Shared
+@using Hss.Services.Notifications
+
+<BlazoredToasts Position="ToastPosition.BottomRight"
+                Timeout="10"
+                SuccessClass="success-toast-override"
+                SuccessIconClass="fa fa-thumbs-up"
+                ErrorIconClass="fa fa-bug"/>
 
 <BlazoredModal />
 

@@ -14,7 +14,7 @@
 
         public event Func<Task> OnCreatedOrder;
 
-        public event Func<Task> OnOrderStatusChange;
+        public event Func<string, Task> OnOrderStatusChange;
 
         public async Task ProcessingBooking(string orderId)
         {
@@ -47,11 +47,11 @@
             }
         }
 
-        public async Task OrderStatusChanged()
+        public async Task OrderStatusChanged(string orderId)
         {
             if (this.OnOrderStatusChange != null)
             {
-                await this.OnOrderStatusChange.Invoke();
+                await this.OnOrderStatusChange.Invoke(orderId);
             }
         }
     }

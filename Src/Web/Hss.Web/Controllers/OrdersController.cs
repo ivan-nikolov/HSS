@@ -46,7 +46,7 @@
             }
 
             await this.ordersService.CancelAsync(input.Id);
-            await this.notifier.OrderStatusChanged();
+            await this.notifier.OrderStatusChanged(input.Id);
 
             return this.Redirect("/Accounts/Dashboard");
         }

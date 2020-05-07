@@ -119,7 +119,10 @@
 
         public async Task ConfirmAsync(string id, string teamId)
         {
-            var order = await this.ordersRepository.GetByIdAsync(id);
+            var order = this.ordersRepository.All()
+                .Where(o => o.Id == id)
+                .FirstOrDefault();
+
             order.TeamId = teamId;
             order.Status = OrderStatus.InProgress;
             this.ordersRepository.Update(order);

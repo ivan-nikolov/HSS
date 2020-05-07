@@ -1,5 +1,6 @@
 ﻿@page "/Accounts/Dashboard"
 @layout AccountsLayout
+@implements IDisposable
 
 @using Hss.Web.Components.RazorComponents.Orders
 @using Hss.Web.Components.RazorComponents.Dashboard
@@ -7,6 +8,8 @@
 @using Data.Models.Enums
 
 @inject Hss.Services.Data.Orders.IOrdersService OrdersService
+@inject Hss.Services.Notifications.IToastService ToastService
+@inject Hss.Services.Notifier.Notifier Notifier
 @attribute [Authorize]
 
 <div class="mt-4">
@@ -29,5 +32,26 @@
 
         this.userId = (await this.AuthenticationStateTask).User.GetId();
         this.orders = this.OrdersService.GetOrdersByUserId<OrderViewModel>(this.userId).Where(o => o.Status == OrderStatus.InProgress || o.Status == OrderStatus.Pending).ToList();
+        this.Notifier.OnOrderStatusChange += this.OnOrderStatusChange;
+    }
+
+    private async Task OnOrderStatusChange(string orderId)
+    {
+        var order = this.OrdersService.GetById<OrderViewModel>(orderId);
+
+        if (order.Status == OrderStatus.InProgress)
+        {
+            this.ToastService.ShowSuccess($"Your booking for {order.ServiceName} on {order.StartDate} has been confirmed.");
+        }
+        else if (order.Status == OrderStatus.Cancelled)
+        {
+
+            this.ToastService.ShowWarning($"Your booking for {order.ServiceName} on {order.StartDate} has been cancelled by administrator.");
+        }
+    }
+
+    public void Dispose()
+    {
+        this.Notifier.OnOrderStatusChange -= this.OnOrderStatusChange;
     }
 }

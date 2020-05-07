@@ -121,7 +121,7 @@ else
         });
     }
 
-    private async Task OnOrderStatusChange()
+    private async Task OnOrderStatusChange(string orderId)
     {
         await this.GetOrders();
 
