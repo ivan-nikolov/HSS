@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'homeservicesandsolutions'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1bf15efd3fcf4a1f9e81f2cefb3f6e00 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_93152ad5b65a466c9e880852e7fcf472 }}
         package: ${{env.DOTNET_ROOT}}/myapp 
