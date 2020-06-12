@@ -113,7 +113,7 @@
 
             await this.usersService.AssignUserToTeam(input.UserId, input.TeamId);
 
-            return this.View();
+            return this.Redirect("/");
         }
     }
 }

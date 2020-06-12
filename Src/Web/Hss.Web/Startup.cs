@@ -190,6 +190,7 @@
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
                         endpoints.MapBlazorHub();
+
                         endpoints.MapFallbackToController("Blazor", "Home");
                     });
         }

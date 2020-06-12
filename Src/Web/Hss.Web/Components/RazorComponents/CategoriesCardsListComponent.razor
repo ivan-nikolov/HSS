@@ -4,7 +4,14 @@
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
 @inject Hss.Services.Data.Categories.ICategoriesService categoriesService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
+@if (this.categories == null)
+{
+    <p>Loading...</p>
+}
+else
+{
     <div class="row d-flex justify-content-center">
         @foreach (var category in this.categories)
         {
@@ -28,7 +35,7 @@
                                 <div>
                                     <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@this.isCardDisabled">@category.Name Services</button>
                                 </div>
-                                @if (this.user.IsInRole(GlobalConstants.AdministratorRoleName))
+                                @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                                 {
                                     <div>
                                         <a class="btn btn-secondary" href="/Administration/Categories/Details/@category.Id">Details</a>
@@ -41,20 +48,22 @@
             </div>
         }
     </div>
+}
 
 @code {
     private IEnumerable<CategoryComponentViewModel> categories;
     private bool isCardDisabled;
-    private ClaimsPrincipal user;
+
+    public ClaimsPrincipal User { get; set; }
 
     [CascadingParameter] int? CurrentCategoryId { get; set; }
 
     [Parameter]
     public EventCallback<int> OnSelectCategory { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        user = this.httpContextAccessor.HttpContext.User;
+        this.User = (await this.AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
     }
 
     protected override void OnParametersSet()

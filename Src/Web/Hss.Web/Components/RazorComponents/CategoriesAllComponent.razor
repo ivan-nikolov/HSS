@@ -1,21 +1,22 @@
 ﻿@inject Hss.Services.Data.Services.IServicesService servicesService
 @inject Hss.Services.Data.Categories.ICategoriesService categoriesService
+@using System.Security.Claims
 @using Hss.Web.ViewModels.Components.RazorComponents
-    <div>
-        <CascadingValue Value="category.CurrentCategoryId">
-            <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect"></CategoriesCardsListComponent>
-        </CascadingValue>
+<div>
+    <CascadingValue Value="category.CurrentCategoryId">
+        <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect"></CategoriesCardsListComponent>
+    </CascadingValue>
+    <hr />
+    @if (this.hasServices && this.category.CurrentCategoryId.HasValue)
+    {
+        <div class="d-flex justify-content-center mt-3">
+            <h2 class="display-3">@this.category.Name Services</h2>
+        </div>
+        <ServicesCardListComponent CategoryId="this.category.CurrentCategoryId.Value"></ServicesCardListComponent>
         <hr />
-        @if (this.hasServices && this.category.CurrentCategoryId.HasValue)
-        {
-            <div class="d-flex justify-content-center mt-3">
-                <h2 class="display-3">@this.category.Name Services</h2>
-            </div>
-            <ServicesCardListComponent CategoryId="this.category.CurrentCategoryId.Value"></ServicesCardListComponent>
-            <hr />
-        }
-        <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked()" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
-    </div>
+    }
+    <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked()" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
+</div>
 @code {
     private bool isDisabled;
     private bool hasServices;
