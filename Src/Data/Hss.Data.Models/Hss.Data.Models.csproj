@@ -7,6 +7,8 @@
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
+    <UserSecretsId>c1bdef6a-fef6-48a5-b9c3-80fdd37c2a55</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/d27bdd49-32b8-442b-b76d-402e6d6da5ca/resourceGroups/HSS/providers/microsoft.insights/components/homeservicesandsolutions-b720</ApplicationInsightsResourceId>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />

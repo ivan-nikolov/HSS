@@ -6,12 +6,12 @@
 }
 <h1 class="mt-4 text-center">Operational Locations</h1>
 <hr />
-<div class="container h-100">
+<div class="container h-100 d-flex flex-column justify-content-center">
     <div class="row h-100 justify-content-center">
         <div class="col-8 mt-4" id="accordion">
             @for (int i = 0; i < locations.Count; i++)
             {
-                <div class="card">
+                <div class="card accordion-card">
                     <div class="card-header" id="heading@(i)">
                         <h5 class="mb-0 d-flex justify-content-between">
                             <button class="btn btn-link" data-toggle="collapse" data-target="#collapse@(i)" aria-expanded="false" aria-controls="collapse@(i)">
@@ -42,9 +42,9 @@
                 </div>
             }
         </div>
-        <div class="col-8 d-flex justify-content-between mt-5">
+    </div>
+        <div class="col-8 d-flex justify-content-between mt-5 align-self-center">
             <a class="btn btn-primary" asp-area="Administration" asp-controller="OperationalLocations" asp-action="CreateCountry">Add Country</a>
             <a class="btn btn-primary" asp-area="Administration" asp-controller="OperationalLocations" asp-action="CreateCity">Add City</a>
         </div>
-    </div>
 </div>

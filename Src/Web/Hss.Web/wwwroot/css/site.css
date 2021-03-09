@@ -10,12 +10,49 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-    font-size: 14px;
+    font-size: 16px;
 }
 
-@media (min-width: 768) {
+@media screen and (max-width: 480px) {
     html {
-        font-size: 16px;
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+
+    .display-1 {
+        font-size: 3rem !important;
+    }
+
+    .card-list-wrapper {
+        display: flex;
+        flex-direction: column;
+        min-width: 100%;
+    }
+
+    body .card-wrapper {
+        min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .display-1 {
+        font-size: 3rem !important;
+    }
+
+    body .card-wrapper {
+        flex-grow: 1;
+    }
+
+}
+
+@media screen and (min-width: 1201px) {
+    .display-1 {
+        font-size: 4rem !important;
     }
 }
 
@@ -96,4 +133,64 @@ app {
     flex-direction: column;
 }
 
-/*Sidebar navbar*/
+/*Card*/
+.card {
+    height: 100%;
+    margin-bottom: 3rem;
+}
+
+.accordion-card {
+    height: inherit!important;
+}
+
+.card-list-wrapper {
+    margin: 0px auto;
+    display: flex;
+    justify-content: center;
+}
+
+
+.card-wrapper {
+    min-width: 20rem;
+    flex-grow: 1;
+}
+
+/*Width*/
+
+/*Height*/
+
+.min-height-10 {
+    min-height: 10vh;
+}
+
+.min-height-20 {
+    min-height: 20vh;
+}
+
+.min-height-30 {
+    min-height: 30vh;
+}
+
+.min-height-40 {
+    min-height: 40vh;
+}
+
+.min-height-50 {
+    min-height: 50vh;
+}
+
+.min-height-60 {
+    min-height: 60vh;
+}
+
+.min-height-70 {
+    min-height: 70vh;
+}
+
+.min-height-80 {
+    min-height: 80vh;
+}
+
+.min-height-90 {
+    min-height: 90vh;
+}

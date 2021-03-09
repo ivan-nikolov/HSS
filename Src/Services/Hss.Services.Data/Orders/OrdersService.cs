@@ -72,14 +72,8 @@
 
         public async Task<string> CreateAsync(OrderServiceModel input)
         {
-            await this.ordersRepository.SaveChangesAsync();
-            var billingFrequency = BillingFrequency.Once;
-            if (input.ServiceFrequency != ServiceFrequency.Once)
-            {
-                billingFrequency = BillingFrequency.Monthly;
-            }
+            var billingFrequency = input.ServiceFrequency == ServiceFrequency.Once ? BillingFrequency.Once : BillingFrequency.Monthly;
 
-            var totalOrdersTime = this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate);
             var teamId = this.teamsService
                 .GetFreeTeams<TeamServiceModel>(input.AppointmentDate, input.AppointmentDate.AddHours(input.ServiceDuration), input.CityId, input.ServiceId, input.ServiceFrequency)
                 .OrderBy(t => this.GetTotalMonthJobsTime(input.ServiceId, input.AppointmentDate, t.Id))

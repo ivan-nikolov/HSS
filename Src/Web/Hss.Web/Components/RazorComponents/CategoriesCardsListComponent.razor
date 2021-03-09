@@ -12,7 +12,7 @@
 }
 else
 {
-    <div class="row d-flex justify-content-center">
+    <div class="card-list-wrapper row">
         @foreach (var category in this.categories)
         {
             @if (category.ChildCategoriesCount == 0 && category.ServicesCount == 0)
@@ -24,16 +24,16 @@ else
                 this.isCardDisabled = false;
             }
 
-            <div class="col-3">
+            <div class="col-3 card-wrapper mb-2">
                 <div class="card">
                     <img class="card-img-top" src="@category.ImageUrl" alt="@category.Name image" style="width:13rem;">
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-between overflow-hidden">
                         <h5 class="card-title">@category.Name</h5>
                         <p class="card-text">@((MarkupString)category.ShortDescription)</p>
                         <div class="card-footer">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@this.isCardDisabled">@category.Name Services</button>
+                                    <button class="btn btn-primary" @onclick="@(() => OnCategorySelect(category.Id))" disabled="@isCardDisabled">@category.Name Services</button>
                                 </div>
                                 @if (this.User.IsInRole(GlobalConstants.AdministratorRoleName))
                                 {

@@ -1,5 +1,4 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@using Hss.Common
+﻿@using Hss.Common
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +24,6 @@
         <link href="~/css/toast.css" rel="stylesheet" />
     </environment>
     @RenderSection("Styles", false)
-    @Html.Raw(JavaScriptSnippet.FullScript)
     <base href="~/" />
 </head>
 <body>

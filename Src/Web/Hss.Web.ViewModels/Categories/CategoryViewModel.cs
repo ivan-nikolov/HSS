@@ -2,7 +2,6 @@
 {
     using Hss.Data.Models;
     using Hss.Services.Mapping;
-    using Hss.Services.Models.Categories;
 
     public class CategoryViewModel : IMapFrom<Category>
     {

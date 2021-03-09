@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-Hss-BBB373B5-EF3F-4DBB-B8AA-7152CEC275BF</UserSecretsId>
+    <!--<UserSecretsId>aspnet-Hss-BBB373B5-EF3F-4DBB-B8AA-7152CEC275BF</UserSecretsId>-->
     <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
     <LangVersion>latest</LangVersion>
@@ -14,7 +14,8 @@
 
   <PropertyGroup>
     <CodeAnalysisRuleSet>..\..\Rules.ruleset</CodeAnalysisRuleSet>
-    <ApplicationInsightsResourceId>/subscriptions/1480577e-51fc-4343-98c5-dbffee559048/resourcegroups/homeservicesandsolutions/providers/microsoft.insights/components/homeservicesandsolutions</ApplicationInsightsResourceId>
+    <ApplicationInsightsResourceId>/subscriptions/d27bdd49-32b8-442b-b76d-402e6d6da5ca/resourceGroups/homeservicesandsolutions/providers/microsoft.insights/components/homeservicesandsolutions</ApplicationInsightsResourceId>
+    <UserSecretsId>7ed65c98-b437-448f-bd7e-cf8984272252</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
@@ -28,9 +29,9 @@
     <PackageReference Include="Hangfire.Core" Version="1.7.11" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.11" />
     <PackageReference Include="HtmlSanitizer" Version="5.0.310" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
     <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
