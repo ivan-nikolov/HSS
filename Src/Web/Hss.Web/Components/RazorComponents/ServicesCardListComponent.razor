@@ -7,8 +7,13 @@
 {
     <h4>Loading...</h4>
 }
-else
+else if (this.Services.Count() > 0)
 {
+    <hr />
+    <div class="d-flex justify-content-center mt-3">
+        <h2 class="display-3">@this.CategoryName Services</h2>
+    </div>
+
     <div class="row d-flex justify-content-center">
         @foreach (var service in this.Services)
         {
@@ -41,8 +46,13 @@ else
     [Parameter]
     public int CategoryId { get; set; }
 
-    protected override void OnInitialized()
+    [Parameter]
+    public string CategoryName { get; set; }
+
+    protected override void OnParametersSet()
     {
         this.Services = this.serviceService.GetAllByCategoryId<ServiceCardListViewModel>(this.CategoryId);
+
+        base.OnParametersSet();
     }
 }

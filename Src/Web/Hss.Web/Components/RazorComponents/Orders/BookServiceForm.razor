@@ -55,7 +55,7 @@
                     <InputDate @bind-Value="this.input.AppointmentDate" type="text" class="form-control"></InputDate>
                 </div>
 
-                <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="workingHours" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited" ServiceFrequency="this.SelectedService.ServiceFrequency"></HoursList>
+                <HoursList SelecteServiceId="input.ServiceId" SelectedDate="this.input.AppointmentDate" CityId="this.selectedAddress.CityId" WorkingHours="workingHours" HourChanged="this.OnHourSelect" ServiceDuration="this.SelectedService.DurationInHours" IsSubmitted="this.isSubmited" ServiceFrequency="this.input.ServiceFrequency"></HoursList>
             }
             <div class="mt-4">
                 <button style="display: @this.submitButtonDisplay" class="btn btn-lg btn-outline-primary" type="submit">Book Service</button>

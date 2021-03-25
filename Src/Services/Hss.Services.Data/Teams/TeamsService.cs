@@ -86,9 +86,9 @@
 
         public bool HasFreeTeams(DateTime startDate, DateTime endDate, int cityId, int serviceId, ServiceFrequency serviceFrequency)
         {
-            var freeTeams = this.GetFreeTeams<TeamServiceModel>(startDate, endDate, cityId, serviceId, serviceFrequency).ToList();
+            var freeTeams = this.GetFreeTeams<TeamServiceModel>(startDate, endDate, cityId, serviceId, serviceFrequency);
 
-            return freeTeams.Count > 0;
+            return freeTeams.Count() > 0;
         }
 
         public IEnumerable<T> GetFreeTeams<T>(DateTime startDate, DateTime endDate, int cityId, int serviceId, ServiceFrequency serviceFrequency)
@@ -133,7 +133,8 @@
 
             var freeTeams = this.CheckMonthlyFreeTeams<T>(startDate, endDate, teams, serviceFrequency);
 
-            return freeTeams;
+            return freeTeams
+                .ToList();
         }
 
         private DateTime GetCurrentMothAppointmentDate(Appointment apt, DateTime appointment)
@@ -158,9 +159,11 @@
             {
                 ServiceFrequency.Daily => (startDate.TimeOfDay >= currentMonthAppointmentStartDate.TimeOfDay && startDate.TimeOfDay <= currentMontAppointmentEndDate.TimeOfDay)
                             || (startDate.TimeOfDay < currentMonthAppointmentStartDate.TimeOfDay && endDate.TimeOfDay >= currentMonthAppointmentStartDate.TimeOfDay),
+
                 ServiceFrequency.Weekly => appointment.DayOfWeek == (int)currentMonthAppointmentStartDate.DayOfWeek
                             && ((startDate.TimeOfDay >= currentMonthAppointmentStartDate.TimeOfDay && startDate.TimeOfDay <= currentMontAppointmentEndDate.TimeOfDay)
                             || (startDate.TimeOfDay < currentMonthAppointmentStartDate.TimeOfDay && endDate.TimeOfDay >= currentMonthAppointmentStartDate.TimeOfDay)),
+
                 _ => (startDate >= currentMonthAppointmentStartDate && startDate <= currentMontAppointmentEndDate)
                     || (startDate < currentMonthAppointmentStartDate && endDate >= currentMonthAppointmentStartDate),
             };

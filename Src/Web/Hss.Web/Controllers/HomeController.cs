@@ -16,9 +16,11 @@
             this.emailSender = emailSender;
         }
 
-        public IActionResult Index()
+        [Route("/")]
+        [Route("/Home/Index/{id:int}")]
+        public IActionResult Index(int id)
         {
-            return this.View();
+            return this.View(id);
         }
 
         public IActionResult Privacy()

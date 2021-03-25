@@ -11,8 +11,6 @@
 
         public int? ParentCategoryId { get; set; }
 
-        public int ServicesCount { get; set; }
-
         public string Name { get; set; }
 
         public string ParentCategoryName { get; set; }

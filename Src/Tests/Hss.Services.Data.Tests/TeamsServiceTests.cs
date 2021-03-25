@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Hss.Common;
     using Hss.Data;
     using Hss.Data.Common.Repositories;
     using Hss.Data.Models;
@@ -23,6 +24,8 @@
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()).Options;
             var dbContext = new ApplicationDbContext(options);
+
+            var week = appointmentStartDate.GetWeekOfMonth();
 
             var repositoryMock = new Mock<IDeletableEntityRepository<Team>>();
             repositoryMock.Setup(x => x.All())
@@ -56,6 +59,7 @@
                                                             DayOfWeek = (int)appointmentStartDate.DayOfWeek,
                                                             StartDate = appointmentStartDate,
                                                             EndDate = appointmentEndDate,
+                                                            WeekOfMonth = appointmentStartDate.GetWeekOfMonth(),
                                                         },
                                                 },
                                             },
@@ -186,6 +190,30 @@
                     new DateTime(2020, 5, 18, 10, 0, 0),
                     new DateTime(2020, 5, 18, 12, 0, 0),
                     0,
+                },
+
+                new object[]
+                {
+                    ServiceFrequency.Monthly,
+                    new DateTime(2020, 5, 28, 10, 0, 0),
+                    new DateTime(2020, 5, 28, 12, 0, 0),
+
+                    ServiceFrequency.Monthly,
+                    new DateTime(2020, 6, 25, 10, 0, 0),
+                    new DateTime(2020, 6, 25, 12, 0, 0),
+                    0,
+                },
+
+                new object[]
+                {
+                    ServiceFrequency.Monthly,
+                    new DateTime(2020, 5, 29, 10, 0, 0),
+                    new DateTime(2020, 5, 29, 12, 0, 0),
+
+                    ServiceFrequency.Monthly,
+                    new DateTime(2020, 6, 29, 10, 0, 0),
+                    new DateTime(2020, 6, 29, 12, 0, 0),
+                    1,
                 },
             };
     }

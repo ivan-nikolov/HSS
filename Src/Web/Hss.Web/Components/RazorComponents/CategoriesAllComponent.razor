@@ -1,40 +1,42 @@
-﻿@inject Hss.Services.Data.Services.IServicesService servicesService
-@inject Hss.Services.Data.Categories.ICategoriesService categoriesService
-@using Hss.Web.ViewModels.Components.RazorComponents
+﻿@inject Hss.Services.Data.Services.IServicesService servicesService;
+@inject Hss.Services.Data.Categories.ICategoriesService categoriesService;
+@inject NavigationManager navManager;
+@using Hss.Web.ViewModels.Components.RazorComponents;
+
 <div>
     <CascadingValue Value="category.CurrentCategoryId">
         <CategoriesCardsListComponent OnSelectCategory="this.OnCategorySelect"></CategoriesCardsListComponent>
     </CascadingValue>
-    <hr />
-    @if (this.hasServices && this.category.CurrentCategoryId.HasValue)
-    {
-        <div class="d-flex justify-content-center mt-3">
-            <h2 class="display-3">@this.category.Name Services</h2>
-        </div>
-        <ServicesCardListComponent CategoryId="this.category.CurrentCategoryId.Value"></ServicesCardListComponent>
-    }
+
+    <ServicesCardListComponent CategoryName="@this.category.Name" CategoryId="@(this.category.CurrentCategoryId.HasValue ? this.category.CurrentCategoryId.Value : 0)"></ServicesCardListComponent>
+
     <hr />
     <button class="btn btn-info ml-auto" @onclick="() => this.OnBackClicked()" disabled="@this.isDisabled" hidden="@this.isDisabled">Back</button>
 </div>
 @code {
     private bool isDisabled;
-    private bool hasServices;
 
     private CategoriesAllModel category;
+
+    [Parameter]
+    public int Id { get; set; }
 
     protected override void OnInitialized()
     {
         this.isDisabled = true;
         this.category = new CategoriesAllModel();
+        this.category.Id = this.Id;
+
+        if (this.Id != 0)
+        {
+            this.OnCategorySelect(this.Id);
+        }
     }
 
     private void OnCategorySelect(int categoryId)
     {
         this.DisableBackButton(categoryId);
         this.category = this.categoriesService.GetAllCategories<CategoriesAllModel>().FirstOrDefault(c => c.Id == categoryId);
-        this.hasServices = this.category.ServicesCount > 0;
-
-        this.StateHasChanged();
     }
 
     private void OnBackClicked()
@@ -43,13 +45,13 @@
         if (this.category.ParentCategoryId.HasValue)
         {
             this.category = this.categoriesService.GetAllCategories<CategoriesAllModel>().FirstOrDefault(c => c.Id == this.category.ParentCategoryId.Value);
+            this.navManager.NavigateTo($"/Home/Index/{this.category.Id}");
         }
         else
         {
             this.category = new CategoriesAllModel();
+            this.navManager.NavigateTo("/");
         }
-
-        this.hasServices = this.category.ServicesCount > 0;
     }
 
     private void DisableBackButton(int? id)
