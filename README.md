@@ -32,6 +32,19 @@ This is my defense project for **ASP.NET Core MVC** course at [SoftUni](https://
 &nbsp;&nbsp;&nbsp;&nbsp;Administrators can create categories, services and teams. They assign users to a team as team members. Administrators confirm the pending jobs but before that they can change the team selecting from the free teams in the location.
   
 &nbsp;&nbsp;&nbsp;&nbsp;Team members can check their team jobs and complete them. Upon completing if the visitation frequency of the booking is different than once a new job is generated for the next visitation date and hour and it is assigned to the team.
+
+&nbsp;&nbsp;&nbsp;&nbsp;URL: <https://homeservicesandsolutions.azurewebsites.net/>
+
+&nbsp;&nbsp;&nbsp;&nbsp;**Test Accounts**:
+
+&nbsp;&nbsp;&nbsp;&nbsp;Username: Admin  
+&nbsp;&nbsp;&nbsp;&nbsp;Password: 123456  
+
+&nbsp;&nbsp;&nbsp;&nbsp;Username: Client  
+&nbsp;&nbsp;&nbsp;&nbsp;Password: 123456  
+
+&nbsp;&nbsp;&nbsp;&nbsp;Username: TeamMember  
+&nbsp;&nbsp;&nbsp;&nbsp;Password: 123456
 # :hammer: Built With:
 * ASP.NET Core 3.1 MVC
 * Blazor Server
